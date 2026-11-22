@@ -1,0 +1,40 @@
+
+name: Extract Depth Studio Project
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "DepthStudio_Project_Starter.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  extract-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract ZIP project
+        run: |
+          mkdir -p _starter_unpack
+          unzip -q DepthStudio_Project_Starter.zip -d _starter_unpack
+          test -d _starter_unpack/DepthStudio
+          cp -a _starter_unpack/DepthStudio/. .
+          rm -rf _starter_unpack
+          rm -f DepthStudio_Project_Starter.zip
+
+      - name: Commit extracted project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Extract Depth Studio starter project"
+            git push
+          fi
