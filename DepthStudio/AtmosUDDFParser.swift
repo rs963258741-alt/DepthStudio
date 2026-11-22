@@ -1,5 +1,4 @@
 import Foundation
-import FoundationXML
 
 struct DiveSample: Identifiable, Codable, Equatable {
     let id: Int
