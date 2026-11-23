@@ -6,7 +6,7 @@ import QuartzCore
 /// Export settings for the first MP4 renderer.
 /// Overlay placement is intentionally expressed as fractions of the final video size.
 struct DiveExportSettings {
-    var quality: AVAssetExportPreset = AVAssetExportPresetHighestQuality
+    var quality: String = AVAssetExportPresetHighestQuality
     var includeTemperature = true
     var includeDepthProfile = true
     var overlayOpacity: Float = 0.88
