@@ -6,7 +6,8 @@ import QuartzCore
 /// Export settings for the first MP4 renderer.
 /// Overlay placement is intentionally expressed as fractions of the final video size.
 struct DiveExportSettings {
-    var quality: AVAssetExportPreset = AVAssetExportPresetHighestQuality
+    // AVAssetExportPresetHighestQuality is a preset-name String, not an AVAssetExportPreset type.
+    var quality: String = AVAssetExportPresetHighestQuality
     var includeTemperature = true
     var includeDepthProfile = true
     var overlayOpacity: Float = 0.88
@@ -20,18 +21,42 @@ enum DiveExportError: LocalizedError {
     case noVideoTrack
     case invalidDuration
     case invalidSamples
+    case invalidSync
+    case noSamplesInVideoRange
+    case invalidSettings
+    case invalidOutputURL
+    case outputWouldOverwriteSource
+    case invalidRenderSize
     case cannotCreateExportSession
     case unsupportedOutputType
     case exportFailed(String)
 
     var errorDescription: String? {
         switch self {
-        case .noVideoTrack: return "找不到可輸出的影片影像軌。"
-        case .invalidDuration: return "影片長度無效。"
-        case .invalidSamples: return "手錶數據不足，無法建立 HUD。"
-        case .cannotCreateExportSession: return "無法建立影片輸出工作。"
-        case .unsupportedOutputType: return "目前輸出格式不受支援，請選擇 MP4。"
-        case .exportFailed(let message): return "影片輸出失敗：\(message)"
+        case .noVideoTrack:
+            return "找不到可輸出的影片影像軌。"
+        case .invalidDuration:
+            return "影片長度無效。"
+        case .invalidSamples:
+            return "手錶數據不足或包含無效資料，無法建立 HUD。"
+        case .invalidSync:
+            return "影片與手錶的同步錨點無效。"
+        case .noSamplesInVideoRange:
+            return "目前的同步偏移沒有任何手錶數據落在影片時間範圍內。"
+        case .invalidSettings:
+            return "影片輸出設定無效，請檢查品質、透明度、大小與位置。"
+        case .invalidOutputURL:
+            return "輸出位置無效，請選擇有效的本機檔案位置。"
+        case .outputWouldOverwriteSource:
+            return "輸出檔案不能與原始影片使用相同位置。"
+        case .invalidRenderSize:
+            return "影片尺寸或旋轉資訊無效，無法建立輸出畫面。"
+        case .cannotCreateExportSession:
+            return "無法建立影片輸出工作。"
+        case .unsupportedOutputType:
+            return "目前輸出格式不受支援，請選擇 MP4。"
+        case .exportFailed(let message):
+            return "影片輸出失敗：\(message)"
         }
     }
 }
@@ -47,11 +72,23 @@ final class DiveVideoExporter {
         outputURL: URL,
         completion: @escaping (Result<URL, Error>) -> Void
     ) {
-        let asset = AVURLAsset(url: videoURL)
         Task {
             do {
-                let tracks = try await asset.loadTracks(withMediaType: .video)
-                guard let sourceVideoTrack = tracks.first else { throw DiveExportError.noVideoTrack }
+                try validate(settings: settings)
+
+                guard videoURL.isFileURL, outputURL.isFileURL else {
+                    throw DiveExportError.invalidOutputURL
+                }
+                guard videoURL.standardizedFileURL != outputURL.standardizedFileURL else {
+                    throw DiveExportError.outputWouldOverwriteSource
+                }
+
+                let asset = AVURLAsset(url: videoURL)
+                let videoTracks = try await asset.loadTracks(withMediaType: .video)
+                guard let sourceVideoTrack = videoTracks.first else {
+                    throw DiveExportError.noVideoTrack
+                }
+
                 let duration = try await asset.load(.duration)
                 guard duration.seconds.isFinite, duration.seconds > 0 else {
                     throw DiveExportError.invalidDuration
@@ -60,19 +97,35 @@ final class DiveVideoExporter {
                 let naturalSize = try await sourceVideoTrack.load(.naturalSize)
                 let preferredTransform = try await sourceVideoTrack.load(.preferredTransform)
                 let sourceFrameDuration = try await sourceVideoTrack.load(.minFrameDuration)
-                let videoComposition = try await makeVideoComposition(
-                    asset: asset,
+
+                let interpolator: DiveDataInterpolator
+                do {
+                    interpolator = try DiveDataInterpolator(samples: samples)
+                } catch {
+                    throw DiveExportError.invalidSamples
+                }
+                guard interpolator.samples.count >= 2 else {
+                    throw DiveExportError.invalidSamples
+                }
+                try validate(sync: sync)
+
+                let videoComposition = try makeVideoComposition(
                     sourceVideoTrack: sourceVideoTrack,
                     duration: duration,
                     naturalSize: naturalSize,
                     preferredTransform: preferredTransform,
                     sourceFrameDuration: sourceFrameDuration,
-                    samples: samples,
+                    interpolator: interpolator,
                     sync: sync,
                     settings: settings
                 )
 
-                try? FileManager.default.removeItem(at: outputURL)
+                let outputDirectory = outputURL.deletingLastPathComponent()
+                try FileManager.default.createDirectory(
+                    at: outputDirectory,
+                    withIntermediateDirectories: true
+                )
+
                 guard let session = AVAssetExportSession(
                     asset: asset,
                     presetName: settings.quality
@@ -82,6 +135,11 @@ final class DiveVideoExporter {
                 guard session.supportedFileTypes.contains(settings.outputFileType) else {
                     throw DiveExportError.unsupportedOutputType
                 }
+
+                if FileManager.default.fileExists(atPath: outputURL.path) {
+                    try FileManager.default.removeItem(at: outputURL)
+                }
+
                 session.videoComposition = videoComposition
                 session.outputURL = outputURL
                 session.outputFileType = settings.outputFileType
@@ -91,17 +149,23 @@ final class DiveVideoExporter {
                     session.exportAsynchronously {
                         switch session.status {
                         case .completed:
-                            continuation.resume()
+                            continuation.resume(returning: ())
                         case .failed:
-                            continuation.resume(throwing: session.error ?? DiveExportError.exportFailed("未知錯誤"))
+                            continuation.resume(
+                                throwing: session.error ?? DiveExportError.exportFailed("未知錯誤")
+                            )
                         case .cancelled:
                             continuation.resume(throwing: CancellationError())
                         default:
                             continuation.resume(throwing: DiveExportError.exportFailed(
-                                "輸出工作未正常完成（\\(session.status.rawValue)）"
+                                "輸出工作未正常完成（狀態碼：\(session.status.rawValue)）"
                             ))
                         }
                     }
+                }
+
+                guard FileManager.default.fileExists(atPath: outputURL.path) else {
+                    throw DiveExportError.exportFailed("輸出工作回報完成，但找不到產生的檔案。")
                 }
                 completion(.success(outputURL))
             } catch {
@@ -110,38 +174,106 @@ final class DiveVideoExporter {
         }
     }
 
+    private func validate(settings: DiveExportSettings) throws {
+        guard !settings.quality.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              settings.overlayOpacity.isFinite,
+              (0.0...1.0).contains(settings.overlayOpacity),
+              settings.overlayScale.isFinite,
+              (0.25...2.0).contains(settings.overlayScale),
+              settings.overlayBottomInset.isFinite,
+              (0.0...0.5).contains(settings.overlayBottomInset) else {
+            throw DiveExportError.invalidSettings
+        }
+    }
+
+    private func validate(sync: TimelineSync) throws {
+        let first = sync.first
+        guard first.videoSeconds.isFinite, first.watchSeconds.isFinite else {
+            throw DiveExportError.invalidSync
+        }
+        if let second = sync.second {
+            guard second.videoSeconds.isFinite,
+                  second.watchSeconds.isFinite,
+                  second.videoSeconds > first.videoSeconds,
+                  second.watchSeconds > first.watchSeconds else {
+                throw DiveExportError.invalidSync
+            }
+            let rate = (second.watchSeconds - first.watchSeconds) /
+                (second.videoSeconds - first.videoSeconds)
+            guard rate.isFinite, (0.90...1.10).contains(rate) else {
+                throw DiveExportError.invalidSync
+            }
+        }
+    }
+
     private func makeVideoComposition(
-        asset: AVAsset,
         sourceVideoTrack: AVAssetTrack,
         duration: CMTime,
         naturalSize: CGSize,
         preferredTransform: CGAffineTransform,
         sourceFrameDuration: CMTime,
-        samples: [DiveSample],
+        interpolator: DiveDataInterpolator,
         sync: TimelineSync,
         settings: DiveExportSettings
-    ) async throws -> AVMutableVideoComposition {
-        let sorted = samples.sorted { $0.elapsedSeconds < $1.elapsedSeconds }
-        guard sorted.count >= 2,
-              zip(sorted, sorted.dropFirst()).allSatisfy({ $0.elapsedSeconds < $1.elapsedSeconds }) else {
+    ) throws -> AVMutableVideoComposition {
+        let samples = interpolator.samples
+        guard samples.count >= 2,
+              duration.seconds.isFinite,
+              duration.seconds > 0 else {
             throw DiveExportError.invalidSamples
         }
 
+        let transformValues = [
+            preferredTransform.a, preferredTransform.b,
+            preferredTransform.c, preferredTransform.d,
+            preferredTransform.tx, preferredTransform.ty
+        ]
+        guard naturalSize.width.isFinite,
+              naturalSize.height.isFinite,
+              naturalSize.width > 0,
+              naturalSize.height > 0,
+              transformValues.allSatisfy({ $0.isFinite }) else {
+            throw DiveExportError.invalidRenderSize
+        }
+
         let transformedRect = CGRect(origin: .zero, size: naturalSize).applying(preferredTransform)
-        let renderSize = CGSize(width: abs(transformedRect.width).rounded(),
-                                height: abs(transformedRect.height).rounded())
-        let normalize = preferredTransform.concatenating(
-            CGAffineTransform(translationX: -transformedRect.minX, y: -transformedRect.minY)
+        let renderSize = CGSize(
+            width: abs(transformedRect.width).rounded(),
+            height: abs(transformedRect.height).rounded()
         )
+        guard renderSize.width.isFinite,
+              renderSize.height.isFinite,
+              renderSize.width > 0,
+              renderSize.height > 0 else {
+            throw DiveExportError.invalidRenderSize
+        }
+
+        let normalize = preferredTransform.concatenating(
+            CGAffineTransform(
+                translationX: -transformedRect.minX,
+                y: -transformedRect.minY
+            )
+        )
+
+        let frames = animationFrames(
+            samples: samples,
+            videoDuration: duration.seconds,
+            sync: sync
+        )
+        guard !frames.isEmpty else {
+            throw DiveExportError.noSamplesInVideoRange
+        }
 
         let composition = AVMutableVideoComposition()
         composition.renderSize = renderSize
-        composition.frameDuration = sourceFrameDuration.isValid && sourceFrameDuration.seconds > 0
+        composition.frameDuration = sourceFrameDuration.isValid &&
+            sourceFrameDuration.seconds.isFinite && sourceFrameDuration.seconds > 0
             ? sourceFrameDuration
             : CMTime(value: 1, timescale: 30)
 
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRange(start: .zero, duration: duration)
+
         let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: sourceVideoTrack)
         layerInstruction.setTransform(normalize, at: .zero)
         instruction.layerInstructions = [layerInstruction]
@@ -157,12 +289,14 @@ final class DiveVideoExporter {
 
         let hud = makeHUDLayer(
             size: renderSize,
-            samples: sorted,
+            samples: samples,
             videoDuration: duration.seconds,
-            sync: sync,
+            interpolator: interpolator,
+            frames: frames,
             settings: settings
         )
         parent.addSublayer(hud)
+
         composition.animationTool = AVVideoCompositionCoreAnimationTool(
             postProcessingAsVideoLayer: videoLayer,
             in: parent
@@ -174,13 +308,15 @@ final class DiveVideoExporter {
         size: CGSize,
         samples: [DiveSample],
         videoDuration: Double,
-        sync: TimelineSync,
+        interpolator: DiveDataInterpolator,
+        frames: [(videoTime: Double, watchTime: Double)],
         settings: DiveExportSettings
     ) -> CALayer {
         let width = size.width * 0.92 * settings.overlayScale
         let height = size.height * 0.235 * settings.overlayScale
         let x = (size.width - width) / 2
         let y = size.height * (1 - settings.overlayBottomInset) - height
+
         let root = CALayer()
         root.frame = CGRect(x: x, y: y, width: width, height: height)
         root.opacity = settings.overlayOpacity
@@ -196,50 +332,84 @@ final class DiveVideoExporter {
         let valueFont = UIFont.monospacedDigitSystemFont(ofSize: max(18, height * 0.17), weight: .bold)
 
         addAnimatedMetric(
-            to: root, label: "DEPTH", unit: "m",
-            x: width * 0.035, y: height * 0.12,
-            width: leftWidth, height: height * 0.23,
-            samples: samples, videoDuration: videoDuration, sync: sync,
-            font: valueFont, labelFont: labelFont, color: cyan,
-            value: { String(format: "%.1f", $0.depthMeters) }
+            to: root,
+            label: "DEPTH",
+            x: width * 0.035,
+            y: height * 0.12,
+            width: leftWidth,
+            height: height * 0.23,
+            interpolator: interpolator,
+            frames: frames,
+            videoDuration: videoDuration,
+            font: valueFont,
+            labelFont: labelFont,
+            color: cyan,
+            value: { String(format: "%.1f", $0.depthMeters) },
+            unit: "m"
         )
         addAnimatedMetric(
-            to: root, label: "DIVE TIME", unit: "",
-            x: width * 0.035, y: height * 0.40,
-            width: leftWidth, height: height * 0.23,
-            samples: samples, videoDuration: videoDuration, sync: sync,
-            font: valueFont, labelFont: labelFont, color: cyan,
-            value: { String(format: "%02d:%02d", Int($0.elapsedSeconds) / 60, Int($0.elapsedSeconds) % 60) }
+            to: root,
+            label: "DIVE TIME",
+            x: width * 0.035,
+            y: height * 0.40,
+            width: leftWidth,
+            height: height * 0.23,
+            interpolator: interpolator,
+            frames: frames,
+            videoDuration: videoDuration,
+            font: valueFont,
+            labelFont: labelFont,
+            color: cyan,
+            value: { String(format: "%02d:%02d", Int($0.elapsedSeconds) / 60, Int($0.elapsedSeconds) % 60) },
+            unit: ""
         )
         addAnimatedMetric(
-            to: root, label: "RATE", unit: "m/s",
-            x: width * 0.035, y: height * 0.68,
-            width: leftWidth, height: height * 0.23,
-            samples: samples, videoDuration: videoDuration, sync: sync,
-            font: valueFont, labelFont: labelFont, color: cyan,
-            value: { String(format: "%.2f", abs($0.verticalSpeedMetersPerSecond ?? 0)) }
+            to: root,
+            label: "RATE",
+            x: width * 0.035,
+            y: height * 0.68,
+            width: leftWidth,
+            height: height * 0.23,
+            interpolator: interpolator,
+            frames: frames,
+            videoDuration: videoDuration,
+            font: valueFont,
+            labelFont: labelFont,
+            color: cyan,
+            value: { String(format: "%.2f", abs($0.verticalSpeedMetersPerSecond ?? 0)) },
+            unit: "m/s"
         )
 
-        if settings.includeTemperature {
-            let temperature = samples.compactMap(\.temperatureCelsius).first
-            if let temperature {
-                let temp = CATextLayer()
-                temp.contentsScale = UIScreen.main.scale
-                temp.string = String(format: "TEMP  %.1f°C", temperature)
-                temp.font = labelFont
-                temp.fontSize = labelFont.pointSize
-                temp.foregroundColor = UIColor.white.cgColor
-                temp.frame = CGRect(x: width * 0.035, y: height * 0.91,
-                                    width: leftWidth, height: height * 0.08)
-                root.addSublayer(temp)
-            }
+        if settings.includeTemperature,
+           let temperature = samples.compactMap(\.temperatureCelsius).first,
+           temperature.isFinite {
+            let temp = CATextLayer()
+            temp.contentsScale = UIScreen.main.scale
+            temp.string = String(format: "TEMP  %.1f°C", temperature)
+            temp.font = labelFont
+            temp.fontSize = labelFont.pointSize
+            temp.foregroundColor = UIColor.white.cgColor
+            temp.frame = CGRect(
+                x: width * 0.035,
+                y: height * 0.91,
+                width: leftWidth,
+                height: height * 0.08
+            )
+            root.addSublayer(temp)
         }
 
         if settings.includeDepthProfile {
-            addDepthProfile(to: root, samples: samples, videoDuration: videoDuration,
-                            sync: sync, left: leftWidth + width * 0.045,
-                            top: height * 0.12, width: width * 0.57,
-                            height: height * 0.73, cyan: cyan)
+            addDepthProfile(
+                to: root,
+                samples: samples,
+                frames: frames,
+                videoDuration: videoDuration,
+                left: leftWidth + width * 0.045,
+                top: height * 0.12,
+                width: width * 0.57,
+                height: height * 0.73,
+                cyan: cyan
+            )
         }
         return root
     }
@@ -247,15 +417,18 @@ final class DiveVideoExporter {
     private func addAnimatedMetric(
         to root: CALayer,
         label: String,
-        unit: String,
-        x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat,
-        samples: [DiveSample],
+        x: CGFloat,
+        y: CGFloat,
+        width: CGFloat,
+        height: CGFloat,
+        interpolator: DiveDataInterpolator,
+        frames: [(videoTime: Double, watchTime: Double)],
         videoDuration: Double,
-        sync: TimelineSync,
         font: UIFont,
         labelFont: UIFont,
         color: UIColor,
-        value: @escaping (DiveReading) -> String
+        value: (DiveReading) -> String,
+        unit: String
     ) {
         let labelLayer = CATextLayer()
         labelLayer.contentsScale = UIScreen.main.scale
@@ -271,23 +444,27 @@ final class DiveVideoExporter {
         valueLayer.font = font
         valueLayer.fontSize = font.pointSize
         valueLayer.foregroundColor = UIColor.white.cgColor
-        valueLayer.frame = CGRect(x: x, y: y + height * 0.30,
-                                  width: width, height: height * 0.70)
+        valueLayer.frame = CGRect(
+            x: x,
+            y: y + height * 0.30,
+            width: width,
+            height: height * 0.70
+        )
         root.addSublayer(valueLayer)
 
-        let interpolator = try? DiveDataInterpolator(samples: samples)
-        let frames = animationFrames(samples: samples, videoDuration: videoDuration, sync: sync)
-        let strings = frames.compactMap { frame -> (Double, String)? in
-            guard let reading = interpolator?.reading(at: frame.watchTime) else { return nil }
+        let strings = frames.compactMap { frame -> (videoTime: Double, text: String)? in
+            guard let reading = interpolator.reading(at: frame.watchTime) else {
+                return nil
+            }
             return (frame.videoTime, value(reading))
         }
         guard let first = strings.first else { return }
-        valueLayer.string = first.1
+        valueLayer.string = unit.isEmpty ? first.text : "\(first.text) \(unit)"
         guard strings.count > 1 else { return }
 
         let animation = CAKeyframeAnimation(keyPath: "string")
-        animation.values = strings.map { $0.1 }
-        animation.keyTimes = keyTimes(strings.map { $0.0 }, duration: videoDuration)
+        animation.values = strings.map { $0.text + (unit.isEmpty ? "" : " \(unit)") }
+        animation.keyTimes = keyTimes(strings.map { $0.videoTime }, duration: videoDuration)
         animation.duration = videoDuration
         animation.beginTime = AVCoreAnimationBeginTimeAtZero
         animation.calculationMode = .discrete
@@ -299,9 +476,12 @@ final class DiveVideoExporter {
     private func addDepthProfile(
         to root: CALayer,
         samples: [DiveSample],
+        frames: [(videoTime: Double, watchTime: Double)],
         videoDuration: Double,
-        sync: TimelineSync,
-        left: CGFloat, top: CGFloat, width: CGFloat, height: CGFloat,
+        left: CGFloat,
+        top: CGFloat,
+        width: CGFloat,
+        height: CGFloat,
         cyan: UIColor
     ) {
         let maxDepth = max(5, ceil((samples.map(\.depthMeters).max() ?? 5) / 5) * 5)
@@ -363,7 +543,6 @@ final class DiveVideoExporter {
         playhead.bounds = CGRect(x: 0, y: 0, width: max(2, width * 0.003), height: height)
         chart.addSublayer(playhead)
 
-        let frames = animationFrames(samples: samples, videoDuration: videoDuration, sync: sync)
         let positions = frames.map { frame -> NSValue in
             let fraction = min(max((frame.watchTime - firstTime) / (lastTime - firstTime), 0), 1)
             let px = CGFloat(fraction) * width
@@ -399,13 +578,22 @@ final class DiveVideoExporter {
             } else {
                 videoTime = first.videoSeconds + sample.elapsedSeconds - first.watchSeconds
             }
-            guard videoTime >= 0, videoTime <= videoDuration else { return nil }
+            guard videoTime.isFinite,
+                  videoTime >= 0,
+                  videoTime <= videoDuration else { return nil }
             return (videoTime, sample.elapsedSeconds)
         }.sorted { $0.videoTime < $1.videoTime }
     }
 
     private func keyTimes(_ times: [Double], duration: Double) -> [NSNumber] {
-        guard duration > 0 else { return [] }
-        return times.map { NSNumber(value: min(max($0 / duration, 0), 1)) }
+        guard duration.isFinite, duration > 0 else { return [] }
+        // Keep one key time for every animation value. Samples are already
+        // strictly time-ordered by DiveDataInterpolator and TimelineSync has
+        // a positive rate, so the resulting values remain ordered.
+        return times.map { time in
+            let safeTime = time.isFinite ? time : 0
+            let normalized = min(max(safeTime / duration, 0), 1)
+            return NSNumber(value: normalized)
+        }
     }
 }
