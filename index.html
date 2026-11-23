@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.4</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.5</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -79,7 +79,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.4</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.5</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -161,8 +161,8 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.4：逐影格離線合成，優先輸出直向／橫向 4K 長邊（3840px）；原片已達 4K 以上則保留原始尺寸。保持來源影格時間戳與持續時間，不以即時播放錄製。4K 升頻不會憑空增加原始細節；輸出仍需重新編碼。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload" role="button">下載已完成影片（MP4）</a><button id="saveToPhotosBtn" class="secondary" type="button" style="display:none">儲存到照片</button></div><div class="export-note" id="exportInfo">匯入影片後會讀取來源影格數、平均 FPS、時間戳與影片位元率。若裝置不支援 4K 編碼、儲存空間不足，或品質檢查未通過，會停止輸出而不提供不合格檔案。首次輸出需連線載入 Mediabunny 媒體處理模組。完成後可下載 MP4，或使用 iPhone 系統分享選單選擇「儲存影片」。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.4 以 V8.2 為底版。HUD 資訊欄背景透明，只保留文字陰影及排版時的虛線選取框。保留原本姓名／國旗／潛水種類組合、深度曲線座標、離線逐影格輸出與輸出後品質驗證。品質檢查未通過時不提供下載。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.5：優化逐影格離線合成，優先輸出直向／橫向 4K 長邊（3840px）；原片已達 4K 以上則保留原始尺寸。保持來源影格時間戳與持續時間，不以即時播放錄製。4K 升頻不會憑空增加原始細節；輸出仍需重新編碼。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload" role="button">下載已完成影片（MP4）</a><button id="saveToPhotosBtn" class="secondary" type="button" style="display:none">儲存到照片</button></div><div class="export-note" id="exportInfo">匯入影片後會分析來源影格時間與位元率。MP4 一旦成功建立，下載按鈕會立即顯示；後續檔案檢查若有警告，不會再把已建立的檔案刪除。首次輸出需連線載入 Mediabunny。完成後可下載 MP4，或使用 iPhone 系統分享選單選擇「儲存影片」。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.5 以 V8.4 為底版。HUD 資訊欄背景透明，只保留文字陰影及排版時的虛線選取框。保留原本姓名／國旗／潛水種類組合、深度曲線座標、離線逐影格輸出與輸出後品質驗證。MP4 建立後立即提供下載；後續檢查結果以提醒呈現，不會隱藏已產生的檔案。</p></div>
 </section>
 </main>
 <script>
@@ -285,7 +285,7 @@ function hideLiveData(){['depthValue','depthUnit','elapsedValue','elapsedLabel',
 function updateAt(timeOverride=null){const v=$('video');const fallback=samples.length?Math.min(samples[samples.length-1].t,Math.max(samples[0].t,11.8)):0;const baseTime=Number.isFinite(timeOverride)?timeOverride:(v.src?v.currentTime:fallback);const dataTime=baseTime+(Number($('offset').value)||0);const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1)+' m/s';$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('y1',PROFILE_PLOT.top);$('profileGuide').setAttribute('y2',PROFILE_PLOT.bottom);$('profileGuide').setAttribute('visibility','visible')}
 function animationLoop(){updateAt();if(!$('video').paused)rafId=requestAnimationFrame(animationLoop);else rafId=null}
 function startAnimation(){if(rafId===null)rafId=requestAnimationFrame(animationLoop)}
-$('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
+$('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}lastExportBlob=null;$('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('saveToPhotosBtn').style.display='none';if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
 $('video').addEventListener('play',startAnimation);['timeupdate','seeked','seeking','loadedmetadata','pause','ended'].forEach(evt=>$('video').addEventListener(evt,updateAt));
 $('uddfFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const xml=new DOMParser().parseFromString(await file.text(),'application/xml');if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');const nodes=[...xml.getElementsByTagName('*')].filter(n=>n.localName?.toLowerCase()==='waypoint');const childText=(node,name)=>{const found=[...node.getElementsByTagName('*')].find(n=>n.localName?.toLowerCase()===name);return found?.textContent?.trim()??null};const parsed=nodes.map((node,i)=>{const depthRaw=childText(node,'depth');const tRaw=childText(node,'divetime');const tempRaw=childText(node,'temperature');const d=Number(depthRaw);const t=Number(tRaw??i+1);let temp=tempRaw===null?NaN:Number(tempRaw);if(temp>100)temp-=273.15;return {t:Number.isFinite(t)?t:i+1,d,temp}}).filter(p=>Number.isFinite(p.d)&&Number.isFinite(p.t)).sort((a,b)=>a.t-b.t);if(!parsed.length)throw Error('找不到可辨識的深度 waypoint；示範資料仍保留');samples=parsed;maxD=Math.max(...samples.map(p=>p.d));avgD=samples.reduce((sum,p)=>sum+p.d,0)/samples.length;duration=samples[samples.length-1].t;$('sumMax').textContent=maxD.toFixed(1)+' m';$('sumAvg').textContent=avgD.toFixed(1)+' m';$('sumDur').textContent=duration+' s';$('recordInfo').textContent='已讀取 '+file.name+'，樣本數 '+samples.length+'。請核對匯入結果是否與手錶紀錄一致。';$('status').textContent='UDDF 已載入：'+samples.length+' 個深度樣本。';drawProfile();updateAt()}catch(err){$('status').textContent='解析提醒：'+err.message}});
 $('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
@@ -315,41 +315,87 @@ function drawSpacedText(ctx,text,x,y,spacing){
   const widths=[...text].map(ch=>ctx.measureText(ch).width);const total=widths.reduce((a,b)=>a+b,0)+Math.max(0,text.length-1)*spacing;let cursor=x-total/2;
   [...text].forEach((ch,i)=>{ctx.fillText(ch,cursor+widths[i]/2,y);cursor+=widths[i]+spacing})
 }
-function drawProfileCanvas(ctx,x0,y0,w,h,time){
-  if(!samples.length)return;const range=profileTimeRange(),dscale=profileDepthScale(),plot=PROFILE_PLOT;
-  const sx=w/360,sy=h/132;const X=v=>v*sx,Y=v=>v*sy;
+function makeSortedExportSamples(){
+  return samples.slice().sort((a,b)=>a.t-b.t);
+}
+function interpolateExportSample(sorted,t){
+  if(!sorted.length||t<sorted[0].t||t>sorted[sorted.length-1].t)return null;
+  let lo=0,hi=sorted.length;
+  while(lo<hi){const mid=(lo+hi)>>1;if(sorted[mid].t<t)lo=mid+1;else hi=mid;}
+  const i=lo;
+  if(i<=0)return {...sorted[0],speed:0};
+  const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;
+  const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);
+  return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span};
+}
+function buildExportProfileCache(sorted){
+  const plot=PROFILE_PLOT,first=sorted[0]?.t??0,last=sorted[sorted.length-1]?.t??1,span=Math.max(.001,last-first),dscale=profileDepthScale();
+  const points=sorted.map(p=>({x:Math.max(plot.left,Math.min(plot.right,plot.left+((p.t-first)/span)*(plot.right-plot.left))),y:Math.max(plot.top,Math.min(plot.bottom,plot.top+(Math.max(0,p.d)/dscale)*(plot.bottom-plot.top)))}));
+  return {plot,first,last,span,dscale,points,sorted};
+}
+function drawProfileCanvasCached(ctx,x0,y0,w,h,time,cache){
+  if(!cache||!cache.points.length)return;
+  const plot=cache.plot,range=cache,sx=w/360,sy=h/132,X=v=>v*sx,Y=v=>v*sy;
   ctx.save();ctx.translate(x0,y0);ctx.font=`700 ${Math.max(7,9*sx)}px -apple-system,BlinkMacSystemFont,Arial,sans-serif`;ctx.textBaseline='middle';
-  // Y axis labels and horizontal depth grid (10m increments).
-  for(let d=10;d<=dscale;d+=10){const yy=plot.top+(d/dscale)*(plot.bottom-plot.top);ctx.beginPath();ctx.setLineDash([2*sx,3*sx]);ctx.moveTo(X(plot.left),Y(yy));ctx.lineTo(X(plot.right),Y(yy));ctx.strokeStyle='rgba(160,226,242,.28)';ctx.lineWidth=Math.max(.55,sx*.7);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c4edf8';ctx.textAlign='right';ctx.fillText(d+'m',X(plot.left-5),Y(yy));}
-  // X axis labels at one-third, two-thirds and the full dive duration.
-  for(let i=1;i<=3;i++){const xx=plot.left+(plot.right-plot.left)*i/3;const yy=plot.bottom;ctx.beginPath();ctx.setLineDash([2*sx,3*sx]);ctx.moveTo(X(xx),Y(plot.top));ctx.lineTo(X(xx),Y(yy));ctx.strokeStyle='rgba(160,226,242,.24)';ctx.lineWidth=Math.max(.55,sx*.7);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c4edf8';ctx.textAlign=i===3?'right':'center';ctx.fillText(fmtTime(range.span*i/3),X(xx),Y(117));}
+  // Axis ticks and grid are drawn from cached depth/time ranges; no per-frame sorting.
+  for(let d=10;d<=cache.dscale;d+=10){const yy=plot.top+(d/cache.dscale)*(plot.bottom-plot.top);ctx.beginPath();ctx.setLineDash([2*sx,3*sx]);ctx.moveTo(X(plot.left),Y(yy));ctx.lineTo(X(plot.right),Y(yy));ctx.strokeStyle='rgba(160,226,242,.28)';ctx.lineWidth=Math.max(.55,sx*.7);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c4edf8';ctx.textAlign='right';ctx.fillText(d+'m',X(plot.left-5),Y(yy));}
+  for(let i=1;i<=3;i++){const xx=plot.left+(plot.right-plot.left)*i/3;ctx.beginPath();ctx.setLineDash([2*sx,3*sx]);ctx.moveTo(X(xx),Y(plot.top));ctx.lineTo(X(xx),Y(plot.bottom));ctx.strokeStyle='rgba(160,226,242,.24)';ctx.lineWidth=Math.max(.55,sx*.7);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c4edf8';ctx.textAlign=i===3?'right':'center';ctx.fillText(fmtTime(range.span*i/3),X(xx),Y(117));}
   ctx.beginPath();ctx.moveTo(X(plot.left),Y(plot.top));ctx.lineTo(X(plot.left),Y(plot.bottom));ctx.lineTo(X(plot.right),Y(plot.bottom));ctx.strokeStyle='rgba(160,226,242,.5)';ctx.lineWidth=Math.max(.65,sx*.9);ctx.stroke();
-  const pts=[...samples].sort((a,b)=>a.t-b.t).map(p=>{const [x,y]=pointForSample(p);return [X(x),Y(y)]});
-  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.lineTo(X(plot.right),Y(plot.bottom));ctx.lineTo(X(plot.left),Y(plot.bottom));ctx.closePath();const grad=ctx.createLinearGradient(0,Y(plot.top),0,Y(plot.bottom));grad.addColorStop(0,'rgba(85,231,255,.26)');grad.addColorStop(1,'rgba(85,231,255,0)');ctx.fillStyle=grad;ctx.fill();
-  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle='#70edff';ctx.lineWidth=Math.max(1.2,w*2.2/360);ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='#2adfff';ctx.shadowBlur=ctx.lineWidth*2.2;ctx.stroke();ctx.shadowBlur=0;
-  const sample=interpolateAt(time+(Number($('offset').value)||0));if(sample){const [px,py]=pointForSample(sample);const x=X(px),y=Y(py);ctx.beginPath();ctx.setLineDash([3*sx,3*sx]);ctx.moveTo(x,Y(plot.top));ctx.lineTo(x,Y(plot.bottom));ctx.strokeStyle='rgba(186,247,255,.85)';ctx.lineWidth=Math.max(1,w/360);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(x,y,9*sx,0,Math.PI*2);ctx.fillStyle='rgba(85,234,255,.3)';ctx.fill();ctx.beginPath();ctx.arc(x,y,4.8*sx,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle='#55eaff';ctx.lineWidth=2.2*sx;ctx.fill();ctx.stroke()}
+  const pts=cache.points;
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.lineTo(X(plot.right),Y(plot.bottom));ctx.lineTo(X(plot.left),Y(plot.bottom));ctx.closePath();
+  const grad=ctx.createLinearGradient(0,Y(plot.top),0,Y(plot.bottom));grad.addColorStop(0,'rgba(85,231,255,.26)');grad.addColorStop(1,'rgba(85,231,255,0)');ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.strokeStyle='#70edff';ctx.lineWidth=Math.max(1.2,w*2.2/360);ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='#2adfff';ctx.shadowBlur=ctx.lineWidth*2.2;ctx.stroke();ctx.shadowBlur=0;
+  const sample=interpolateExportSample(cache.sorted,time+cache.offset);if(sample){const x=plot.left+((sample.t-cache.first)/cache.span)*(plot.right-plot.left),y=plot.top+(Math.max(0,sample.d)/cache.dscale)*(plot.bottom-plot.top);const px=X(x),py=Y(y);ctx.beginPath();ctx.setLineDash([3*sx,3*sx]);ctx.moveTo(px,Y(plot.top));ctx.lineTo(px,Y(plot.bottom));ctx.strokeStyle='rgba(186,247,255,.85)';ctx.lineWidth=Math.max(1,w/360);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(px,py,9*sx,0,Math.PI*2);ctx.fillStyle='rgba(85,234,255,.3)';ctx.fill();ctx.beginPath();ctx.arc(px,py,4.8*sx,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle='#55eaff';ctx.lineWidth=2.2*sx;ctx.fill();ctx.stroke();}
   ctx.restore();
 }
-function drawHudToCanvas(ctx,W,H,time){
-  updateAt(time);const hud=$('hud'),rect=hud.getBoundingClientRect(),stageRect=$('stage').getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const opacity=Number(getComputedStyle(hud).opacity)||1;
-  for(const id of itemIds){const el=$(id),style=getComputedStyle(el);if(el.classList.contains('is-disabled')||style.display==='none'||style.visibility==='hidden')continue;
-    const x=Number(el.dataset.x??DEFAULT_LAYOUT[id][0])/100*rect.width;const y=Number(el.dataset.y??DEFAULT_LAYOUT[id][1])/100*rect.height;const scale=Number(el.dataset.scale||1),rotation=Number(el.dataset.rotation||0);
-    ctx.save();ctx.setTransform(sx,0,0,sy,0,0);ctx.globalAlpha=opacity;ctx.translate(x,y);ctx.rotate(rotation*Math.PI/180);ctx.scale(scale,scale);
+function buildHudExportCache(W,H){
+  const hud=$('hud'),rect=hud.getBoundingClientRect(),items=[];
+  const dynamicIds=new Set(['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock']);
+  for(const id of itemIds){
+    const el=$(id),style=getComputedStyle(el);
+    if(el.classList.contains('is-disabled')||style.display==='none')continue;
+    if(style.visibility==='hidden'&&!dynamicIds.has(id))continue;
+    items.push({
+      id,x:Number(el.dataset.x??DEFAULT_LAYOUT[id][0])/100*rect.width,y:Number(el.dataset.y??DEFAULT_LAYOUT[id][1])/100*rect.height,
+      scale:Number(el.dataset.scale||1),rotation:Number(el.dataset.rotation||0),
+      fontSize:parseFloat(style.fontSize)||12,weight:style.fontWeight||'700',family:style.fontFamily||'Arial,sans-serif',
+      color:style.color||'#fff',spacing:parseFloat(style.letterSpacing)||0,width:el.offsetWidth,height:el.offsetHeight,text:el.textContent.trim(),
+      dynamic:dynamicIds.has(id)
+    });
+  }
+  const identity={name:$('hudDisplayName').textContent||'YOUR NAME',type:$('hudDivingType').textContent||'CWTB',flag:$('hudCountryFlag'),maxDepth:maxD};
+  const sorted=makeSortedExportSamples();
+  const profile=buildExportProfileCache(sorted);profile.offset=Number($('offset').value)||0;
+  return {items,identity,profile,sorted,offset:profile.offset,sx:W/rect.width,sy:H/rect.height,opacity:Number(getComputedStyle(hud).opacity)||1,profileCache:{width:items.find(x=>x.id==='profileBlock')?.width||0,height:items.find(x=>x.id==='profileBlock')?.height||0}};
+}
+function drawHudToCanvasFast(ctx,W,H,time,cache){
+  const sample=interpolateExportSample(cache.sorted,time+cache.offset),live=!!sample;
+  for(const item of cache.items){
+    if(item.dynamic&&!live)continue;
+    const id=item.id;ctx.save();ctx.setTransform(cache.sx,0,0,cache.sy,0,0);ctx.globalAlpha=cache.opacity;ctx.translate(item.x,item.y);ctx.rotate(item.rotation*Math.PI/180);ctx.scale(item.scale,item.scale);
     if(id==='profileBlock'){
-      const w=el.offsetWidth,h=el.offsetHeight;drawProfileCanvas(ctx,-w/2,-h/2,w,h,time);ctx.restore();continue;
+      drawProfileCanvasCached(ctx,-item.width/2,-item.height/2,item.width,item.height,time,cache.profile);ctx.restore();continue;
     }
-    const fontSize=parseFloat(style.fontSize)||12;const weight=style.fontWeight||'700';const family=style.fontFamily||'Arial,sans-serif';ctx.font=`${weight} ${fontSize}px ${family}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=style.color||'#fff';ctx.shadowColor='rgba(61,223,255,.55)';ctx.shadowBlur=id==='depthValue'?fontSize*.32:fontSize*.12;ctx.shadowOffsetY=1;
+    ctx.font=`${item.weight} ${item.fontSize}px ${item.family}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=item.color;ctx.shadowColor='rgba(61,223,255,.55)';ctx.shadowBlur=id==='depthValue'?item.fontSize*.32:item.fontSize*.12;ctx.shadowOffsetY=1;
     if(id==='identityGroup'){
-      const name=$('hudDisplayName').textContent||'YOUR NAME';const diveType=$('hudDivingType').textContent||'CWTB';const flag=$('hudCountryFlag');
-      const flagH=fontSize*1.28;const flagW=flag&&!flag.hidden&&flag.complete&&flag.naturalWidth?flagH*flag.naturalWidth/flag.naturalHeight:0;
-      ctx.font=`850 ${fontSize}px ${family}`;const nameW=ctx.measureText(name).width;const typeFont=fontSize*.96;ctx.font=`900 ${typeFont}px ${family}`;const typeW=ctx.measureText(diveType).width;
+      const name=cache.identity.name,diveType=cache.identity.type,flag=cache.identity.flag,fontSize=item.fontSize;
+      const flagH=fontSize*1.28,flagW=flag&&!flag.hidden&&flag.complete&&flag.naturalWidth?flagH*flag.naturalWidth/flag.naturalHeight:0;
+      ctx.font=`850 ${fontSize}px ${item.family}`;const nameW=ctx.measureText(name).width;const typeFont=fontSize*.96;ctx.font=`900 ${typeFont}px ${item.family}`;const typeW=ctx.measureText(diveType).width;
       const flagGap=flagW?fontSize*.42:0,typeGap=fontSize*.9,total=flagW+flagGap+nameW+typeGap+typeW;let cursor=-total/2;
       if(flagW){try{ctx.drawImage(flag,cursor,-flagH/2,flagW,flagH)}catch(_){}cursor+=flagW+flagGap;}
-      ctx.font=`850 ${fontSize}px ${family}`;ctx.fillStyle='#ffffff';ctx.fillText(name,cursor+nameW/2,0);cursor+=nameW+typeGap;
-      ctx.font=`900 ${typeFont}px ${family}`;ctx.fillStyle='#62e7ff';ctx.fillText(diveType,cursor+typeW/2,0);
+      ctx.font=`850 ${fontSize}px ${item.family}`;ctx.fillStyle='#ffffff';ctx.fillText(name,cursor+nameW/2,0);cursor+=nameW+typeGap;
+      ctx.font=`900 ${typeFont}px ${item.family}`;ctx.fillStyle='#62e7ff';ctx.fillText(diveType,cursor+typeW/2,0);
     }else{
-      let text=el.textContent.trim();if(id==='hudBrand')text='● FREEDIVE / MISSION 02';if(id==='footerBrand')text='ATMOS MISSION 2';if(id==='maxDepth')text='MAX '+maxD.toFixed(1)+' M';
-      const spacing=parseFloat(style.letterSpacing)||0;drawSpacedText(ctx,text,0,0,spacing);
+      let text='';
+      if(id==='depthValue')text=sample.d.toFixed(1);
+      else if(id==='depthUnit')text=item.text;
+      else if(id==='elapsedValue'||id==='hudClock')text=fmtTime(sample.t);
+      else if(id==='tempValue')text=Number.isFinite(sample.temp)?sample.temp.toFixed(1)+'°':'--';
+      else if(id==='speedValue')text=(Number.isFinite(sample.speed)?sample.speed:0).toFixed(1)+' m/s';
+      else if(id==='maxDepth')text='MAX '+cache.identity.maxDepth.toFixed(1)+' M';
+      else text=item.text;
+      if(id==='hudBrand')text='● FREEDIVE / MISSION 02';if(id==='footerBrand')text='ATMOS MISSION 2';
+      drawSpacedText(ctx,text,0,0,item.spacing);
     }
     ctx.restore();
   }
@@ -359,179 +405,220 @@ const MEDIABUNNY_URL='https://cdn.jsdelivr.net/npm/mediabunny@1.65.2/+esm';
 let mediabunnyModulePromise=null,activeExportUrl=null,lastExportFilename='DepthStudio_Export.mp4',lastExportBlob=null;
 async function loadMediabunny(){
   if(!mediabunnyModulePromise){
-    const importTask=import(MEDIABUNNY_URL);
-    mediabunnyModulePromise=Promise.race([importTask,new Promise((_,reject)=>setTimeout(()=>reject(new Error('媒體處理模組載入逾時（45 秒）')),45000))]).catch(error=>{mediabunnyModulePromise=null;throw new Error('無法載入媒體處理模組，請確認網路連線後再試。'+(error?.message||String(error))) });
+    mediabunnyModulePromise=import(MEDIABUNNY_URL).catch(error=>{mediabunnyModulePromise=null;throw new Error('無法載入影片處理模組。請確認網路連線後再試。'+(error?.message||String(error)));});
   }
   return mediabunnyModulePromise;
 }
-function yieldToUI(){return new Promise(resolve=>setTimeout(resolve,0))}
 function get4KOutputSize(width,height){
   const long=Math.max(width,height);if(long>=3840)return {width:width+(width%2),height:height+(height%2),upscaled:false};
-  const scale=3840/long;const even=n=>Math.max(2,Math.round((n*scale)/2)*2);
+  const scale=3840/long,even=n=>Math.max(2,Math.round((n*scale)/2)*2);
   return {width:even(width),height:even(height),upscaled:true};
 }
 async function inspectVideoPackets(track){
-  const {EncodedPacketSink}=await loadMediabunny();const sink=new EncodedPacketSink(track);let count=0,bytes=0,first=Infinity,last=-Infinity;const timing=[];
+  const {EncodedPacketSink}=await loadMediabunny();const sink=new EncodedPacketSink(track);
+  let count=0,bytes=0,first=Infinity,last=-Infinity;const timing=[];
   for await(const packet of sink.packets()){
-    count++;bytes+=packet.data?.byteLength||0;const ts=Number(packet.timestamp)||0;const dur=Number(packet.duration)||0;first=Math.min(first,ts);last=Math.max(last,ts+dur);timing.push([ts,dur]);
+    count++;bytes+=packet.data?.byteLength||0;
+    const ts=Number(packet.timestamp)||0,dur=Number(packet.duration)||0;
+    if(ts<first)first=ts;if(ts+dur>last)last=ts+dur;
+    timing.push([ts,dur]);
   }
-  timing.sort((a,b)=>a[0]-b[0]);const duration=Math.max(0.001,last-first);return {count,bytes,first,last,duration,bitrate:bytes*8/duration,fps:count/duration,timing};
+  timing.sort((a,b)=>a[0]-b[0]);
+  const span=Math.max(.001,last-first);
+  return {count,bytes,first,last,duration:span,bitrate:bytes*8/span,fps:count/span,timing};
+}
+function attachExportDownload(blob,file,versionLabel){
+  if(!(blob instanceof Blob)||blob.size<1024)throw new Error('輸出影片資料為空或不完整，無法建立下載檔。');
+  if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);
+  activeExportUrl=URL.createObjectURL(blob);lastExportBlob=blob;
+  lastExportFilename=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_'+versionLabel+'_4K.mp4';
+  const link=$('exportDownload');
+  link.href=activeExportUrl;link.download=lastExportFilename;link.type='video/mp4';
+  link.style.display='inline-flex';link.style.visibility='visible';link.style.opacity='1';
+  link.textContent=`下載完成影片（4K MP4・${(blob.size/1024/1024).toFixed(1)} MB）`;
+  link.setAttribute('aria-label','下載已完成的 Depth Studio MP4 影片');
+  $('saveToPhotosBtn').style.display='inline-block';
+  $('saveToPhotosBtn').disabled=false;
+  // Keep a persistent, visible status even if the optional metadata verification later warns.
+  $('status').textContent='MP4 檔案已建立，下載按鈕已出現。請點擊「下載完成影片」儲存到 iPhone；也可選擇「儲存到照片」。';
+}
+async function validateMp4Container(blob){
+  if(!(blob instanceof Blob)||blob.size<1024)throw new Error('MP4 檔案大小不足。');
+  const head=new Uint8Array(await blob.slice(0,Math.min(blob.size,2*1024*1024)).arrayBuffer());
+  const ascii=(offset)=>String.fromCharCode(head[offset]||0,head[offset+1]||0,head[offset+2]||0,head[offset+3]||0);
+  if(ascii(4)!=='ftyp')throw new Error('輸出資料缺少 MP4 ftyp 標頭；不建立錯誤下載連結。');
+  const text=new TextDecoder('latin1').decode(head.subarray(0,Math.min(head.length,256*1024)));
+  if(!text.includes('moov'))throw new Error('MP4 缺少必要的 moov 中繼資料，檔案無法可靠播放。');
+  if(!text.includes('moof')&&!text.includes('mdat'))throw new Error('MP4 缺少媒體片段資料，輸出檔可能不完整。');
+  return true;
+}
+async function verifyMp4Blob(MB,blob,sourceStats,sourceWidth,sourceHeight,targetSize,sourceDuration,sourceHasAudio){
+  const {Input,ALL_FORMATS,BlobSource}=MB;
+  const verifyInput=new Input({formats:ALL_FORMATS,source:new BlobSource(blob)});
+  const outTrack=await verifyInput.getPrimaryVideoTrack();
+  if(!outTrack)throw new Error('MP4 已建立，但無法讀到輸出影片軌。');
+  const actualW=await outTrack.getDisplayWidth(),actualH=await outTrack.getDisplayHeight();
+  if(!(await outTrack.canDecode()))throw new Error('MP4 已建立，但瀏覽器無法解碼輸出影片。');
+  const outStats=await inspectVideoPackets(outTrack),outDuration=await outTrack.computeDuration();
+  const outAudio=await verifyInput.getPrimaryAudioTrack();
+  const warnings=[];
+  if(actualW!==targetSize.width||actualH!==targetSize.height)warnings.push(`解析度預期 ${targetSize.width}×${targetSize.height}，實際 ${actualW}×${actualH}`);
+  if(outStats.count!==sourceStats.count)warnings.push(`影格數來源 ${sourceStats.count}、輸出 ${outStats.count}`);
+  const durationTolerance=Math.max(.1,2/Math.max(1,sourceStats.fps));
+  if(Math.abs(outDuration-sourceDuration)>durationTolerance)warnings.push(`片長來源 ${sourceDuration.toFixed(3)} 秒、輸出 ${outDuration.toFixed(3)} 秒`);
+  const fpsDelta=Math.abs(outStats.fps-sourceStats.fps)/Math.max(.001,sourceStats.fps);
+  if(fpsDelta>.01)warnings.push(`平均 FPS 來源 ${sourceStats.fps.toFixed(3)}、輸出 ${outStats.fps.toFixed(3)}`);
+  const tsTol=Math.max(.012,.5/Math.max(1,sourceStats.fps));
+  let timestampMismatches=0;
+  if(sourceStats.timing.length===outStats.timing.length){
+    for(let i=0;i<sourceStats.timing.length;i++){
+      const a=sourceStats.timing[i],b=outStats.timing[i];
+      if(Math.abs((a[0]-sourceStats.timing[0][0])-(b[0]-outStats.timing[0][0]))>tsTol||Math.abs(a[1]-b[1])>tsTol)timestampMismatches++;
+    }
+  }else timestampMismatches=Math.abs(sourceStats.timing.length-outStats.timing.length);
+  if(timestampMismatches)warnings.push(`有 ${timestampMismatches} 個影格時間戳／持續時間超出容許差`);
+  if(sourceHasAudio&&!outAudio)warnings.push('來源音訊軌未能保留');
+  if(outStats.bitrate<sourceStats.bitrate)warnings.push(`輸出影片軌位元率 ${(outStats.bitrate/1e6).toFixed(2)} Mbps 低於來源 ${(sourceStats.bitrate/1e6).toFixed(2)} Mbps`);
+  return {actualW,actualH,outStats,outDuration,outAudio,warnings};
 }
 async function exportVideo(){
   if(exportBusy)return;
   const file=$('videoFile').files?.[0];
   if(!file){$('status').textContent='請先匯入原始 MP4／MOV 影片。';return;}
-  exportBusy=true;
-  $('exportVideoBtn').disabled=true;
-  $('exportProgress').hidden=false;
-  $('exportProgress').value=0;
-  $('exportDownload').style.display='none';
-  $('exportDownload').removeAttribute('href');
-  $('saveToPhotosBtn').style.display='none';
+  exportBusy=true;$('exportVideoBtn').disabled=true;
+  $('exportProgress').hidden=false;$('exportProgress').value=0;
+  $('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('saveToPhotosBtn').style.display='none';
+  if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}
   lastExportBlob=null;
-  let heartbeat=null;
-  const startedAt=Date.now();
-  let lastActivityAt=startedAt;
-  let lastProgress=0;
-  let currentPhase='正在準備輸出';
-  const setProgress=(value,message)=>{
-    const n=Math.max(lastProgress,Math.min(99.5,Number(value)||0));
-    lastProgress=n;$('exportProgress').value=n;
-    if(message){$('status').textContent=message;currentPhase=message;}
-    lastActivityAt=Date.now();
+  const startedAt=Date.now();let lastActivityAt=startedAt,lastUiAt=0,lastProgress=0,currentPhase='正在準備輸出';
+  let heartbeat=null,frameUiTimer=null,output=null,conversion=null,blob=null,parts=null,bufferFallback=false,streamWriteError=null,bytesWritten=0;
+  const setProgress=(value,message,force=false)=>{
+    const now=Date.now();lastActivityAt=now;
+    const n=Math.max(lastProgress,Math.max(0,Math.min(99.5,Number(value)||0)));lastProgress=n;$('exportProgress').value=n;
+    if(message&&(force||now-lastUiAt>=180)){ $('status').textContent=message;currentPhase=message;lastUiAt=now; }
   };
-  const phase=(message,value)=>setProgress(value,message);
+  const phase=(message,value)=>setProgress(value,message,true);
   $('status').textContent='正在準備輸出…';
-  heartbeat=setInterval(()=>{
-    if(Date.now()-lastActivityAt>6000){
-      const elapsed=Math.floor((Date.now()-startedAt)/1000);
-      $('status').textContent=`${currentPhase}（已經過 ${elapsed} 秒，仍在處理；請保持 Safari 在前景。）`;
-    }
-  },3000);
-  let output=null,conversion=null;
+  heartbeat=setInterval(()=>{if(Date.now()-lastActivityAt>6000){const elapsed=Math.floor((Date.now()-startedAt)/1000);$('status').textContent=`${currentPhase}（已經過 ${elapsed} 秒；請保持 Safari 在前景，避免切換 App 或鎖定螢幕。）`; }},3000);
   try{
     phase('正在載入影片處理模組…',1);
-    if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('目前 Safari 未提供 WebCodecs VideoEncoder／VideoDecoder。為避免輸出卡頓或丟幀，本次停止輸出。');
+    if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('此 Safari 尚未提供完整 WebCodecs 編碼／解碼功能，無法安全輸出。');
     const MB=await loadMediabunny();
-    const {Input,ALL_FORMATS,BlobSource,Output,Mp4OutputFormat,BufferTarget,Conversion,Quality,canEncodeVideo}=MB;
-    phase('正在分析原片影格與時間資訊…',4);
+    const {Input,ALL_FORMATS,BlobSource,Output,Mp4OutputFormat,BufferTarget,StreamTarget,Conversion,Quality,canEncodeVideo}=MB;
+    phase('正在分析原始影片…',3);
     const input=new Input({formats:ALL_FORMATS,source:new BlobSource(file)});
-    const videoTrack=await input.getPrimaryVideoTrack();
-    if(!videoTrack)throw new Error('找不到來源影片軌。');
+    const videoTrack=await input.getPrimaryVideoTrack();if(!videoTrack)throw new Error('找不到來源影片軌。');
     const audioTrack=await input.getPrimaryAudioTrack();
-    if(!(await videoTrack.canDecode()))throw new Error('目前裝置無法解碼這支影片的來源編碼；未輸出任何檔案。');
-    const sourceWidth=await videoTrack.getDisplayWidth();
-    const sourceHeight=await videoTrack.getDisplayHeight();
-    const srcStats=await inspectVideoPackets(videoTrack);
-    const sourceDuration=await videoTrack.computeDuration();
+    if(!(await videoTrack.canDecode()))throw new Error('目前裝置無法解碼來源影片。');
+    const sourceWidth=await videoTrack.getDisplayWidth(),sourceHeight=await videoTrack.getDisplayHeight();
+    const srcStats=await inspectVideoPackets(videoTrack),sourceDuration=await videoTrack.computeDuration();
     if(!sourceWidth||!sourceHeight||!srcStats.count||!Number.isFinite(sourceDuration)||sourceDuration<=0)throw new Error('無法可靠讀取來源影片尺寸、影格數或時間長度。');
-    const targetSize=get4KOutputSize(sourceWidth,sourceHeight);
-    const outW=targetSize.width,outH=targetSize.height;
+    const targetSize=get4KOutputSize(sourceWidth,sourceHeight),outW=targetSize.width,outH=targetSize.height;
     const sourceBitrate=Math.max(1,Math.round(srcStats.bitrate));
     const pixelsPerSecond=outW*outH*srcStats.fps;
-    const targetBitrate=Math.ceil(Math.max(sourceBitrate*1.25,pixelsPerSecond*0.12));
-    const approxSizeMB=targetBitrate*sourceDuration/8/1000000;
-    $('exportInfo').textContent=`來源 ${sourceWidth} × ${sourceHeight}；輸出目標 ${outW} × ${outH}${targetSize.upscaled?'（升頻至 4K 長邊）':'（原片已達 4K，保留原尺寸）'}；來源 ${srcStats.fps.toFixed(3)} FPS、${srcStats.count.toLocaleString()} 幀、影片軌 ${(sourceBitrate/1e6).toFixed(2)} Mbps。目標影片位元率 ${(targetBitrate/1e6).toFixed(1)} Mbps；預估檔案約 ${approxSizeMB.toFixed(0)} MB。`;
-    phase('正在檢查裝置是否支援 4K 影片編碼…',8);
-    const quality=new Quality({bitrate:targetBitrate});
-    let codec=null;
-    for(const candidate of ['avc','hevc']){
-      try{if(await canEncodeVideo(candidate,{width:outW,height:outH,quality})){codec=candidate;break;}}catch(_){ }
+    // Keep a high-quality target while avoiding a needlessly extreme bitrate that slows mobile hardware encoders.
+    const targetBitrate=Math.ceil(Math.max(sourceBitrate*1.05,pixelsPerSecond*.10));
+    const approxSizeMB=targetBitrate*sourceDuration/8/1e6;
+    $('exportInfo').textContent=`來源 ${sourceWidth} × ${sourceHeight}；輸出 ${outW} × ${outH}${targetSize.upscaled?'（升頻 4K）':'（保留原生 4K 以上尺寸）'}；${srcStats.fps.toFixed(3)} FPS、${srcStats.count.toLocaleString()} 幀；來源影片軌 ${(sourceBitrate/1e6).toFixed(2)} Mbps；預估輸出約 ${approxSizeMB.toFixed(0)} MB。`;
+    phase('正在檢查 4K 編碼能力…',6);
+    const quality=new Quality({bitrate:targetBitrate});let codec=null;
+    for(const candidate of ['avc','hevc']){try{if(await canEncodeVideo(candidate,{width:outW,height:outH,quality})){codec=candidate;break;}}catch(_){}}
+    if(!codec)throw new Error(`此裝置無法以 H.264 或 HEVC 編碼 ${outW} × ${outH}。為避免降低解析度，本次停止。`);
+    // A chunked, append-only MP4 target avoids BufferTarget's single contiguous ArrayBuffer
+    // and its large finalization copy, which is particularly problematic on iPhone Safari.
+    if(typeof WritableStream!=='undefined'&&StreamTarget){
+      parts=[];let expectedPosition=0;
+      const writable=new WritableStream({write(chunk){
+        if(!chunk||!(chunk.data instanceof Uint8Array))throw new Error('MP4 輸出串流資料格式錯誤。');
+        if(chunk.position!==expectedPosition)throw new Error(`MP4 串流寫入位置不連續（${chunk.position}／${expectedPosition}），停止以免產生損毀檔案。`);
+        parts.push(chunk.data);expectedPosition+=chunk.data.byteLength;bytesWritten=expectedPosition;
+      }});
+      output=new Output({format:new Mp4OutputFormat({fastStart:'fragmented',minimumFragmentDuration:1}),target:new StreamTarget(writable,{chunked:true,chunkSize:4*1024*1024})});
+    }else{
+      if(approxSizeMB>350)throw new Error('此瀏覽器缺少串流輸出能力，而且影片預估超過 350 MB。為避免 Safari 因記憶體不足而關閉，請改用支援 Streams API 的 Safari 版本或分段處理。');
+      bufferFallback=true;output=new Output({format:new Mp4OutputFormat({fastStart:'in-memory'}),target:new BufferTarget()});
     }
-    if(!codec)throw new Error(`此裝置目前無法以 H.264 或 HEVC 編碼 ${outW} × ${outH} 的 4K 影片。為避免偷偷降低解析度或改成低畫質，本次停止輸出。`);
-    if(approxSizeMB>1400)throw new Error(`預估輸出約 ${approxSizeMB.toFixed(0)} MB，可能超出 iPhone Safari 可用記憶體。請先使用較短影片分段輸出；本次未開始編碼。`);
-    const format=new Mp4OutputFormat();
-    output=new Output({format,target:new BufferTarget()});
+    const renderCache=buildHudExportCache(outW,outH);
     let renderCanvas=null,renderCtx=null,processedFrames=0;
-    let lastFrameUiUpdate=0;
-    const conversionInitOptions={
-      input,output,tracks:'primary',
-      video:{
-        forceTranscode:true,codec,quality,hardwareAcceleration:'prefer-hardware',
-        processedWidth:outW,processedHeight:outH,
-        process:async sample=>{
-          const fw=sample.displayWidth,fh=sample.displayHeight;
-          if(fw!==sourceWidth||fh!==sourceHeight)throw new Error(`來源影格尺寸在影片中途變成 ${fw} × ${fh}，與起始尺寸不同；停止輸出以避免畫面變形。`);
-          if(!renderCanvas){
-            renderCanvas=document.createElement('canvas');renderCanvas.width=outW;renderCanvas.height=outH;
-            renderCtx=renderCanvas.getContext('2d',{alpha:false,desynchronized:true});
-            if(!renderCtx)throw new Error('無法建立 4K 合成畫布。');
-            renderCtx.imageSmoothingEnabled=true;renderCtx.imageSmoothingQuality='high';
-          }
-          renderCtx.setTransform(1,0,0,1,0,0);
-          renderCtx.fillStyle='#000';renderCtx.fillRect(0,0,outW,outH);
-          renderCtx.setTransform(outW/sourceWidth,0,0,outH/sourceHeight,0,0);
-          sample.draw(renderCtx,0,0);
-          drawHudToCanvas(renderCtx,outW,outH,sample.timestamp);
-          processedFrames++;
-          const frameProgress=8+Math.min(1,processedFrames/srcStats.count)*58;
-          setProgress(frameProgress,`4K 離線合成中：${processedFrames.toLocaleString()} / ${srcStats.count.toLocaleString()} 幀（${Math.round(processedFrames/srcStats.count*100)}%）`);
-          // 每兩幀讓 UI 有機會更新，避免長時間卡在同一個進度數字。
-          if(processedFrames-lastFrameUiUpdate>=2){lastFrameUiUpdate=processedFrames;await yieldToUI();}
-          return renderCanvas;
+    const conversionOptions={input,output,tracks:'primary',video:{
+      forceTranscode:true,codec,quality,hardwareAcceleration:'prefer-hardware',processedWidth:outW,processedHeight:outH,
+      process:sample=>{
+        if(!renderCanvas){
+          renderCanvas=document.createElement('canvas');renderCanvas.width=outW;renderCanvas.height=outH;
+          renderCtx=renderCanvas.getContext('2d',{alpha:false,desynchronized:true});
+          if(!renderCtx)throw new Error('無法建立 4K 合成畫布。');
+          renderCtx.imageSmoothingEnabled=true;renderCtx.imageSmoothingQuality='high';
         }
+        renderCtx.setTransform(outW/sourceWidth,0,0,outH/sourceHeight,0,0);
+        sample.draw(renderCtx,0,0);
+        drawHudToCanvasFast(renderCtx,outW,outH,sample.timestamp,renderCache);
+        processedFrames++;
+        return renderCanvas;
       }
-    };
-    phase('正在建立 4K 離線編碼工作…',9);
-    conversion=await Conversion.init(conversionInitOptions);
-    if(!conversion.isValid){const reasons=(conversion.discardedTracks||[]).map(x=>x.reason||x.track?.type||'不支援的軌道').join('、');throw new Error('來源影片無法安全封裝為 MP4。'+(reasons?'無法保留的軌道：'+reasons:'請確認影片編碼格式。'));}
+    }};
+    phase('正在建立 4K 編碼工作…',8);
+    conversion=await Conversion.init(conversionOptions);
+    if(!conversion.isValid){const reasons=(conversion.discardedTracks||[]).map(x=>x.reason||x.track?.type||'不支援的軌道').join('、');throw new Error('來源影片無法安全轉換為 MP4。'+(reasons?'無法保留的軌道：'+reasons:'請確認影片編碼格式。'));}
     const audioDiscarded=audioTrack&&(conversion.discardedTracks||[]).some(x=>x===audioTrack||x.track===audioTrack||x.track?.id===audioTrack.id);
-    if(audioTrack&&audioDiscarded)throw new Error('來源影片含有音訊，但目前裝置無法在輸出 MP4 時保留音訊軌；本次停止，避免交付無聲影片。');
+    if(audioTrack&&audioDiscarded)throw new Error('來源影片含有音訊，但目前裝置無法將音訊放入 MP4。');
     conversion.onProgress=(p,processedTime)=>{
       const pct=Number.isFinite(p)?Math.max(0,Math.min(1,p)):0;
-      setProgress(Math.max(lastProgress,66+pct*27),`4K 編碼中：${Math.round(pct*100)}%（已處理 ${Math.max(0,processedTime||0).toFixed(1)} / ${sourceDuration.toFixed(1)} 秒）`);
+      setProgress(10+pct*80,`4K 合成／編碼中：${Math.round(pct*100)}%（${Math.max(0,processedTime||0).toFixed(1)}／${sourceDuration.toFixed(1)} 秒；${processedFrames.toLocaleString()} 幀）`);
     };
-    // Heartbeat started before module loading; it reports waiting without fabricating percentage progress.
-    phase('開始逐影格合成與編碼…',10);
+    // The frame-count ticker runs outside the per-frame callback, so it never forces a yield
+    // or layout recalculation for every couple of frames.
+    frameUiTimer=setInterval(()=>{
+      if(srcStats.count>0){const pct=Math.min(1,processedFrames/srcStats.count);setProgress(10+pct*55,`逐影格合成中：${processedFrames.toLocaleString()}／${srcStats.count.toLocaleString()} 幀（${Math.round(pct*100)}%）`);}
+    },500);
+    phase('開始離線逐影格合成…',10);
     await conversion.execute();
-    phase('影格合成完成，正在封裝 MP4…',94);
-    if(!output.target.buffer)throw new Error('編碼已結束，但沒有取得 MP4 輸出資料。');
-    const blob=new Blob([output.target.buffer],{type:'video/mp4'});
-    if(!blob.size)throw new Error('輸出檔案是空的。');
-    phase('正在重新讀取輸出影片並驗證品質…',96);
-    const verifyInput=new Input({formats:ALL_FORMATS,source:new BlobSource(blob)});
-    const outTrack=await verifyInput.getPrimaryVideoTrack();if(!outTrack)throw new Error('輸出檔案沒有影片軌。');
-    const actualW=await outTrack.getDisplayWidth(),actualH=await outTrack.getDisplayHeight();
-    const outStats=await inspectVideoPackets(outTrack);const outDuration=await outTrack.computeDuration();
-    const frameCountOk=outStats.count===srcStats.count;
-    const dimensionsOk=actualW===outW&&actualH===outH&&Math.max(actualW,actualH)>=3840;
-    const durationTolerance=Math.max(0.05,2/Math.max(1,srcStats.fps));
-    const durationOk=Math.abs(outDuration-sourceDuration)<=durationTolerance;
-    const fpsDelta=Math.abs(outStats.fps-srcStats.fps)/Math.max(.001,srcStats.fps);
-    const fpsOk=fpsDelta<=.005;
-    const timestampTolerance=Math.max(.002,.025/Math.max(.1,srcStats.fps));
-    const timestampsOk=srcStats.timing.length===outStats.timing.length&&srcStats.timing.every((p,i)=>Math.abs((p[0]-srcStats.timing[0][0])-(outStats.timing[i][0]-outStats.timing[0][0]))<=timestampTolerance&&Math.abs(p[1]-outStats.timing[i][1])<=timestampTolerance);
-    const bitrateOk=outStats.bitrate>=sourceBitrate;
-    const outAudio=await verifyInput.getPrimaryAudioTrack();const audioOk=!audioTrack||!!outAudio;
-    if(!frameCountOk||!dimensionsOk||!durationOk||!fpsOk||!timestampsOk||!bitrateOk||!audioOk){
-      const reasons=[];
-      if(!frameCountOk)reasons.push(`影格數來源 ${srcStats.count}／輸出 ${outStats.count}`);
-      if(!dimensionsOk)reasons.push(`解析度預期 ${outW}×${outH}／輸出 ${actualW}×${actualH}`);
-      if(!durationOk)reasons.push(`片長來源 ${sourceDuration.toFixed(3)}s／輸出 ${outDuration.toFixed(3)}s`);
-      if(!fpsOk)reasons.push(`FPS 來源 ${srcStats.fps.toFixed(3)}／輸出 ${outStats.fps.toFixed(3)}`);
-      if(!timestampsOk)reasons.push('逐幀時間戳或影格持續時間與來源不一致');
-      if(!bitrateOk)reasons.push(`影片軌位元率來源 ${(sourceBitrate/1e6).toFixed(2)}／輸出 ${(outStats.bitrate/1e6).toFixed(2)} Mbps`);
-      if(!audioOk)reasons.push('原音訊軌未能保留');
-      throw new Error('4K 輸出品質檢查未通過，未提供下載：'+reasons.join('；'));
+    if(frameUiTimer){clearInterval(frameUiTimer);frameUiTimer=null;}
+    phase('影格已完成，正在建立可下載 MP4…',92);
+    if(bufferFallback){
+      if(!output.target.buffer)throw new Error('影片編碼完成，但 MP4 暫存區是空的。');
+      blob=new Blob([output.target.buffer],{type:'video/mp4'});
+    }else{
+      if(!parts?.length||bytesWritten===0)throw new Error('影片編碼完成，但沒有收到任何 MP4 輸出資料。');
+      blob=new Blob(parts,{type:'video/mp4'});parts=null;
     }
-    if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);
-    activeExportUrl=URL.createObjectURL(blob);lastExportBlob=blob;
-    lastExportFilename=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-4_4K.mp4';
-    const link=$('exportDownload');link.href=activeExportUrl;link.download=lastExportFilename;link.style.display='inline-block';
-    link.textContent=`下載完成影片（4K MP4・${(blob.size/1024/1024).toFixed(1)} MB）`;
-    $('saveToPhotosBtn').style.display='inline-block';
+    if(!blob||blob.size<1024)throw new Error('輸出檔案太小或為空檔。');
+    await validateMp4Container(blob);
+    // Publish the download link immediately after MP4/container validation.
+    // Optional track-metadata checks must never revoke or hide this file.
+    attachExportDownload(blob,file,'V8-5');
+    $('exportProgress').value=94;
+    $('exportInfo').textContent=`MP4 已建立（${(blob.size/1024/1024).toFixed(1)} MB），下載按鈕已顯示；正在進行額外的影格與音訊檢查。`;
+    phase('MP4 已建立，正在檢查檔案可讀性…',95);
+    let verification=null;
+    try{verification=await verifyMp4Blob(MB,blob,srcStats,sourceWidth,sourceHeight,targetSize,sourceDuration,!!audioTrack);}
+    catch(verifyError){
+      $('exportProgress').value=100;
+      $('exportInfo').textContent=`已建立 MP4（${(blob.size/1024/1024).toFixed(1)} MB），但完整品質檢查未能完成：${verifyError?.message||String(verifyError)}。下載按鈕仍保留，請先下載並用 iPhone 播放確認。`;
+      $('status').textContent='MP4 已建立並保留下載按鈕，但自動驗證未完成。請先下載測試，不會因驗證讀取錯誤而刪除檔案。';
+      return;
+    }
     $('exportProgress').value=100;
-    $('exportInfo').textContent=`品質檢查通過：${actualW} × ${actualH}${targetSize.upscaled?'（升頻 4K）':'（來源原生 4K 或更高）'}；${outStats.fps.toFixed(3)} FPS；${outStats.count.toLocaleString()} 幀；影片軌 ${(outStats.bitrate/1e6).toFixed(2)} Mbps；片長 ${outDuration.toFixed(3)} 秒。${audioTrack?'原音訊軌已保留。':'來源沒有音訊軌。'}`;
-    $('status').textContent='4K MP4 輸出完成。解析度、影格數、FPS、逐幀時間戳、影片位元率及音訊檢查均通過。可下載影片，或按「儲存到照片」開啟 iPhone 分享選單。';
+    const detail=`${verification.actualW} × ${verification.actualH}；${verification.outStats.fps.toFixed(3)} FPS；${verification.outStats.count.toLocaleString()} 幀；影片軌 ${(verification.outStats.bitrate/1e6).toFixed(2)} Mbps；${verification.outDuration.toFixed(3)} 秒。`;
+    if(verification.warnings.length){
+      $('exportInfo').textContent=`MP4 已建立並可下載。檔案檢查：${detail}注意事項：${verification.warnings.join('；')}。`;
+      $('status').textContent='MP4 已建立，下載按鈕已開啟。品質檢查有提醒，但不會隱藏已產生的檔案。';
+    }else{
+      $('exportInfo').textContent=`品質檢查通過：${detail}${targetSize.upscaled?'來源升頻至 4K。':'保留來源原生解析度。'} ${verification.outAudio?'原音訊軌已保留。':'來源沒有音訊軌。'}`;
+      $('status').textContent='MP4 輸出完成，品質檢查通過。可直接按「下載完成影片」。';
+    }
   }catch(err){
-    if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}
-    lastExportBlob=null;
-    $('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('saveToPhotosBtn').style.display='none';
-    $('status').textContent='未提供輸出檔：'+(err?.message||String(err));
-    $('exportInfo').textContent='輸出未完成或品質檢查未通過。請保持 Safari 在前景、確認裝置支援 4K 編碼並確保儲存空間足夠，再重新嘗試。';
+    if(blob&&blob.size>1024){
+      // Never revoke or remove an assembled file because a later check failed.
+      if(!activeExportUrl||!$('exportDownload').href)attachExportDownload(blob,file,'V8-5');
+      $('status').textContent='影片檔已建立，但後續處理遇到問題；下載按鈕仍保留。'+(err?.message||String(err));
+      $('exportInfo').textContent=`已產生 ${(blob.size/1024/1024).toFixed(1)} MB MP4；請先下載確認播放。後續檢查訊息：${err?.message||String(err)}`;
+    }else{
+      $('status').textContent='尚未產生可下載影片：'+(err?.message||String(err));
+      $('exportInfo').textContent='輸出在產生 MP4 前停止。請依照錯誤訊息確認瀏覽器能力、原始影片格式、網路或裝置儲存空間，再重新輸出。';
+      $('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('saveToPhotosBtn').style.display='none';
+    }
   }finally{
-    if(heartbeat)clearInterval(heartbeat);
-    $('exportProgress').hidden=false;
+    if(heartbeat)clearInterval(heartbeat);if(frameUiTimer)clearInterval(frameUiTimer);
     exportBusy=false;$('exportVideoBtn').disabled=false;
   }
 }
@@ -540,7 +627,7 @@ async function saveVideoToPhotos(){
   const videoFile=new File([lastExportBlob],lastExportFilename,{type:'video/mp4'});
   try{
     if(!navigator.share||!navigator.canShare||!navigator.canShare({files:[videoFile]})){
-      $('status').textContent='此瀏覽器不支援直接分享影片檔案。請使用旁邊的「下載完成影片」，再到 iPhone「檔案」開啟影片並選擇分享／儲存影片。';
+      $('status').textContent='此瀏覽器不支援直接分享影片檔案。請使用「下載完成影片」備援按鈕；iPhone Safari 會依你的下載設定儲存或開啟 MP4。';
       $('exportDownload').focus();return;
     }
     await navigator.share({files:[videoFile],title:'Depth Studio 潛水影片'});
