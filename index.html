@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.1</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.2</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -31,8 +31,9 @@ h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:
 #profileBlock{width:91%;height:18%;white-space:normal;filter:drop-shadow(0 0 5px #2adfff65)}
 #profile{width:100%;height:100%;display:block;overflow:visible}
 #footerBrand,#maxDepth{font-size:calc(9px * var(--hud-scale));letter-spacing:.11em;color:#c9eff9;font-weight:750}
-#nameFlagGroup{font-size:calc(13px * var(--hud-scale) * var(--name-scale,1));font-weight:850;letter-spacing:.025em;color:#fff}
-#divingType{font-size:calc(13px * var(--hud-scale));font-weight:900;letter-spacing:.08em;color:#62e7ff;text-shadow:0 0 10px #2adfffcc,0 1px 3px #00121d}
+#identityGroup{font-size:calc(13px * var(--hud-scale) * var(--identity-scale,1));font-weight:850;letter-spacing:.025em;color:#fff}
+.identity-content{display:inline-flex;align-items:center;gap:.75em;white-space:nowrap;line-height:1.15}
+#hudDivingType{font-size:.96em;font-weight:900;letter-spacing:.08em;color:#62e7ff;text-shadow:0 0 10px #2adfffcc,0 1px 3px #00121d;padding-left:.65em;border-left:1px solid rgba(98,231,255,.55)}
 #displayNameInput{width:100%;padding:11px 12px;border-radius:10px;background:#0a2030;border:1px solid #32627a;color:#eaf7ff;font-size:14px;outline:none}
 #displayNameInput::placeholder{color:#64899b}
 #displayNameInput:focus,#countrySelect:focus{border-color:#62e7ff;box-shadow:0 0 0 2px #62e7ff22}
@@ -77,7 +78,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.1</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.2</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -87,13 +88,15 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
     <div class="snap-guides" id="snapGuides"><div class="snap-line-v" id="snapLineV"></div><div class="snap-line-h" id="snapLineH"></div></div>
     <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:3%;--y:3%">● FREEDIVE / MISSION 02</div>
     <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:83%;--y:3%">00:18</div>
-    <div class="hud-item" id="nameFlagGroup" data-title="姓名與國旗" style="--x:78%;--y:68%">
-      <div class="name-flag-content">
-        <img id="hudCountryFlag" alt="" hidden>
-        <span id="hudDisplayName">姓名</span>
+    <div class="hud-item" id="identityGroup" data-title="姓名、國旗與潛水種類" style="--x:37%;--y:78%">
+      <div class="identity-content">
+        <div class="name-flag-content">
+          <img id="hudCountryFlag" alt="" hidden>
+          <span id="hudDisplayName">YOUR NAME</span>
+        </div>
+        <span id="hudDivingType">CWTB</span>
       </div>
     </div>
-    <div class="hud-item" id="divingType" data-title="潛水種類" style="--x:52%;--y:78%">CWTB</div>
     <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:3.5%;--y:4%">11.9</div>
     <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:29%;--y:11.5%">M</div>
     <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:40%;--y:4.5%">00:18</div>
@@ -152,13 +155,13 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <option value="japan">日本 Japan</option>
 <option value="chinesetaipei" selected>中華台北 Chinese Taipei</option>
 </select></div>
-<div class="field"><label for="nameFlagScale">姓名與國旗共同大小 <b id="nameFlagScaleVal">80%</b></label><input id="nameFlagScale" type="range" min="60" max="180" value="80"></div>
+<div class="field"><label for="nameFlagScale">姓名、國旗與潛水種類共同大小 <b id="nameFlagScaleVal">80%</b></label><input id="nameFlagScale" type="range" min="60" max="180" value="80"></div>
 <div class="field"><label for="divingTypeSelect">潛水種類</label><select id="divingTypeSelect" style="width:100%;padding:11px 12px;border-radius:10px;background:#0a2030;border:1px solid #32627a;color:#eaf7ff;font-size:14px"><option value="CWTB" selected>CWTB</option><option value="CNF">CNF</option><option value="CWT">CWT</option><option value="FIM">FIM</option><option value="VWT">VWT</option><option value="DPV">DPV</option></select></div>
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.1 改用離線逐影格合成，不使用即時播放錄製。逐幀讀取來源影片時間戳與影格持續時間，保留來源解析度、影格數與時間節奏；原音訊軌在 MP4 相容時直接複製，不重新錄音。HUD 燒錄仍必須重新編碼影像。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出影片（保留原始影格節奏）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload">下載輸出影片</a></div><div class="export-note" id="exportInfo">匯入影片後會讀取來源影格數、平均 FPS 與影片位元率。輸出使用離線編碼；若裝置不支援原始尺寸／編碼目標或品質檢查未通過，會停止輸出而不提供不合格檔案。首次輸出需連線載入 Mediabunny 媒體處理模組。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.1 以 V8 為底稿，新增潛水種類 HUD 與深度曲線時間／深度座標。輸出改為離線逐影格處理，保留來源每一幀的時間戳和持續時間；影像需重新編碼以燒錄 HUD，並在完成後核對影格數、平均 FPS、解析度及位元率。若品質檢查不通過，不提供下載。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.2 以 V8.2 為基礎；姓名、國旗與潛水種類合併為同一個可變形欄位，不使用即時播放錄製。逐幀讀取來源影片時間戳與影格持續時間，保留來源解析度、影格數與時間節奏；原音訊軌在 MP4 相容時直接複製，不重新錄音。HUD 燒錄仍必須重新編碼影像。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出影片（保留原始影格節奏）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" class="secondary" type="button" style="display:none">儲存到照片（開啟 iPhone 分享選單）</button><a id="exportDownload">下載到 iPhone「檔案」</a></div><div class="export-note" id="exportInfo">匯入影片後會讀取來源影格數、平均 FPS 與影片位元率。輸出使用離線編碼；若裝置不支援原始尺寸／編碼目標或品質檢查未通過，會停止輸出而不提供不合格檔案。首次輸出需連線載入 Mediabunny 媒體處理模組。iPhone 完成後可按「儲存到照片」並在系統分享選單選「儲存影片」；亦可下載至「檔案」。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.2 以 V8 為底稿，新增潛水種類 HUD 與深度曲線時間／深度座標。輸出改為離線逐影格處理，保留來源每一幀的時間戳和持續時間；影像需重新編碼以燒錄 HUD，並在完成後核對影格數、平均 FPS、解析度及位元率。若品質檢查不通過，不提供下載。</p></div>
 </section>
 </main>
 <script>
@@ -174,28 +177,56 @@ const FLAG_IMAGES = {
 };
 const COUNTRY_NAMES = {roc:'中華民國 Republic of China',hongkong:'香港 Hong Kong',china:'中國 China',southkorea:'韓國 South Korea',malaysia:'馬來西亞 Malaysia',japan:'日本 Japan',chinesetaipei:'中華台北 Chinese Taipei'};
 const demoDepths=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
-const DEFAULT_LAYOUT={hudBrand:[16,3],hudClock:[88,3],nameFlagGroup:[19,78],divingType:[52,78],depthValue:[17,12],depthUnit:[34,18],elapsedValue:[55,14],elapsedLabel:[55,8],tempValue:[82,14],tempLabel:[82,8],speedValue:[83,72],speedLabel:[83,79],profileTitle:[30,82],profileBlock:[50,89],footerBrand:[17,99],maxDepth:[83,99]};
-const DEFAULT_VISIBILITY={hudBrand:false,hudClock:false,nameFlagGroup:true,divingType:true,depthValue:true,depthUnit:true,elapsedValue:true,elapsedLabel:true,tempValue:true,tempLabel:true,speedValue:true,speedLabel:true,profileTitle:false,profileBlock:true,footerBrand:false,maxDepth:false};
-const LAYOUT_KEY='depthstudio_hud_layout_v7';
-const TRANSFORM_KEY='depthstudio_hud_transforms_v7';
+const DEFAULT_LAYOUT={hudBrand:[16,3],hudClock:[88,3],identityGroup:[37,78],depthValue:[17,12],depthUnit:[34,18],elapsedValue:[55,14],elapsedLabel:[55,8],tempValue:[82,14],tempLabel:[82,8],speedValue:[83,72],speedLabel:[83,79],profileTitle:[30,82],profileBlock:[50,89],footerBrand:[17,96],maxDepth:[83,96]};
+const DEFAULT_VISIBILITY={hudBrand:false,hudClock:false,identityGroup:true,depthValue:true,depthUnit:true,elapsedValue:true,elapsedLabel:true,tempValue:true,tempLabel:true,speedValue:true,speedLabel:true,profileTitle:false,profileBlock:true,footerBrand:false,maxDepth:false};
+const LAYOUT_KEY='depthstudio_hud_layout_v8_2';
+const TRANSFORM_KEY='depthstudio_hud_transforms_v8_2';
 const IDENTITY_KEY='depthstudio_identity_v2';
-const VISIBILITY_KEY='depthstudio_hud_visibility_v2';
+const VISIBILITY_KEY='depthstudio_hud_visibility_v8_2';
 const $=id=>document.getElementById(id);
 const itemIds=Object.keys(DEFAULT_LAYOUT);
 let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));
 let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=true,dragItem=null,dragOffset={x:0,y:0},rafId=null,selectedItem='depthValue',snapState={x:null,y:null},audioGraph=null,exportBusy=false;
 function fmtTime(seconds){const n=Math.max(0,Math.floor(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
-function setItemPosition(id,x,y){const el=$(id);const sx=Math.max(0,Math.min(100,Number(x)));const sy=Math.max(0,Math.min(100,Number(y)));el.style.left=sx+'%';el.style.top=sy+'%';el.dataset.x=sx;el.dataset.y=sy}
+function clampItemCenter(id,x,y){
+  const hudRect=$('hud').getBoundingClientRect(),el=$(id),r=el.getBoundingClientRect();
+  if(!hudRect.width||!hudRect.height)return [Math.max(0,Math.min(100,Number(x)||0)),Math.max(0,Math.min(100,Number(y)||0))];
+  // getBoundingClientRect includes the item's current scale and rotation, so its complete visible bounds stay inside the video frame.
+  const halfX=(r.width/2)/hudRect.width*100,halfY=(r.height/2)/hudRect.height*100;
+  const safeInset=1.25; // 保留少量空隙，避免文字陰影貼到圓角邊緣。
+  const minX=Math.min(50,halfX+safeInset),maxX=Math.max(50,100-halfX-safeInset),minY=Math.min(50,halfY+safeInset),maxY=Math.max(50,100-halfY-safeInset);
+  return [Math.max(minX,Math.min(maxX,Number(x)||0)),Math.max(minY,Math.min(maxY,Number(y)||0))];
+}
+function setItemPosition(id,x,y){const el=$(id);const [sx,sy]=clampItemCenter(id,x,y);el.style.left=sx+'%';el.style.top=sy+'%';el.dataset.x=sx;el.dataset.y=sy}
 function saveLayout(){const obj={};itemIds.forEach(id=>obj[id]=[Number($(id).dataset.x??DEFAULT_LAYOUT[id][0]),Number($(id).dataset.y??DEFAULT_LAYOUT[id][1])]);try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存位置；本次操作仍可使用。'}}
-function applySavedLayout(){let obj=null;try{obj=JSON.parse(localStorage.getItem(LAYOUT_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))})}
+function readStoredJSON(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
+function applySavedLayout(){
+  let obj=readStoredJSON(LAYOUT_KEY);
+  if(!obj){
+    const legacy=readStoredJSON('depthstudio_hud_layout_v7')||readStoredJSON('depthstudio_hud_layout_v8');
+    if(legacy){obj={...legacy};const a=legacy.nameFlagGroup,b=legacy.divingType; if(Array.isArray(a)&&Array.isArray(b))obj.identityGroup=[(Number(a[0])+Number(b[0]))/2,(Number(a[1])+Number(b[1]))/2];else if(Array.isArray(a))obj.identityGroup=a;else if(Array.isArray(b))obj.identityGroup=b;}
+  }
+  itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))});
+  saveLayout();
+}
 const DEFAULT_TRANSFORMS=Object.fromEntries(itemIds.map(id=>[id,{scale:1,rotation:0}]));
-function applyItemTransform(id,scale,rotation){const el=$(id);const sc=Math.max(.3,Math.min(3,Number(scale)||1));const rot=((Number(rotation)||0)%360+360)%360;el.dataset.scale=sc;el.dataset.rotation=rot;el.style.setProperty('--item-scale',sc);el.style.setProperty('--rotation',rot+'deg')}
+function applyItemTransform(id,scale,rotation){const el=$(id);const sc=Math.max(.3,Math.min(3,Number(scale)||1));const rot=((Number(rotation)||0)%360+360)%360;el.dataset.scale=sc;el.dataset.rotation=rot;el.style.setProperty('--item-scale',sc);el.style.setProperty('--rotation',rot+'deg');const x=Number(el.dataset.x??DEFAULT_LAYOUT[id][0]),y=Number(el.dataset.y??DEFAULT_LAYOUT[id][1]);setItemPosition(id,x,y)}
 function saveTransforms(){const obj={};itemIds.forEach(id=>obj[id]={scale:Number($(id).dataset.scale??1),rotation:Number($(id).dataset.rotation??0)});try{localStorage.setItem(TRANSFORM_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存變形設定；本次操作仍可使用。'}}
-function applySavedTransforms(){let obj=null;try{obj=JSON.parse(localStorage.getItem(TRANSFORM_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const t=obj?.[id]||DEFAULT_TRANSFORMS[id];applyItemTransform(id,t.scale,t.rotation)})}
+function applySavedTransforms(){
+  let obj=readStoredJSON(TRANSFORM_KEY);
+  if(!obj){const old=readStoredJSON('depthstudio_hud_transforms_v7')||readStoredJSON('depthstudio_hud_transforms_v8');if(old){obj={...old,identityGroup:old.nameFlagGroup||old.divingType||DEFAULT_TRANSFORMS.identityGroup};}}
+  itemIds.forEach(id=>{const t=obj?.[id]||DEFAULT_TRANSFORMS[id];applyItemTransform(id,t.scale,t.rotation)});
+  saveTransforms();
+}
 function resetAllTransforms(){itemIds.forEach(id=>applyItemTransform(id,1,0));saveTransforms()}
 function setItemVisible(id,visible){$(id).classList.toggle('is-disabled',!visible)}
 function saveVisibility(){const state={};itemIds.forEach(id=>state[id]=!$(id).classList.contains('is-disabled'));try{localStorage.setItem(VISIBILITY_KEY,JSON.stringify(state))}catch(e){$('status').textContent='瀏覽器未允許儲存顯示狀態；本次操作仍可使用。'}}
-function applySavedVisibility(){let state=null;try{state=JSON.parse(localStorage.getItem(VISIBILITY_KEY)||'null')}catch(e){}itemIds.forEach(id=>setItemVisible(id,state?state[id]!==false:DEFAULT_VISIBILITY[id]===true))}
+function applySavedVisibility(){
+  let state=readStoredJSON(VISIBILITY_KEY);
+  if(!state){const old=readStoredJSON('depthstudio_hud_visibility_v2')||readStoredJSON('depthstudio_hud_visibility_v7');if(old){state={...old,identityGroup:old.nameFlagGroup!==false&&old.divingType!==false};}}
+  itemIds.forEach(id=>setItemVisible(id,state?state[id]!==false:DEFAULT_VISIBILITY[id]===true));
+  saveVisibility();
+}
 function buildVisibilityControls(){const host=$('visibilityControls');host.replaceChildren();itemIds.forEach(id=>{const label=document.createElement('label');label.className='visibility-toggle';const input=document.createElement('input');input.type='checkbox';input.checked=!$(id).classList.contains('is-disabled');input.addEventListener('change',()=>{setItemVisible(id,input.checked);saveVisibility();$('status').textContent=$(id).dataset.title+(input.checked?'：已顯示':'：已隱藏')+'。'});const name=document.createElement('span');name.textContent=$(id).dataset.title;label.append(input,name);host.append(label)})}
 function setAllVisibility(visible){itemIds.forEach(id=>setItemVisible(id,visible));saveVisibility();buildVisibilityControls();$('status').textContent=visible?'所有 HUD 資訊已顯示。':'所有 HUD 資訊已隱藏。'}
 function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));resetAllTransforms();saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置、大小與角度。'}
@@ -207,10 +238,10 @@ function updateIdentity(save=true){
   if(country&&FLAG_IMAGES[country]){flag.src=FLAG_IMAGES[country];flag.alt=COUNTRY_NAMES[country]+'旗幟';flag.hidden=false;}
   else{flag.removeAttribute('src');flag.alt='';flag.hidden=true;}
   const scale=Number($('nameFlagScale').value)||100;
-  $('nameFlagGroup').style.setProperty('--name-scale',scale/100);
+  $('identityGroup').style.setProperty('--identity-scale',scale/100);
   $('nameFlagScaleVal').textContent=scale+'%';
   const divingType=$('divingTypeSelect').value||'CWTB';
-  $('divingType').textContent=divingType;
+  $('hudDivingType').textContent=divingType;
   if(save){try{localStorage.setItem(IDENTITY_KEY,JSON.stringify({name,country,scale,divingType}))}catch(e){$('status').textContent='瀏覽器未允許儲存姓名設定；本次操作仍可使用。'}}
 }
 function applySavedIdentity(){
@@ -307,8 +338,14 @@ function drawHudToCanvas(ctx,W,H,time){
       const w=el.offsetWidth,h=el.offsetHeight;drawProfileCanvas(ctx,-w/2,-h/2,w,h,time);ctx.restore();continue;
     }
     const fontSize=parseFloat(style.fontSize)||12;const weight=style.fontWeight||'700';const family=style.fontFamily||'Arial,sans-serif';ctx.font=`${weight} ${fontSize}px ${family}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=style.color||'#fff';ctx.shadowColor='rgba(61,223,255,.55)';ctx.shadowBlur=id==='depthValue'?fontSize*.32:fontSize*.12;ctx.shadowOffsetY=1;
-    if(id==='nameFlagGroup'){
-      const name=$('hudDisplayName').textContent||'YOUR NAME';const flag=$('hudCountryFlag');const flagH=fontSize*1.35;const flagW=flag&&!flag.hidden&&flag.complete&&flag.naturalWidth?flagH*flag.naturalWidth/flag.naturalHeight:0;ctx.font=`850 ${fontSize}px ${family}`;const nameW=ctx.measureText(name).width;const gap=flagW?fontSize*.48:0;const total=flagW+gap+nameW;const start=-total/2;if(flagW){try{ctx.drawImage(flag,start,-flagH/2,flagW,flagH)}catch(_){}}ctx.fillText(name,start+flagW+gap+nameW/2,0);
+    if(id==='identityGroup'){
+      const name=$('hudDisplayName').textContent||'YOUR NAME';const diveType=$('hudDivingType').textContent||'CWTB';const flag=$('hudCountryFlag');
+      const flagH=fontSize*1.28;const flagW=flag&&!flag.hidden&&flag.complete&&flag.naturalWidth?flagH*flag.naturalWidth/flag.naturalHeight:0;
+      ctx.font=`850 ${fontSize}px ${family}`;const nameW=ctx.measureText(name).width;const typeFont=fontSize*.96;ctx.font=`900 ${typeFont}px ${family}`;const typeW=ctx.measureText(diveType).width;
+      const flagGap=flagW?fontSize*.42:0,typeGap=fontSize*.9,total=flagW+flagGap+nameW+typeGap+typeW;let cursor=-total/2;
+      if(flagW){try{ctx.drawImage(flag,cursor,-flagH/2,flagW,flagH)}catch(_){}cursor+=flagW+flagGap;}
+      ctx.font=`850 ${fontSize}px ${family}`;ctx.fillStyle='#ffffff';ctx.fillText(name,cursor+nameW/2,0);cursor+=nameW+typeGap;
+      ctx.font=`900 ${typeFont}px ${family}`;ctx.fillStyle='#62e7ff';ctx.fillText(diveType,cursor+typeW/2,0);
     }else{
       let text=el.textContent.trim();if(id==='hudBrand')text='● FREEDIVE / MISSION 02';if(id==='footerBrand')text='ATMOS MISSION 2';if(id==='maxDepth')text='MAX '+maxD.toFixed(1)+' M';
       const spacing=parseFloat(style.letterSpacing)||0;drawSpacedText(ctx,text,0,0,spacing);
@@ -318,7 +355,7 @@ function drawHudToCanvas(ctx,W,H,time){
   ctx.setTransform(1,0,0,1,0,0);
 }
 const MEDIABUNNY_URL='https://cdn.jsdelivr.net/npm/mediabunny@1.65.2/+esm';
-let mediabunnyModulePromise=null,activeExportUrl=null;
+let mediabunnyModulePromise=null,activeExportUrl=null,lastExportBlob=null,lastExportFilename='DepthStudio_Export.mp4';
 async function loadMediabunny(){if(!mediabunnyModulePromise){mediabunnyModulePromise=import(MEDIABUNNY_URL).catch(error=>{mediabunnyModulePromise=null;throw new Error('無法載入媒體處理模組，請確認網路連線後再次按下輸出。'+(error?.message||String(error)))})}return mediabunnyModulePromise}
 async function inspectVideoPackets(track){
   const {EncodedPacketSink}=await loadMediabunny();const sink=new EncodedPacketSink(track);let count=0,bytes=0,first=Infinity,last=-Infinity;const timing=[];
@@ -329,7 +366,7 @@ async function inspectVideoPackets(track){
 }
 async function exportVideo(){
   if(exportBusy)return;const file=$('videoFile').files?.[0];if(!file){$('status').textContent='請先匯入原始 MP4／MOV 影片。';return}
-  exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';$('status').textContent='正在準備離線逐影格輸出…';
+  exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';$('saveToPhotosBtn').style.display='none';lastExportBlob=null;$('status').textContent='正在準備離線逐影格輸出…';
   let blobUrl=null;
   try{
     if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('此 Safari 未提供 WebCodecs VideoEncoder／VideoDecoder。為避免再次產生卡頓影片，本版不會退回即時錄製模式。');
@@ -390,13 +427,30 @@ async function exportVideo(){
       const reasons=[];if(!frameCountOk)reasons.push(`影格數來源 ${srcStats.count}／輸出 ${outStats.count}`);if(!dimensionsOk)reasons.push(`解析度來源 ${W}×${H}／輸出 ${outW}×${outH}`);if(!durationOk)reasons.push(`片長來源 ${sourceDuration.toFixed(3)}s／輸出 ${outDuration.toFixed(3)}s`);if(!fpsOk)reasons.push(`FPS 來源 ${srcStats.fps.toFixed(3)}／輸出 ${outStats.fps.toFixed(3)}`);if(!timestampsOk)reasons.push('逐幀時間戳或影格持續時間與來源不一致');if(!bitrateOk)reasons.push(`影片軌位元率來源 ${(sourceBitrate/1e6).toFixed(2)}／輸出 ${(outStats.bitrate/1e6).toFixed(2)} Mbps`);if(!audioOk)reasons.push('原音訊軌未能保留');
       throw new Error('輸出品質檢查未通過，因此沒有提供下載。'+reasons.join('；'));
     }
-    if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);activeExportUrl=URL.createObjectURL(blob);blobUrl=activeExportUrl;
-    const link=$('exportDownload');link.href=blobUrl;link.download=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-1.mp4';link.style.display='inline-block';link.textContent=`下載已驗證影片（${(blob.size/1024/1024).toFixed(1)} MB）`;
+    if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);activeExportUrl=URL.createObjectURL(blob);blobUrl=activeExportUrl;lastExportBlob=blob;lastExportFilename=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-2.mp4';
+    const link=$('exportDownload');link.href=blobUrl;link.download=lastExportFilename;link.style.display='inline-block';link.textContent=`下載到 iPhone「檔案」（${(blob.size/1024/1024).toFixed(1)} MB）`;
+    $('saveToPhotosBtn').style.display='inline-block';$('saveToPhotosBtn').disabled=false;
     $('exportProgress').value=100;$('exportInfo').textContent=`品質檢查通過：${outW} × ${outH}；${outStats.fps.toFixed(3)} 平均 FPS；${outStats.count.toLocaleString()} 幀；影片軌 ${(outStats.bitrate/1e6).toFixed(2)} Mbps；片長 ${outDuration.toFixed(3)} 秒。${audioTrack?'原音訊軌已保留（相容格式下直接封裝）。':'來源沒有音訊軌。'} `;
     $('status').textContent='離線逐影格輸出完成，影格數、解析度、時間長度、平均 FPS、逐幀時間戳、影片軌位元率及音訊軌均通過檢查。點擊下載已驗證影片。';
-  }catch(err){$('exportDownload').style.display='none';$('status').textContent='未提供輸出檔：'+(err?.message||String(err));$('exportInfo').textContent='品質檢查或裝置能力檢查未通過時，程式會停止輸出，不會退回容易掉幀的即時錄製模式。'}
+  }catch(err){$('exportDownload').style.display='none';$('saveToPhotosBtn').style.display='none';lastExportBlob=null;$('status').textContent='未提供輸出檔：'+(err?.message||String(err));$('exportInfo').textContent='品質檢查或裝置能力檢查未通過時，程式會停止輸出，不會退回容易掉幀的即時錄製模式。'}
   finally{$('exportProgress').hidden=false;exportBusy=false;$('exportVideoBtn').disabled=false;}
 }
+async function saveExportToPhotos(){
+  if(!lastExportBlob){$('status').textContent='目前沒有可儲存的輸出影片，請先完成影片輸出。';return;}
+  if(typeof File==='undefined'||typeof navigator.share!=='function'){
+    $('status').textContent='此瀏覽器不支援直接開啟影片分享選單。請先點「下載到 iPhone 檔案」，再到「檔案」App 開啟影片，按分享並選「儲存影片」。';return;
+  }
+  const file=new File([lastExportBlob],lastExportFilename,{type:'video/mp4',lastModified:Date.now()});
+  try{
+    if(typeof navigator.canShare==='function'&&!navigator.canShare({files:[file]}))throw new Error('此 Safari 版本不支援分享這個影片檔案');
+    await navigator.share({files:[file],title:'Depth Studio 輸出影片',text:'在 iPhone 分享選單中選擇「儲存影片」，即可加入照片圖庫。'});
+    $('status').textContent='已開啟 iPhone 系統分享選單。請在選單中點選「儲存影片」，完成後可到「照片」App 的「最近項目」查看。';
+  }catch(err){
+    if(err&&err.name==='AbortError'){$('status').textContent='你已關閉分享選單，影片仍保留在本頁，可再次按「儲存到照片」或下載到「檔案」。';return;}
+    $('status').textContent='無法直接開啟照片儲存選單：'+(err?.message||String(err))+'。請改用「下載到 iPhone 檔案」，再從「檔案」App 分享並選「儲存影片」。';
+  }
+}
+$('saveToPhotosBtn').addEventListener('click',saveExportToPhotos);
 $('exportVideoBtn').addEventListener('click',exportVideo);
 $('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;const file=$('videoFile').files?.[0];const duration=Number.isFinite($('video').duration)?$('video').duration:0;const average=file?Math.ceil(file.size*8/Math.max(1,duration)):0;$('exportInfo').textContent=`已載入來源影片：${$('video').videoWidth} × ${$('video').videoHeight}；檔案整體平均位元率估算 ${(average/1000000).toFixed(2)} Mbps。正式輸出時會另外分析影片軌實際影格數、時間戳與影片位元率，改用離線逐影格處理；若輸出品質檢查不符就不會提供下載。`});
 
