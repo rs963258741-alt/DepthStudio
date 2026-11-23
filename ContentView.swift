@@ -53,7 +53,7 @@ struct ContentView: View {
             .fileImporter(isPresented: $showingUDDFPicker, allowedContentTypes: [UTType(filenameExtension: "uddf") ?? .xml]) { result in
                 loadUDDF(result)
             }
-            .fileImporter(isPresented: $showingVideoPicker, allowedContentTypes: [.movie, .video, .mpeg4, .quickTimeMovie]) { result in
+            .fileImporter(isPresented: $showingVideoPicker, allowedContentTypes: [.movie, .mpeg4Movie, .quickTimeMovie]) { result in
                 loadVideo(result)
             }
         }
