@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V7</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -76,7 +76,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V7</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -98,7 +98,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
     <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:40%;--y:11.5%">DIVE TIME</div>
     <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:70%;--y:4.5%">29.3°</div>
     <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:70%;--y:11.5%">WATER TEMP</div>
-    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:82%;--y:78.5%">0.0</div>
+    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:82%;--y:78.5%">0.0 m/s</div>
     <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:73%;--y:73.5%">DEPTH / SEC</div>
     <div class="hud-item" id="profileTitle" data-title="深度曲線標題" style="--x:5%;--y:81%">DEPTH PROFILE <span style="opacity:.7">/ 0 M ↓ MAX DEPTH</span></div>
     <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:5%;--y:84%">
@@ -120,16 +120,16 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <section class="right">
 <div class="panel"><h2>01 / 匯入素材</h2><div class="field"><label>潛水影片（MP4 / MOV）</label><input id="videoFile" type="file" accept="video/*"></div>
 <div class="field"><label>潛水紀錄（UDDF）</label><input id="uddfFile" type="file" accept=".uddf,.xml,text/xml"></div>
-<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button><button id="exportVideoBtn" disabled>輸出影片（原始尺寸）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload">下載輸出影片</a></div><div class="export-note" id="exportInfo">匯入影片後可輸出 HUD 合成影片。輸出尺寸會沿用原影片的寬與高。</div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
+<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button></div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
 <div class="panel"><h2>02 / HUD 外觀與自由排版</h2>
 <div class="actions"><button id="editLayout">拖曳排版：關</button><button id="resetLayout" class="secondary">恢復預設位置</button></div>
-<div class="editor-help" id="editorHelp">排版模式已開啟：點選任一 HUD 項目後，可獨立設定大小與角度；拖曳時會吸附其他項目的水平或垂直中心。</div>
+<div class="editor-help" id="editorHelp">排版模式已開啟：所有 HUD 欄位都可分別移動、縮放及旋轉。角度接近直角會自動吸附；拖曳時與其他可見欄位中心對齊會出現輔助線。</div>
 <div class="transform-panel">
   <div class="field"><label for="itemSelect">目前編輯項目</label><select id="itemSelect"></select></div>
   <div class="field"><label>項目大小 <b id="itemScaleVal">100%</b></label><input id="itemScale" type="range" min="30" max="300" value="100"></div>
   <div class="field"><label>旋轉角度 <b id="itemRotationVal">0°</b></label><input id="itemRotation" type="range" min="0" max="359" value="0"></div>
-  <div class="actions"><button id="rotateLeft" class="secondary" type="button">逆時針 90°</button><button id="rotateRight" class="secondary" type="button">順時針 90°</button><button id="resetTransform" class="secondary" type="button">重設此項目</button></div>
-  <div class="snap-note">旋轉接近 0°、90°、180°、270° 時會自動吸附正角度。拖曳項目時，若中心線對齊其他可見項目，會出現輔助線並自動對正。</div>
+  <div class="actions"><button id="angle0" class="secondary" type="button">0°</button><button id="angle90" class="secondary" type="button">90°</button><button id="angle180" class="secondary" type="button">180°</button><button id="angle270" class="secondary" type="button">270°</button></div><div class="actions"><button id="rotateLeft" class="secondary" type="button">逆時針 90°</button><button id="rotateRight" class="secondary" type="button">順時針 90°</button><button id="resetTransform" class="secondary" type="button">重設此項目</button></div>
+  <div class="snap-note">先在「目前編輯項目」選擇任一資訊欄，再使用角度滑桿或 0°／90°／180°／270°快捷鍵。放開滑桿時會吸附最近直角。拖曳時會以欄位中心進行水平與垂直吸附。</div>
 </div>
 <div class="field"><label>HUD 透明度 <b id="opacityVal">90%</b></label><input id="opacity" type="range" min="20" max="100" value="90"></div>
 <div class="field"><label>HUD 字體大小 <b id="scaleVal">90%</b></label><input id="scale" type="range" min="70" max="140" value="90"></div>
@@ -153,7 +153,8 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗會固定在姓名左側。開啟「拖曳排版」後，移動姓名時旗幟會一起移動；兩者共用同一個大小設定，不能分開移動或縮放。選擇國家／地區後才會顯示對應圖片。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 目前版本說明</h2><p class="sub">V7 支援每個 HUD 項目獨立移動、縮放與旋轉，並提供角度吸附與中心對齊輔助線。輸出影片時沿用原影片像素尺寸，優先依影片逐格回呼維持來源影格節奏，並以來源檔案大小／時間估算目標位元率；合成必須重新編碼，並非保留原始編碼位元流。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">輸出會維持原影片像素寬高、不裁切、不縮小解析度，並優先依來源影格回呼逐格合成。高畫質模式會以原片平均位元率的 2 倍作為編碼目標，不套用任意低位元率。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（原始尺寸）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload">下載輸出影片</a></div><div class="export-note" id="exportInfo">匯入影片後即可輸出。請注意：HUD 燒錄進畫面需要重新編碼，不能同時保留原始壓縮位元流完全不變；瀏覽器也可能調整實際位元率。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8 保留 V7 所有預覽與排版設定。所有 HUD 欄位均可獨立移動、縮放與旋轉，提供 0°／90°／180°／270° 快捷吸附及欄位中心對齊輔助線。速度數值顯示 m/s。輸出維持來源解析度與影格更新節奏，並採來源平均位元率 2 倍作為高畫質目標；燒錄 HUD 仍需重新編碼。</p></div>
 </section>
 </main>
 <script>
@@ -220,13 +221,13 @@ function applySavedIdentity(){
 function setEditing(on){layoutEditing=on;$('hud').classList.toggle('editing',on);$('editLayout').classList.toggle('active',on);$('editLayout').textContent='拖曳排版：'+(on?'開':'關');$('editorHelp').textContent=on?'排版模式已開啟：拖曳影片上的項目。每一個數值、標籤、標題及曲線都是獨立的。':'預設已開啟排版模式：可直接拖動影片上的項目。每個數值、標籤、標題與曲線都能獨立移動；姓名與國旗固定為同一組。'}
 function selectItem(id){if(!itemIds.includes(id))return;selectedItem=id;itemIds.forEach(k=>$(k).classList.toggle('selected',k===id));$('itemSelect').value=id;const el=$(id);const sc=Math.round(Number(el.dataset.scale||1)*100);const rot=Math.round(Number(el.dataset.rotation||0))%360;$('itemScale').value=sc;$('itemRotation').value=rot;$('itemScaleVal').textContent=sc+'%';$('itemRotationVal').textContent=rot+'°'}
 function buildItemSelect(){const sel=$('itemSelect');sel.replaceChildren();itemIds.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=$(id).dataset.title;sel.append(o)});selectItem(selectedItem)}
-function snapAngle(deg){const n=((Number(deg)||0)%360+360)%360;const q=Math.round(n/90)*90%360;const d=Math.min(Math.abs(n-q),360-Math.abs(n-q));return d<=6?q:n}
+function snapAngle(deg){const n=((Number(deg)||0)%360+360)%360;const q=Math.round(n/90)*90%360;const d=Math.min(Math.abs(n-q),360-Math.abs(n-q));return d<=7?q:n}
 function setSelectedScale(value){const el=$(selectedItem);applyItemTransform(selectedItem,Number(value)/100,Number(el.dataset.rotation||0));$('itemScaleVal').textContent=Math.round(Number(value))+'%';saveTransforms()}
 function setSelectedRotation(value,commit=false){const el=$(selectedItem);let deg=((Number(value)||0)%360+360)%360;if(commit)deg=snapAngle(deg);applyItemTransform(selectedItem,Number(el.dataset.scale||1),deg);$('itemRotation').value=Math.round(deg);$('itemRotationVal').textContent=Math.round(deg)+'°';if(commit)saveTransforms()}
 function resetSelectedTransform(){applyItemTransform(selectedItem,1,0);selectItem(selectedItem);saveTransforms()}
 function hideSnapGuides(){$('snapGuides').classList.remove('active');$('snapLineV').style.display='none';$('snapLineH').style.display='none';snapState={x:null,y:null}}
 function showSnapGuides(x,y){const active=x!==null||y!==null;$('snapGuides').classList.toggle('active',active);if(x!==null){$('snapLineV').style.display='block';$('snapLineV').style.left=x+'%'}else $('snapLineV').style.display='none';if(y!==null){$('snapLineH').style.display='block';$('snapLineH').style.top=y+'%'}else $('snapLineH').style.display='none'}
-function snapPosition(id,x,y){let sx=x,sy=y,alignedX=null,alignedY=null;const threshold=1.65;let bestDx=threshold,bestDy=threshold;for(const otherId of itemIds){if(otherId===id)continue;const other=$(otherId);if(other.classList.contains('is-disabled')||getComputedStyle(other).visibility==='hidden')continue;const ox=Number(other.dataset.x),oy=Number(other.dataset.y);const dx=Math.abs(x-ox),dy=Math.abs(y-oy);if(dx<=bestDx){bestDx=dx;sx=ox;alignedX=ox}if(dy<=bestDy){bestDy=dy;sy=oy;alignedY=oy}}
+function snapPosition(id,x,y){let sx=x,sy=y,alignedX=null,alignedY=null;const threshold=2.0;let bestDx=threshold+Number.EPSILON,bestDy=threshold+Number.EPSILON;for(const otherId of itemIds){if(otherId===id)continue;const other=$(otherId),style=getComputedStyle(other);if(other.classList.contains('is-disabled')||style.display==='none'||style.visibility==='hidden')continue;const ox=Number(other.dataset.x),oy=Number(other.dataset.y);if(!Number.isFinite(ox)||!Number.isFinite(oy))continue;const dx=Math.abs(x-ox),dy=Math.abs(y-oy);if(dx<bestDx){bestDx=dx;sx=ox;alignedX=ox}if(dy<bestDy){bestDy=dy;sy=oy;alignedY=oy}}
   sx=Math.max(0,Math.min(100,sx));sy=Math.max(0,Math.min(100,sy));showSnapGuides(alignedX,alignedY);return [sx,sy]}
 
 function pointForSample(s){const first=samples[0]?.t??0,last=samples[samples.length-1]?.t??1;const span=Math.max(.001,last-first);const x=10+((s.t-first)/span)*300;const y=5+(Math.max(0,s.d)/Math.max(1,maxD))*86;return [Math.max(10,Math.min(310,x)),Math.max(5,Math.min(91,y))]}
@@ -250,7 +251,12 @@ itemIds.forEach(id=>{const el=$(id);el.addEventListener('pointerdown',e=>{if(!la
 $('itemSelect').addEventListener('change',()=>selectItem($('itemSelect').value));
 $('itemScale').addEventListener('input',()=>setSelectedScale($('itemScale').value));
 $('itemRotation').addEventListener('input',()=>setSelectedRotation($('itemRotation').value,false));
-$('itemRotation').addEventListener('change',()=>setSelectedRotation($('itemRotation').value,true));
+const commitRotation=()=>setSelectedRotation($('itemRotation').value,true);
+$('itemRotation').addEventListener('change',commitRotation);
+$('itemRotation').addEventListener('pointerup',commitRotation);
+$('itemRotation').addEventListener('touchend',commitRotation,{passive:true});
+function setAnglePreset(degrees){setSelectedRotation(degrees,true);selectItem(selectedItem)}
+[0,90,180,270].forEach(degrees=>$('angle'+degrees).addEventListener('click',()=>setAnglePreset(degrees)));
 $('rotateLeft').addEventListener('click',()=>{const e=$(selectedItem);setSelectedRotation(Number(e.dataset.rotation||0)+270,true)});
 $('rotateRight').addEventListener('click',()=>{const e=$(selectedItem);setSelectedRotation(Number(e.dataset.rotation||0)+90,true)});
 $('resetTransform').addEventListener('click',resetSelectedTransform);
@@ -287,14 +293,14 @@ function drawHudToCanvas(ctx,W,H,time){
   }
   ctx.setTransform(1,0,0,1,0,0);
 }
-function chooseRecorderMime(){const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return types.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||''}
+function chooseRecorderMimes(){const types=['video/mp4;codecs=avc1.640033,mp4a.40.2','video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return types.filter(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))}
 async function exportVideo(){
   if(exportBusy)return;const video=$('video'),file=$('videoFile').files?.[0];if(!file||!video.src||!video.videoWidth||!video.videoHeight){$('status').textContent='請先匯入並等待影片載入完成，再輸出影片。';return}
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){$('status').textContent='目前瀏覽器不支援影片合成錄製；請改用支援 MediaRecorder 與 Canvas captureStream 的 Safari 版本。';return}
-  const mime=chooseRecorderMime();if(!mime){$('status').textContent='此瀏覽器沒有可用的 MP4／WebM 錄製格式，無法輸出。';return}
+  const supportedMimes=chooseRecorderMimes();if(!supportedMimes.length){$('status').textContent='此瀏覽器沒有可用的 MP4／WebM 錄製格式，無法輸出。';return}
   exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';
-  const W=video.videoWidth,H=video.videoHeight,duration=Number.isFinite(video.duration)?video.duration:0;const estimate=Math.max(1500000,Math.min(50000000,Math.round((file.size*8/Math.max(1,duration))*1.15)));
-  $('exportInfo').textContent=`輸出尺寸 ${W} × ${H}；目標影片位元率約 ${(estimate/1000000).toFixed(1)} Mbps（依原檔平均位元率加強估算）。${typeof video.requestVideoFrameCallback==='function'?'依來源影格回呼輸出':'瀏覽器回退為 30 fps'}。合成必須重新編碼，無法保留原始編碼位元流。`;
+  const W=video.videoWidth,H=video.videoHeight,duration=Number.isFinite(video.duration)?video.duration:0;const sourceAverageBitrate=Math.max(1,Math.ceil(file.size*8/Math.max(1,duration)));const targetVideoBitrate=Math.max(1000000,Math.ceil(sourceAverageBitrate*2));
+  $('exportInfo').textContent=`原始尺寸 ${W} × ${H}；來源檔案平均總位元率約 ${(sourceAverageBitrate/1000000).toFixed(1)} Mbps；本次要求編碼器至少以約 ${(targetVideoBitrate/1000000).toFixed(1)} Mbps 作為影片位元率目標，不設定上限。${typeof video.requestVideoFrameCallback==='function'?'依來源影格回呼更新':'瀏覽器回退為 30 fps'}。畫面合成仍需重新編碼，無法保留原壓縮碼流完全不變。`;
   const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d',{alpha:false});
   if(!ctx){$('status').textContent='無法建立影片合成畫布。';exportBusy=false;$('exportVideoBtn').disabled=false;return}
   let stream=null,recorder=null,oldTime=video.currentTime,wasPaused=video.paused,oldMuted=video.muted,raf=null,rvfc=null,chunks=[],audioTrackClones=[];
@@ -303,12 +309,12 @@ async function exportVideo(){
     video.pause();video.muted=false;video.currentTime=0;await new Promise(resolve=>{if(video.readyState>=2&&video.currentTime===0)resolve();else video.addEventListener('seeked',resolve,{once:true})});
     ctx.drawImage(video,0,0,W,H);drawHudToCanvas(ctx,W,H,0);
     let videoTrack=null,useFrameCallbacks=typeof video.requestVideoFrameCallback==='function';
-    if(useFrameCallbacks){stream=canvas.captureStream(0);videoTrack=stream.getVideoTracks()[0];if(!videoTrack||typeof videoTrack.requestFrame!=='function'){stream.getTracks().forEach(t=>t.stop());stream=canvas.captureStream(30);useFrameCallbacks=false}}else{stream=canvas.captureStream(30)}
+    if(useFrameCallbacks){stream=canvas.captureStream(0);videoTrack=stream.getVideoTracks()[0];if(!videoTrack||typeof videoTrack.requestFrame!=='function'){stream.getTracks().forEach(t=>t.stop());stream=canvas.captureStream();videoTrack=null}}else{stream=canvas.captureStream(30)}
     // 將原影片音訊加入錄製串流；若 Web Audio 不可用，仍可輸出無聲影片並在狀態中提示。
     let audioAdded=false;try{
       const AC=window.AudioContext||window.webkitAudioContext;if(AC){if(!audioGraph){const ac=new AC(),srcNode=ac.createMediaElementSource(video),dest=ac.createMediaStreamDestination();srcNode.connect(dest);srcNode.connect(ac.destination);audioGraph={ac,srcNode,dest}}await audioGraph.ac.resume();audioGraph.dest.stream.getAudioTracks().forEach(t=>{const clone=t.clone();audioTrackClones.push(clone);stream.addTrack(clone)});audioAdded=audioTrackClones.length>0}
     }catch(err){console.warn('Audio capture unavailable',err)}
-    const options={mimeType:mime,videoBitsPerSecond:estimate,audioBitsPerSecond:192000};recorder=new MediaRecorder(stream,options);recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    const optionsBase={videoBitsPerSecond:targetVideoBitrate,audioBitsPerSecond:320000};let chosenMime='';let creationError=null;for(const candidate of supportedMimes){try{recorder=new MediaRecorder(stream,{...optionsBase,mimeType:candidate});chosenMime=candidate;break}catch(err){creationError=err;}}if(!recorder)throw new Error('瀏覽器無法建立高畫質輸出編碼器：'+(creationError?.message||'格式不支援'));recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
     const stopped=new Promise(resolve=>{recorder.onstop=resolve});
     let ended=false;const renderFrame=()=>{ctx.drawImage(video,0,0,W,H);drawHudToCanvas(ctx,W,H,video.currentTime);$('exportProgress').value=Math.min(100,video.currentTime/Math.max(.01,duration)*100);if(videoTrack&&useFrameCallbacks)videoTrack.requestFrame()};
     const onVideoFrame=()=>{if(ended)return;renderFrame();if(!video.paused&&!video.ended)rvfc=video.requestVideoFrameCallback(onVideoFrame)};
@@ -316,8 +322,9 @@ async function exportVideo(){
     recorder.start(1000);await video.play();renderFrame();if(useFrameCallbacks)rvfc=video.requestVideoFrameCallback(onVideoFrame);else raf=requestAnimationFrame(onAnimationFrame);
     await new Promise((resolve,reject)=>{const onEnd=()=>{if(recorder.state!=='inactive')recorder.stop();resolve()};const onErr=()=>reject(new Error('影片播放期間發生錯誤'));video.addEventListener('ended',onEnd,{once:true});video.addEventListener('error',onErr,{once:true});});
     await stopped;ended=true;if(raf)cancelAnimationFrame(raf);if(rvfc&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(rvfc);
-    const blob=new Blob(chunks,{type:recorder.mimeType||mime});if(!blob.size)throw new Error('輸出檔案是空的，請重新嘗試。');
-    const ext=blob.type.includes('mp4')?'mp4':'webm';const url=URL.createObjectURL(blob);const link=$('exportDownload');link.href=url;link.download=(file.name.replace(/\.[^.]+$/,'')+'_DepthStudio.'+ext);link.style.display='inline-block';link.textContent='下載輸出影片（'+(blob.size/1024/1024).toFixed(1)+' MB）';$('exportProgress').value=100;$('status').textContent='影片合成完成。'+(audioAdded?'已包含原影片音訊。':'注意：瀏覽器未能擷取原影片音訊，輸出可能沒有聲音。')+' 點擊「下載輸出影片」儲存檔案。';
+    const blob=new Blob(chunks,{type:recorder.mimeType||chosenMime});if(!blob.size)throw new Error('輸出檔案是空的，請重新嘗試。');
+    const actualBitrate=Number(recorder.videoBitsPerSecond)||0;const bitrateNotice=actualBitrate&&actualBitrate<sourceAverageBitrate?'注意：瀏覽器實際輸出位元率低於來源檔案平均總位元率，無法保證畫質達到原片。':'已要求高於來源平均位元率的編碼目標。';
+    const ext=blob.type.includes('mp4')?'mp4':'webm';const url=URL.createObjectURL(blob);const link=$('exportDownload');link.href=url;link.download=(file.name.replace(/\.[^.]+$/,'')+'_DepthStudio.'+ext);link.style.display='inline-block';link.textContent='下載輸出影片（'+(blob.size/1024/1024).toFixed(1)+' MB）';$('exportProgress').value=100;$('exportInfo').textContent=`完成：${W} × ${H}；要求影片位元率 ${(targetVideoBitrate/1000000).toFixed(1)} Mbps；${actualBitrate?`瀏覽器回報實際位元率 ${(actualBitrate/1000000).toFixed(1)} Mbps。`:''}格式 ${blob.type||chosenMime}。`; $('status').textContent='影片合成完成。'+bitrateNotice+(audioAdded?' 已包含原影片音訊（音訊亦經重新編碼）。':' 注意：瀏覽器未能擷取原影片音訊，輸出可能沒有聲音。')+' 點擊「下載輸出影片」儲存檔案。';
   }catch(err){$('status').textContent='輸出失敗：'+(err?.message||String(err))+'。請確認 Safari 允許影片播放及下載。';}
   finally{
     try{if(recorder&&recorder.state!=='inactive')recorder.stop()}catch(_){}try{stream?.getVideoTracks().forEach(t=>t.stop())}catch(_){}try{audioTrackClones.forEach(t=>t.stop())}catch(_){}
@@ -325,7 +332,7 @@ async function exportVideo(){
   }
 }
 $('exportVideoBtn').addEventListener('click',exportVideo);
-$('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;$('exportInfo').textContent=`原影片尺寸：${$('video').videoWidth} × ${$('video').videoHeight}。輸出會使用相同像素尺寸；編碼格式依目前 Safari 支援狀況選擇。`});
+$('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;const file=$('videoFile').files?.[0];const duration=Number.isFinite($('video').duration)?$('video').duration:0;const average=file?Math.ceil(file.size*8/Math.max(1,duration)):0;$('exportInfo').textContent=`原影片尺寸：${$('video').videoWidth} × ${$('video').videoHeight}；檔案平均總位元率約 ${(average/1000000).toFixed(1)} Mbps。輸出不縮小、不裁切，並以來源位元率 2 倍作為高畫質編碼目標。燒錄 HUD 必須重新編碼，無法保留原始壓縮碼流完全不變。`});
 
 applySavedLayout();applySavedTransforms();applySavedVisibility();buildVisibilityControls();applySavedIdentity();buildItemSelect();drawProfile();applyControls();selectItem('depthValue');setEditing(true);
 
