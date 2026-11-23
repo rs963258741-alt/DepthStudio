@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.2</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.3</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -39,21 +39,21 @@ h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:
 #displayNameInput:focus,#countrySelect:focus{border-color:#62e7ff;box-shadow:0 0 0 2px #62e7ff22}
 
 .name-flag-content{display:inline-flex;align-items:center;gap:.48em;white-space:nowrap;line-height:1.15}
-#hudCountryFlag{display:block;height:1.35em;width:auto;max-width:2.5em;object-fit:contain;flex:0 0 auto;border-radius:1px;box-shadow:0 1px 4px #0009}
+#hudCountryFlag{display:block;height:1.35em;width:auto;max-width:2.5em;object-fit:contain;flex:0 0 auto;border-radius:1px;box-shadow:none}
 #hudCountryFlag[hidden]{display:none}
 #hudDisplayName{display:inline-block;min-width:1em}
 .name-field-note{font-size:11px;color:#88b6c9;line-height:1.5}
 
 /* 只有開啟編輯模式時，才顯示選取提示框；正式預覽完全沒有框線 */
-.hud.editing .hud-item{outline:1px dashed rgba(105,232,255,.9);outline-offset:4px;border-radius:2px;background:rgba(0,25,40,.14);cursor:grab;pointer-events:auto}
-.hud.editing .hud-item:active{cursor:grabbing;outline:1px solid #fff;background:rgba(0,38,58,.28)}
+.hud.editing .hud-item{outline:1px dashed rgba(105,232,255,.9);outline-offset:4px;border-radius:2px;background:transparent;cursor:grab;pointer-events:auto}
+.hud.editing .hud-item:active{cursor:grabbing;outline:1px solid #fff;background:transparent}
 .hud.editing .hud-item.selected{outline:2px solid #fff;outline-offset:6px;box-shadow:0 0 0 3px #43dfff55}
 .snap-guides{position:absolute;inset:0;z-index:2;display:none;pointer-events:none}
 .snap-guides.active{display:block}
 .snap-line-v,.snap-line-h{position:absolute;display:none;background:repeating-linear-gradient(90deg,#fff 0 5px,transparent 5px 10px);filter:drop-shadow(0 0 5px #55eaff);opacity:.95}
 .snap-line-v{top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#bdfaff 0 6px,transparent 6px 12px)}
 .snap-line-h{left:0;right:0;height:1px;background:repeating-linear-gradient(90deg,#bdfaff 0 6px,transparent 6px 12px)}
-.hud.editing #profileBlock{background:rgba(0,25,40,.12)}
+.hud.editing #profileBlock{background:transparent}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px;margin:10px 0}.field label{font-size:12px;color:#a9c9d8;display:flex;justify-content:space-between;gap:8px}.field input[type=range]{width:100%;accent-color:#4adfff}
 input[type=file]{width:100%;font-size:12px;color:#b9d9e8}
 button{background:linear-gradient(135deg,#087fc7,#13b7d7);border:0;color:#00131e;font-weight:800;padding:11px 14px;border-radius:11px;font-size:13px}
@@ -78,7 +78,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.2</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.3</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -160,8 +160,8 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.2 以 V8.2 為基礎；姓名、國旗與潛水種類合併為同一個可變形欄位，不使用即時播放錄製。逐幀讀取來源影片時間戳與影格持續時間，保留來源解析度、影格數與時間節奏；原音訊軌在 MP4 相容時直接複製，不重新錄音。HUD 燒錄仍必須重新編碼影像。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出影片（保留原始影格節奏）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" class="secondary" type="button" style="display:none">儲存到照片（開啟 iPhone 分享選單）</button><a id="exportDownload">下載到 iPhone「檔案」</a></div><div class="export-note" id="exportInfo">匯入影片後會讀取來源影格數、平均 FPS 與影片位元率。輸出使用離線編碼；若裝置不支援原始尺寸／編碼目標或品質檢查未通過，會停止輸出而不提供不合格檔案。首次輸出需連線載入 Mediabunny 媒體處理模組。iPhone 完成後可按「儲存到照片」並在系統分享選單選「儲存影片」；亦可下載至「檔案」。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.2 以 V8 為底稿，新增潛水種類 HUD 與深度曲線時間／深度座標。輸出改為離線逐影格處理，保留來源每一幀的時間戳和持續時間；影像需重新編碼以燒錄 HUD，並在完成後核對影格數、平均 FPS、解析度及位元率。若品質檢查不通過，不提供下載。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.3 保留 V8.2 的姓名／國旗／潛水種類組合、HUD 排版及離線影片輸出功能。資訊欄背景完全透明，只保留字體陰影與編輯輔助框；不使用即時播放錄製。逐幀讀取來源影片時間戳與影格持續時間，保留來源解析度、影格數與時間節奏；原音訊軌在 MP4 相容時直接複製，不重新錄音。HUD 燒錄仍必須重新編碼影像。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出影片（保留原始影格節奏）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload" role="button">下載已完成影片（MP4）</a></div><div class="export-note" id="exportInfo">匯入影片後會讀取來源影格數、平均 FPS 與影片位元率。輸出使用離線編碼；若裝置不支援原始尺寸／編碼目標或品質檢查未通過，會停止輸出而不提供不合格檔案。首次輸出需連線載入 Mediabunny 媒體處理模組。輸出及品質檢查完成後，按下方「下載已完成影片（MP4）」即可儲存檔案；在 iPhone Safari 中，檔案通常會進入 Safari 的下載項目。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.3 以 V8.2 為底版。HUD 資訊欄背景透明，只保留文字陰影及排版時的虛線選取框。保留原本姓名／國旗／潛水種類組合、深度曲線座標、離線逐影格輸出與輸出後品質驗證。品質檢查未通過時不提供下載。</p></div>
 </section>
 </main>
 <script>
@@ -355,7 +355,7 @@ function drawHudToCanvas(ctx,W,H,time){
   ctx.setTransform(1,0,0,1,0,0);
 }
 const MEDIABUNNY_URL='https://cdn.jsdelivr.net/npm/mediabunny@1.65.2/+esm';
-let mediabunnyModulePromise=null,activeExportUrl=null,lastExportBlob=null,lastExportFilename='DepthStudio_Export.mp4';
+let mediabunnyModulePromise=null,activeExportUrl=null,lastExportFilename='DepthStudio_Export.mp4';
 async function loadMediabunny(){if(!mediabunnyModulePromise){mediabunnyModulePromise=import(MEDIABUNNY_URL).catch(error=>{mediabunnyModulePromise=null;throw new Error('無法載入媒體處理模組，請確認網路連線後再次按下輸出。'+(error?.message||String(error)))})}return mediabunnyModulePromise}
 async function inspectVideoPackets(track){
   const {EncodedPacketSink}=await loadMediabunny();const sink=new EncodedPacketSink(track);let count=0,bytes=0,first=Infinity,last=-Infinity;const timing=[];
@@ -366,7 +366,7 @@ async function inspectVideoPackets(track){
 }
 async function exportVideo(){
   if(exportBusy)return;const file=$('videoFile').files?.[0];if(!file){$('status').textContent='請先匯入原始 MP4／MOV 影片。';return}
-  exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';$('saveToPhotosBtn').style.display='none';lastExportBlob=null;$('status').textContent='正在準備離線逐影格輸出…';
+  exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('status').textContent='正在準備離線逐影格輸出…';
   let blobUrl=null;
   try{
     if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('此 Safari 未提供 WebCodecs VideoEncoder／VideoDecoder。為避免再次產生卡頓影片，本版不會退回即時錄製模式。');
@@ -427,30 +427,13 @@ async function exportVideo(){
       const reasons=[];if(!frameCountOk)reasons.push(`影格數來源 ${srcStats.count}／輸出 ${outStats.count}`);if(!dimensionsOk)reasons.push(`解析度來源 ${W}×${H}／輸出 ${outW}×${outH}`);if(!durationOk)reasons.push(`片長來源 ${sourceDuration.toFixed(3)}s／輸出 ${outDuration.toFixed(3)}s`);if(!fpsOk)reasons.push(`FPS 來源 ${srcStats.fps.toFixed(3)}／輸出 ${outStats.fps.toFixed(3)}`);if(!timestampsOk)reasons.push('逐幀時間戳或影格持續時間與來源不一致');if(!bitrateOk)reasons.push(`影片軌位元率來源 ${(sourceBitrate/1e6).toFixed(2)}／輸出 ${(outStats.bitrate/1e6).toFixed(2)} Mbps`);if(!audioOk)reasons.push('原音訊軌未能保留');
       throw new Error('輸出品質檢查未通過，因此沒有提供下載。'+reasons.join('；'));
     }
-    if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);activeExportUrl=URL.createObjectURL(blob);blobUrl=activeExportUrl;lastExportBlob=blob;lastExportFilename=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-2.mp4';
-    const link=$('exportDownload');link.href=blobUrl;link.download=lastExportFilename;link.style.display='inline-block';link.textContent=`下載到 iPhone「檔案」（${(blob.size/1024/1024).toFixed(1)} MB）`;
-    $('saveToPhotosBtn').style.display='inline-block';$('saveToPhotosBtn').disabled=false;
+    if(activeExportUrl)URL.revokeObjectURL(activeExportUrl);activeExportUrl=URL.createObjectURL(blob);blobUrl=activeExportUrl;lastExportFilename=file.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-3.mp4';
+    const link=$('exportDownload');link.href=blobUrl;link.download=lastExportFilename;link.style.display='inline-block';link.textContent=`下載已完成影片（MP4・${(blob.size/1024/1024).toFixed(1)} MB）`;
     $('exportProgress').value=100;$('exportInfo').textContent=`品質檢查通過：${outW} × ${outH}；${outStats.fps.toFixed(3)} 平均 FPS；${outStats.count.toLocaleString()} 幀；影片軌 ${(outStats.bitrate/1e6).toFixed(2)} Mbps；片長 ${outDuration.toFixed(3)} 秒。${audioTrack?'原音訊軌已保留（相容格式下直接封裝）。':'來源沒有音訊軌。'} `;
-    $('status').textContent='離線逐影格輸出完成，影格數、解析度、時間長度、平均 FPS、逐幀時間戳、影片軌位元率及音訊軌均通過檢查。點擊下載已驗證影片。';
-  }catch(err){$('exportDownload').style.display='none';$('saveToPhotosBtn').style.display='none';lastExportBlob=null;$('status').textContent='未提供輸出檔：'+(err?.message||String(err));$('exportInfo').textContent='品質檢查或裝置能力檢查未通過時，程式會停止輸出，不會退回容易掉幀的即時錄製模式。'}
+    $('status').textContent='離線逐影格輸出完成，影格數、解析度、時間長度、平均 FPS、逐幀時間戳、影片軌位元率及音訊軌均通過檢查。請點擊「下載已完成影片（MP4）」。';
+  }catch(err){$('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('status').textContent='未提供輸出檔：'+(err?.message||String(err));$('exportInfo').textContent='品質檢查或裝置能力檢查未通過時，程式會停止輸出，不會退回容易掉幀的即時錄製模式。'}
   finally{$('exportProgress').hidden=false;exportBusy=false;$('exportVideoBtn').disabled=false;}
 }
-async function saveExportToPhotos(){
-  if(!lastExportBlob){$('status').textContent='目前沒有可儲存的輸出影片，請先完成影片輸出。';return;}
-  if(typeof File==='undefined'||typeof navigator.share!=='function'){
-    $('status').textContent='此瀏覽器不支援直接開啟影片分享選單。請先點「下載到 iPhone 檔案」，再到「檔案」App 開啟影片，按分享並選「儲存影片」。';return;
-  }
-  const file=new File([lastExportBlob],lastExportFilename,{type:'video/mp4',lastModified:Date.now()});
-  try{
-    if(typeof navigator.canShare==='function'&&!navigator.canShare({files:[file]}))throw new Error('此 Safari 版本不支援分享這個影片檔案');
-    await navigator.share({files:[file],title:'Depth Studio 輸出影片',text:'在 iPhone 分享選單中選擇「儲存影片」，即可加入照片圖庫。'});
-    $('status').textContent='已開啟 iPhone 系統分享選單。請在選單中點選「儲存影片」，完成後可到「照片」App 的「最近項目」查看。';
-  }catch(err){
-    if(err&&err.name==='AbortError'){$('status').textContent='你已關閉分享選單，影片仍保留在本頁，可再次按「儲存到照片」或下載到「檔案」。';return;}
-    $('status').textContent='無法直接開啟照片儲存選單：'+(err?.message||String(err))+'。請改用「下載到 iPhone 檔案」，再從「檔案」App 分享並選「儲存影片」。';
-  }
-}
-$('saveToPhotosBtn').addEventListener('click',saveExportToPhotos);
 $('exportVideoBtn').addEventListener('click',exportVideo);
 $('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;const file=$('videoFile').files?.[0];const duration=Number.isFinite($('video').duration)?$('video').duration:0;const average=file?Math.ceil(file.size*8/Math.max(1,duration)):0;$('exportInfo').textContent=`已載入來源影片：${$('video').videoWidth} × ${$('video').videoHeight}；檔案整體平均位元率估算 ${(average/1000000).toFixed(2)} Mbps。正式輸出時會另外分析影片軌實際影格數、時間戳與影片位元率，改用離線逐影格處理；若輸出品質檢查不符就不會提供下載。`});
 
