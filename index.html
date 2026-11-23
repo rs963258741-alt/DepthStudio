@@ -1,66 +1,133 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V3</title>
 <style>
-:root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--panel:rgba(5,18,30,.78);--line:rgba(103,224,255,.3);--opacity:.86}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#163b5a 0,#07111b 55%);color:#eaf7ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -20%,#163b5a 0,#07111b 55%);color:#eaf7ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 header{padding:18px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #19384c}
 .brand{font-size:21px;font-weight:800;letter-spacing:.08em}.brand span{color:var(--cyan)}.tag{font-size:11px;color:#8daebe;border:1px solid #2a5369;border-radius:99px;padding:6px 10px}
-main{max-width:1050px;margin:auto;padding:16px;display:grid;gap:16px}.panel{background:linear-gradient(145deg,rgba(16,42,61,.92),rgba(5,17,29,.94));border:1px solid #23506a;border-radius:18px;padding:15px;box-shadow:0 12px 35px #0005}
-h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:#91aebd;font-size:12px;line-height:1.5}
-.preview{position:relative;aspect-ratio:9/16;max-height:68vh;margin:auto;background:linear-gradient(180deg,#0c344b,#06111d 55%,#0c4053);border-radius:16px;overflow:hidden;border:1px solid #36738e}
-#video{width:100%;height:100%;object-fit:contain;background:#02080d;display:none}#empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#8cb8cc;padding:25px}
-.hud{position:absolute;left:5%;right:5%;top:5%;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel);backdrop-filter:blur(10px);box-shadow:0 0 22px #35cfff26;opacity:var(--opacity);pointer-events:none}
-.hudtop{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.16em;color:#a8edff}.depth{font-size:clamp(34px,8vw,58px);font-weight:800;line-height:1.05;color:#fff;text-shadow:0 0 16px #42dfff}.unit{font-size:14px;color:var(--cyan);margin-left:4px}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.metric{border-top:1px solid #64dfff55;padding-top:6px}.metric b{display:block;font-size:17px}.metric small{font-size:9px;color:#8ebdce;letter-spacing:.08em}
-.chartbox{margin-top:10px;border-top:1px solid #64dfff55;padding-top:7px}.charttitle{font-size:9px;color:#9ed9eb;display:flex;justify-content:space-between}
-#profile{width:100%;height:76px;display:block}
-.hudbottom{display:flex;justify-content:space-between;font-size:9px;color:#9bc9d8}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px;margin:10px 0}.field label{font-size:12px;color:#a9c9d8;display:flex;justify-content:space-between}.field input[type=range]{width:100%;accent-color:#4adfff}
-input[type=file]{width:100%;font-size:12px;color:#b9d9e8}button{background:linear-gradient(135deg,#087fc7,#13b7d7);border:0;color:#00131e;font-weight:800;padding:11px 14px;border-radius:11px;font-size:13px}button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.status{font-size:12px;color:#83c7dc;margin-top:8px;white-space:pre-wrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{padding:10px;background:#0a2030;border-radius:12px;border:1px solid #1e5068}.stat strong{display:block;font-size:20px}.stat span{font-size:10px;color:#8fb8c9}
-@media(min-width:760px){main{grid-template-columns:1.1fr .9fr;align-items:start}.left{position:sticky;top:12px}.preview{max-height:78vh}.right{display:grid;gap:16px}}
-</style></head>
+main{max-width:1050px;margin:auto;padding:16px;display:grid;gap:16px}
+.panel{background:linear-gradient(145deg,rgba(16,42,61,.92),rgba(5,17,29,.94));border:1px solid #23506a;border-radius:18px;padding:15px;box-shadow:0 12px 35px #0005}
+h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:#91aebd;font-size:12px;line-height:1.55}
+.preview{position:relative;aspect-ratio:9/16;max-height:68vh;width:min(100%,40vh);margin:auto;background:linear-gradient(180deg,#0c344b,#06111d 55%,#0c4053);border-radius:16px;overflow:hidden;border:1px solid #36738e;isolation:isolate}
+#video{width:100%;height:100%;object-fit:contain;background:#02080d;display:none}
+#empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#8cb8cc;padding:25px}
+/* HUD 本身透明，不繪製面板、框線或底色 */
+.hud{position:absolute;inset:0;width:100%;height:100%;opacity:1;pointer-events:none;z-index:3}
+.hud-item{position:absolute;left:var(--x,0%);top:var(--y,0%);margin:0;padding:0;color:#effcff;text-shadow:0 1px 3px #00121d,0 0 10px #3ddfff99;white-space:nowrap;user-select:none;-webkit-user-select:none;touch-action:none;transform-origin:top left}
+#hudBrand{font-size:calc(10px * var(--hud-scale));font-weight:800;letter-spacing:.15em;color:#bcefff}
+#hudClock{font-size:calc(11px * var(--hud-scale));font-variant-numeric:tabular-nums;color:#d8f8ff}
+#depthValue{font-size:calc(52px * var(--hud-scale));font-weight:850;line-height:1;letter-spacing:-.045em;color:#fff;text-shadow:0 0 17px #42dfff,0 2px 4px #00121d;font-variant-numeric:tabular-nums}
+#depthUnit{font-size:calc(14px * var(--hud-scale));font-weight:800;color:var(--cyan)}
+.metric-value{font-size:calc(20px * var(--hud-scale));line-height:1.1;font-weight:800;font-variant-numeric:tabular-nums}
+.metric-label{font-size:calc(9px * var(--hud-scale));letter-spacing:.12em;color:#a8dced}
+#profileTitle{font-size:calc(9px * var(--hud-scale));letter-spacing:.13em;color:#b8eafa;font-weight:750}
+#profileBlock{width:88%;height:15%;white-space:normal;filter:drop-shadow(0 0 5px #2adfff65)}
+#profile{width:100%;height:100%;display:block;overflow:visible}
+#footerBrand,#maxDepth{font-size:calc(9px * var(--hud-scale));letter-spacing:.11em;color:#c9eff9;font-weight:750}
+/* 只有開啟編輯模式時，才顯示選取提示框；正式預覽完全沒有框線 */
+.hud.editing .hud-item{outline:1px dashed rgba(105,232,255,.9);outline-offset:4px;border-radius:2px;background:rgba(0,25,40,.14);cursor:grab;pointer-events:auto}
+.hud.editing .hud-item:active{cursor:grabbing;outline:1px solid #fff;background:rgba(0,38,58,.28)}
+.hud.editing #profileBlock{background:rgba(0,25,40,.12)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px;margin:10px 0}.field label{font-size:12px;color:#a9c9d8;display:flex;justify-content:space-between;gap:8px}.field input[type=range]{width:100%;accent-color:#4adfff}
+input[type=file]{width:100%;font-size:12px;color:#b9d9e8}
+button{background:linear-gradient(135deg,#087fc7,#13b7d7);border:0;color:#00131e;font-weight:800;padding:11px 14px;border-radius:11px;font-size:13px}
+button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}button.active{background:#f0c75e;color:#1a2430;border-color:#f0c75e}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.status{font-size:12px;color:#83c7dc;margin-top:8px;white-space:pre-wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{padding:10px;background:#0a2030;border-radius:12px;border:1px solid #1e5068}.stat strong{display:block;font-size:20px}.stat span{font-size:10px;color:#8fb8c9}
+.editor-help{padding:10px 12px;background:#102c40;border:1px solid #2a6178;border-radius:10px;color:#b9eafa;font-size:12px;line-height:1.55;margin:10px 0}
+@media(min-width:760px){main{grid-template-columns:1.1fr .9fr;align-items:start}.left{position:sticky;top:12px}.preview{max-height:78vh;width:min(100%,44vh)}.right{display:grid;gap:16px}}
+</style>
+</head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · BETA</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V3</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
-<div class="preview" id="stage"><div id="empty"><div><div style="font-size:34px">◉</div><b>DEPTH STUDIO</b><p class="sub">匯入你的潛水影片<br>即可預覽 HUD 疊加效果</p></div></div>
-<video id="video" playsinline controls></video>
-<div class="hud" id="hud"><div class="hudtop"><span>● FREEDIVE / MISSION 02</span><span id="hudtime">00:18</span></div>
-<div><span class="depth" id="depth">11.9</span><span class="unit">M</span></div>
-<div class="metrics"><div class="metric"><b id="elapsed">00:18</b><small>DIVE TIME</small></div><div class="metric"><b id="temp">29.3°</b><small>WATER TEMP</small></div><div class="metric"><b id="speed">0.0</b><small>DEPTH / SEC</small></div></div>
-<div class="chartbox"><div class="charttitle"><span>DEPTH PROFILE</span><span>0 M ↓ MAX DEPTH</span></div><svg id="profile" viewBox="0 0 320 76" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#55e7ff" stop-opacity=".4"/><stop offset="1" stop-color="#55e7ff" stop-opacity="0"/></linearGradient></defs><path id="areaPath" fill="url(#area)"/><path id="linePath" fill="none" stroke="#70edff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-<div class="hudbottom"><span>ATMOS MISSION 2</span><span id="maxDepth">MAX 11.9 M</span></div></div></div>
-<p class="sub">目前是互動式介面原型。示意背景僅供排版預覽；匯入影片後會以你的影片作為背景。</p>
+<div class="preview" id="stage">
+  <div id="empty"><div><div style="font-size:34px">◉</div><b>DEPTH STUDIO</b><p class="sub">匯入你的潛水影片<br>即可預覽透明 HUD 疊加效果</p></div></div>
+  <video id="video" playsinline controls></video>
+  <div class="hud" id="hud">
+    <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:6%;--y:4%">● FREEDIVE / MISSION 02</div>
+    <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:82%;--y:4%">00:18</div>
+    <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:6%;--y:13%">11.9</div>
+    <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:35%;--y:17%">M</div>
+    <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:6%;--y:30%">00:18</div>
+    <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:6%;--y:37%">DIVE TIME</div>
+    <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:38%;--y:30%">29.3°</div>
+    <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:38%;--y:37%">WATER TEMP</div>
+    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:72%;--y:30%">0.0</div>
+    <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:72%;--y:37%">DEPTH / SEC</div>
+    <div class="hud-item" id="profileTitle" data-title="深度曲線標題" style="--x:6%;--y:45%">DEPTH PROFILE <span style="opacity:.7">/ 0 M ↓ MAX DEPTH</span></div>
+    <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:6%;--y:49%">
+      <svg id="profile" viewBox="0 0 320 100" preserveAspectRatio="none" aria-label="深度曲線">
+        <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#55e7ff" stop-opacity=".26"/><stop offset="1" stop-color="#55e7ff" stop-opacity="0"/></linearGradient></defs>
+        <path id="areaPath" fill="url(#area)"/>
+        <path id="linePath" fill="none" stroke="#70edff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line id="profileGuide" x1="0" y1="5" x2="0" y2="91" stroke="#baf7ff" stroke-width="1" stroke-dasharray="3 3" opacity=".85" visibility="hidden"/>
+        <circle id="profileDotGlow" cx="0" cy="0" r="9" fill="#55eaff" opacity=".3" visibility="hidden"/>
+        <circle id="profileDot" cx="0" cy="0" r="4.8" fill="#fff" stroke="#55eaff" stroke-width="2.2" visibility="hidden"/>
+      </svg>
+    </div>
+    <div class="hud-item" id="footerBrand" data-title="裝置名稱" style="--x:6%;--y:70%">ATMOS MISSION 2</div>
+    <div class="hud-item" id="maxDepth" data-title="最大深度" style="--x:70%;--y:70%">MAX 11.9 M</div>
+  </div>
+</div>
+<p class="sub">HUD 沒有底板或固定外框。開啟「拖曳排版」後，影片上的每一個數值、標籤、標題與曲線都能分開移動。</p>
 </section>
 <section class="right">
 <div class="panel"><h2>01 / 匯入素材</h2><div class="field"><label>潛水影片（MP4 / MOV）</label><input id="videoFile" type="file" accept="video/*"></div>
 <div class="field"><label>潛水紀錄（UDDF）</label><input id="uddfFile" type="file" accept=".uddf,.xml,text/xml"></div>
-<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設預覽</button></div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
-<div class="panel"><h2>02 / HUD 外觀調整</h2>
-<div class="field"><label>HUD 透明度 <b id="opacityVal">86%</b></label><input id="opacity" type="range" min="20" max="100" value="86"></div>
-<div class="field"><label>HUD 大小 <b id="scaleVal">100%</b></label><input id="scale" type="range" min="70" max="130" value="100"></div>
-<div class="field"><label>HUD 垂直位置 <b id="posVal">5%</b></label><input id="position" type="range" min="2" max="65" value="5"></div>
+<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button></div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
+<div class="panel"><h2>02 / HUD 外觀與自由排版</h2>
+<div class="actions"><button id="editLayout">拖曳排版：關</button><button id="resetLayout" class="secondary">恢復預設位置</button></div>
+<div class="editor-help" id="editorHelp">開啟排版模式後，直接拖動影片上的任一項目。數值與文字標籤是分開的，可以各自移動。完成後再關閉排版模式。</div>
+<div class="field"><label>HUD 透明度 <b id="opacityVal">90%</b></label><input id="opacity" type="range" min="20" max="100" value="90"></div>
+<div class="field"><label>HUD 字體大小 <b id="scaleVal">100%</b></label><input id="scale" type="range" min="70" max="140" value="100"></div>
+<div class="field"><label>HUD 整體垂直偏移 <b id="posVal">0%</b></label><input id="position" type="range" min="-15" max="25" value="0"></div>
 <div class="field"><label>影片與潛水資料時間差 <b id="offsetVal">0 秒</b></label><input id="offset" type="range" min="-120" max="120" value="0"></div>
-<div class="sub">正值代表潛水資料相對影片延後；負值代表潛水資料提前。此控制目前用於預覽對齊。</div></div>
+<div class="sub">時間差用來對齊影片與手錶紀錄。所有 HUD 位置會保存在這台裝置的 Safari；重新整理後仍會保留。</div></div>
 <div class="panel"><h2>03 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>04 / 下一階段</h2><p class="sub">這個版本先驗證視覺風格、資訊層級與時間軸操作。原生 App 的高畫質影片合成、音訊保留、4K/HDR 匯出仍需在 iOS 專案中完成與測試。</p></div>
-</section></main>
+<div class="panel"><h2>04 / 目前版本說明</h2><p class="sub">本頁用來測試透明 HUD、各項資訊的自由排版，以及深度曲線定位點。定位點會依影片播放位置連續更新，時間超出潛水紀錄區間時會隱藏，避免顯示停住的舊數據。MP4 合成匯出仍需在原生 iOS App 階段完成。</p></div>
+</section>
+</main>
 <script>
-const demo=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
-let samples=demo.map((d,i)=>({t:i+1,d,temp:29.3})), duration=36, maxD=11.9, avgD=6.9, videoURL=null;
+'use strict';
+const demoDepths=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
+const DEFAULT_LAYOUT={hudBrand:[6,4],hudClock:[82,4],depthValue:[6,13],depthUnit:[35,17],elapsedValue:[6,30],elapsedLabel:[6,37],tempValue:[38,30],tempLabel:[38,37],speedValue:[72,30],speedLabel:[72,37],profileTitle:[6,45],profileBlock:[6,49],footerBrand:[6,70],maxDepth:[70,70]};
+const LAYOUT_KEY='depthstudio_hud_layout_v3';
 const $=id=>document.getElementById(id);
-function drawProfile(){let pts=samples.map((s,i)=>[i/(Math.max(1,samples.length-1))*320,5+(s.d/Math.max(1,maxD))*62]);let d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');$('linePath').setAttribute('d',d);$('areaPath').setAttribute('d',d+' L320,76 L0,76 Z')}
-function updateAt(){let v=$('video'),offset=+$('offset').value,sec=v.duration?Math.max(0,Math.min(duration,(v.currentTime||0)+offset)):18;let idx=Math.max(0,Math.min(samples.length-1,Math.round(sec)));let s=samples[idx]||samples[0];$('depth').textContent=s.d.toFixed(1);$('elapsed').textContent='00:'+String(s.t).padStart(2,'0');$('hudtime').textContent='00:'+String(s.t).padStart(2,'0');$('temp').textContent=(s.temp??29.3).toFixed(1)+'°';let prev=samples[Math.max(0,idx-1)];$('speed').textContent=(s.d-prev.d).toFixed(1);$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M'}
-$('videoFile').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+f.name;});
-$('video').addEventListener('timeupdate',updateAt);
-$('uddfFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let xml=new DOMParser().parseFromString(await f.text(),'application/xml');if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');let nodes=[...xml.querySelectorAll('waypoint')];let parsed=nodes.map((n,i)=>{let get=(sel)=>n.querySelector(sel)?.textContent?.trim();let d=Number(get('depth\\, value')||get('depth')||n.querySelector('depth')?.textContent);let t=Number(get('divetime')||i+1);let temp=Number(n.querySelector('temperature')?.textContent);return {t:Number.isFinite(t)?t:i+1,d,temp:Number.isFinite(temp)?temp-273.15:29.3}}).filter(s=>Number.isFinite(s.d));if(!parsed.length)throw Error('找不到可辨識的深度 waypoint；先保留示範資料');samples=parsed;maxD=Math.max(...samples.map(s=>s.d));avgD=samples.reduce((a,s)=>a+s.d,0)/samples.length;duration=samples[samples.length-1].t;$('sumMax').textContent=maxD.toFixed(1)+' m';$('sumAvg').textContent=avgD.toFixed(1)+' m';$('sumDur').textContent=duration+' s';$('recordInfo').textContent='已讀取 '+f.name+'，樣本數 '+samples.length+'。請確認匯入結果與手錶紀錄一致。';$('status').textContent='UDDF 已載入：'+samples.length+' 個深度樣本';drawProfile();updateAt()}catch(err){$('status').textContent='解析提醒：'+err.message+'。示範資料仍可使用。'}});
-$('loadDemo').onclick=()=>{samples=demo.map((d,i)=>({t:i+1,d,temp:29.3}));duration=36;maxD=11.9;avgD=6.9;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料';drawProfile();updateAt()};
-$('reset').onclick=()=>{['opacity','scale','position','offset'].forEach((id,i)=>$(id).value=[86,100,5,0][i]);applyControls();$('status').textContent='外觀與時間差已重設'};
-function applyControls(){let op=+$('opacity').value,sc=+$('scale').value,pos=+$('position').value;$('hud').style.opacity=op/100;$('hud').style.top=pos+'%';$('hud').style.transform='scale('+sc/100+')';$('hud').style.transformOrigin='top center';$('opacityVal').textContent=op+'%';$('scaleVal').textContent=sc+'%';$('posVal').textContent=pos+'%';$('offsetVal').textContent=$('offset').value+' 秒';updateAt()}
-['opacity','scale','position','offset'].forEach(id=>$(id).addEventListener('input',applyControls));drawProfile();applyControls();
-</script></body></html>
+const itemIds=Object.keys(DEFAULT_LAYOUT);
+let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.3}));
+let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=false,dragItem=null,dragOffset={x:0,y:0},rafId=null;
+function fmtTime(seconds){const n=Math.max(0,Math.floor(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
+function setItemPosition(id,x,y){const el=$(id);const sx=Math.max(0,Math.min(100,Number(x)));const sy=Math.max(0,Math.min(100,Number(y)));el.style.left=sx+'%';el.style.top=sy+'%';el.dataset.x=sx;el.dataset.y=sy}
+function saveLayout(){const obj={};itemIds.forEach(id=>obj[id]=[Number($(id).dataset.x??DEFAULT_LAYOUT[id][0]),Number($(id).dataset.y??DEFAULT_LAYOUT[id][1])]);try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存位置；本次操作仍可使用。'}}
+function applySavedLayout(){let obj=null;try{obj=JSON.parse(localStorage.getItem(LAYOUT_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))})}
+function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置。'}
+function setEditing(on){layoutEditing=on;$('hud').classList.toggle('editing',on);$('editLayout').classList.toggle('active',on);$('editLayout').textContent='拖曳排版：'+(on?'開':'關');$('editorHelp').textContent=on?'排版模式已開啟：拖曳影片上的項目。每一個數值、標籤、標題及曲線都是獨立的。':'開啟排版模式後，直接拖動影片上的任一項目。數值與文字標籤是分開的，可以各自移動。完成後再關閉排版模式。'}
+function pointForSample(s){const first=samples[0]?.t??0,last=samples[samples.length-1]?.t??1;const span=Math.max(.001,last-first);const x=10+((s.t-first)/span)*300;const y=5+(Math.max(0,s.d)/Math.max(1,maxD))*86;return [Math.max(10,Math.min(310,x)),Math.max(5,Math.min(91,y))]}
+function drawProfile(){if(!samples.length)return;const sorted=[...samples].sort((a,b)=>a.t-b.t);const pts=sorted.map(pointForSample);const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+','+p[1].toFixed(2)).join(' ');$('linePath').setAttribute('d',path);$('areaPath').setAttribute('d',path+' L310,95 L10,95 Z')}
+function interpolateAt(t){if(!samples.length)return null;const sorted=[...samples].sort((a,b)=>a.t-b.t);if(t<sorted[0].t||t>sorted[sorted.length-1].t)return null;let i=sorted.findIndex(p=>p.t>=t);if(i<0)return null;if(i===0)return {...sorted[0],speed:0};const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span}}
+function hideLiveData(){['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='hidden');['profileDot','profileDotGlow'].forEach(id=>$(id).setAttribute('visibility','hidden'));$('profileGuide').setAttribute('visibility','hidden')}
+function updateAt(){const v=$('video');const fallback=samples.length?(samples[0].t+samples[samples.length-1].t)/2:0;const dataTime=v.src?v.currentTime+(Number($('offset').value)||0):fallback;const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1);$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('visibility','visible')}
+function animationLoop(){updateAt();if(!$('video').paused)rafId=requestAnimationFrame(animationLoop);else rafId=null}
+function startAnimation(){if(rafId===null)rafId=requestAnimationFrame(animationLoop)}
+$('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
+$('video').addEventListener('play',startAnimation);['timeupdate','seeked','seeking','loadedmetadata','pause','ended'].forEach(evt=>$('video').addEventListener(evt,updateAt));
+$('uddfFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const xml=new DOMParser().parseFromString(await file.text(),'application/xml');if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');const nodes=[...xml.getElementsByTagName('*')].filter(n=>n.localName?.toLowerCase()==='waypoint');const childText=(node,name)=>{const found=[...node.getElementsByTagName('*')].find(n=>n.localName?.toLowerCase()===name);return found?.textContent?.trim()??null};const parsed=nodes.map((node,i)=>{const depthRaw=childText(node,'depth');const tRaw=childText(node,'divetime');const tempRaw=childText(node,'temperature');const d=Number(depthRaw);const t=Number(tRaw??i+1);let temp=tempRaw===null?NaN:Number(tempRaw);if(temp>100)temp-=273.15;return {t:Number.isFinite(t)?t:i+1,d,temp}}).filter(p=>Number.isFinite(p.d)&&Number.isFinite(p.t)).sort((a,b)=>a.t-b.t);if(!parsed.length)throw Error('找不到可辨識的深度 waypoint；示範資料仍保留');samples=parsed;maxD=Math.max(...samples.map(p=>p.d));avgD=samples.reduce((sum,p)=>sum+p.d,0)/samples.length;duration=samples[samples.length-1].t;$('sumMax').textContent=maxD.toFixed(1)+' m';$('sumAvg').textContent=avgD.toFixed(1)+' m';$('sumDur').textContent=duration+' s';$('recordInfo').textContent='已讀取 '+file.name+'，樣本數 '+samples.length+'。請核對匯入結果是否與手錶紀錄一致。';$('status').textContent='UDDF 已載入：'+samples.length+' 個深度樣本。';drawProfile();updateAt()}catch(err){$('status').textContent='解析提醒：'+err.message}});
+$('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.3}));maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
+$('reset').addEventListener('click',()=>{[['opacity',90],['scale',100],['position',0],['offset',0]].forEach(([id,v])=>$(id).value=v);applyControls();$('status').textContent='HUD 外觀與時間差已重設。'});
+$('editLayout').addEventListener('click',()=>setEditing(!layoutEditing));$('resetLayout').addEventListener('click',resetLayout);
+['opacity','scale','position','offset'].forEach(id=>$(id).addEventListener('input',applyControls));
+function applyControls(){const op=Number($('opacity').value),sc=Number($('scale').value),pos=Number($('position').value);$('hud').style.opacity=op/100;$('hud').style.transform='translateY('+pos+'%)';document.documentElement.style.setProperty('--hud-scale',sc/100);$('opacityVal').textContent=op+'%';$('scaleVal').textContent=sc+'%';$('posVal').textContent=pos+'%';$('offsetVal').textContent=$('offset').value+' 秒';updateAt()}
+// Pointer Events：支援 iPhone 觸控、Apple Pencil 與滑鼠。
+itemIds.forEach(id=>{const el=$(id);el.addEventListener('pointerdown',e=>{if(!layoutEditing)return;e.preventDefault();dragItem=el;const r=el.getBoundingClientRect();dragOffset={x:e.clientX-r.left,y:e.clientY-r.top};try{el.setPointerCapture(e.pointerId)}catch(_){}});el.addEventListener('pointermove',e=>{if(!layoutEditing||dragItem!==el)return;e.preventDefault();const hudRect=$('hud').getBoundingClientRect();const r=el.getBoundingClientRect();let left=e.clientX-hudRect.left-dragOffset.x;let top=e.clientY-hudRect.top-dragOffset.y;left=Math.max(0,Math.min(hudRect.width-r.width,left));top=Math.max(0,Math.min(hudRect.height-r.height,top));setItemPosition(id,left/hudRect.width*100,top/hudRect.height*100)});const finish=()=>{if(dragItem===el){saveLayout();dragItem=null}};el.addEventListener('pointerup',finish);el.addEventListener('pointercancel',finish)});
+applySavedLayout();drawProfile();applyControls();
+</script>
+</body>
+</html>
