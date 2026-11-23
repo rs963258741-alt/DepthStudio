@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V5</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V6</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -28,7 +28,7 @@ h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:
 .metric-value{font-size:calc(20px * var(--hud-scale));line-height:1.1;font-weight:800;font-variant-numeric:tabular-nums}
 .metric-label{font-size:calc(9px * var(--hud-scale));letter-spacing:.12em;color:#a8dced}
 #profileTitle{font-size:calc(9px * var(--hud-scale));letter-spacing:.13em;color:#b8eafa;font-weight:750}
-#profileBlock{width:88%;height:15%;white-space:normal;filter:drop-shadow(0 0 5px #2adfff65)}
+#profileBlock{width:91%;height:16%;white-space:normal;filter:drop-shadow(0 0 5px #2adfff65)}
 #profile{width:100%;height:100%;display:block;overflow:visible}
 #footerBrand,#maxDepth{font-size:calc(9px * var(--hud-scale));letter-spacing:.11em;color:#c9eff9;font-weight:750}
 #nameFlagGroup{font-size:calc(13px * var(--hud-scale) * var(--name-scale,1));font-weight:850;letter-spacing:.025em;color:#fff}
@@ -62,31 +62,31 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V5</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V6</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
   <div id="empty"><div><div style="font-size:34px">◉</div><b>DEPTH STUDIO</b><p class="sub">匯入你的潛水影片<br>即可預覽透明 HUD 疊加效果</p></div></div>
   <video id="video" playsinline controls></video>
   <div class="hud" id="hud">
-    <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:2%;--y:4%">● FREEDIVE / MISSION 02</div>
-    <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:82%;--y:5%">00:18</div>
-    <div class="hud-item" id="nameFlagGroup" data-title="姓名與國旗" style="--x:3%;--y:23%">
+    <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:3%;--y:3%">● FREEDIVE / MISSION 02</div>
+    <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:83%;--y:3%">00:18</div>
+    <div class="hud-item" id="nameFlagGroup" data-title="姓名與國旗" style="--x:78%;--y:68%">
       <div class="name-flag-content">
         <img id="hudCountryFlag" alt="" hidden>
-        <span id="hudDisplayName">YOUR NAME</span>
+        <span id="hudDisplayName">姓名</span>
       </div>
     </div>
-    <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:3%;--y:8%">11.9</div>
-    <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:19%;--y:18%">M</div>
-    <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:28%;--y:11%">00:18</div>
-    <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:28%;--y:16%">DIVE TIME</div>
-    <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:75%;--y:11%">29.3°</div>
-    <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:72%;--y:16%">WATER TEMP</div>
-    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:71%;--y:69%">0.0</div>
-    <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:75%;--y:75%">DEPTH / SEC</div>
-    <div class="hud-item" id="profileTitle" data-title="深度曲線標題" style="--x:6%;--y:75%">DEPTH PROFILE <span style="opacity:.7">/ 0 M ↓ MAX DEPTH</span></div>
-    <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:3%;--y:79%">
+    <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:3.5%;--y:4%">11.9</div>
+    <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:29%;--y:11.5%">M</div>
+    <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:40%;--y:4.5%">00:18</div>
+    <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:40%;--y:11.5%">DIVE TIME</div>
+    <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:70%;--y:4.5%">29.3°</div>
+    <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:70%;--y:11.5%">WATER TEMP</div>
+    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:82%;--y:78.5%">0.0</div>
+    <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:73%;--y:73.5%">DEPTH / SEC</div>
+    <div class="hud-item" id="profileTitle" data-title="深度曲線標題" style="--x:5%;--y:81%">DEPTH PROFILE <span style="opacity:.7">/ 0 M ↓ MAX DEPTH</span></div>
+    <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:5%;--y:84%">
       <svg id="profile" viewBox="0 0 320 100" preserveAspectRatio="none" aria-label="深度曲線">
         <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#55e7ff" stop-opacity=".26"/><stop offset="1" stop-color="#55e7ff" stop-opacity="0"/></linearGradient></defs>
         <path id="areaPath" fill="url(#area)"/>
@@ -96,8 +96,8 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
         <circle id="profileDot" cx="0" cy="0" r="4.8" fill="#fff" stroke="#55eaff" stroke-width="2.2" visibility="hidden"/>
       </svg>
     </div>
-    <div class="hud-item" id="footerBrand" data-title="裝置名稱" style="--x:3%;--y:95%">ATMOS MISSION 2</div>
-    <div class="hud-item" id="maxDepth" data-title="最大深度" style="--x:78%;--y:95%">MAX 11.9 M</div>
+    <div class="hud-item" id="footerBrand" data-title="裝置名稱" style="--x:3%;--y:96%">ATMOS MISSION 2</div>
+    <div class="hud-item" id="maxDepth" data-title="最大深度" style="--x:78%;--y:96%">MAX 11.9 M</div>
   </div>
 </div>
 <p class="sub">HUD 沒有底板或固定外框。開啟「拖曳排版」後，影片上的每一個數值、標籤、標題與曲線都能分開移動；姓名與國旗則會作為同一組一起移動。</p>
@@ -108,9 +108,9 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button></div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
 <div class="panel"><h2>02 / HUD 外觀與自由排版</h2>
 <div class="actions"><button id="editLayout">拖曳排版：關</button><button id="resetLayout" class="secondary">恢復預設位置</button></div>
-<div class="editor-help" id="editorHelp">開啟排版模式後，直接拖動影片上的任一項目。姓名與國旗會固定為同一組，其他數值與標籤仍可各自移動。完成後再關閉排版模式。</div>
+<div class="editor-help" id="editorHelp">預設已開啟排版模式：可直接拖動影片上的項目。每個數值、標籤、標題與曲線都能獨立移動；姓名與國旗固定為同一組。</div>
 <div class="field"><label>HUD 透明度 <b id="opacityVal">90%</b></label><input id="opacity" type="range" min="20" max="100" value="90"></div>
-<div class="field"><label>HUD 字體大小 <b id="scaleVal">100%</b></label><input id="scale" type="range" min="70" max="140" value="100"></div>
+<div class="field"><label>HUD 字體大小 <b id="scaleVal">90%</b></label><input id="scale" type="range" min="70" max="140" value="90"></div>
 <div class="field"><label>HUD 整體垂直偏移 <b id="posVal">0%</b></label><input id="position" type="range" min="-15" max="25" value="0"></div>
 <div class="field"><label>影片與潛水資料時間差 <b id="offsetVal">0 秒</b></label><input id="offset" type="range" min="-120" max="120" value="0"></div>
 <div class="sub">時間差用來對齊影片與手錶紀錄。所有 HUD 位置會保存在這台裝置的 Safari；重新整理後仍會保留。</div></div>
@@ -125,13 +125,13 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <option value="southkorea">韓國 South Korea</option>
 <option value="malaysia">馬來西亞 Malaysia</option>
 <option value="japan">日本 Japan</option>
-<option value="chinesetaipei">中華台北 Chinese Taipei</option>
+<option value="chinesetaipei" selected>中華台北 Chinese Taipei</option>
 </select></div>
-<div class="field"><label for="nameFlagScale">姓名與國旗共同大小 <b id="nameFlagScaleVal">100%</b></label><input id="nameFlagScale" type="range" min="60" max="180" value="100"></div>
+<div class="field"><label for="nameFlagScale">姓名與國旗共同大小 <b id="nameFlagScaleVal">80%</b></label><input id="nameFlagScale" type="range" min="60" max="180" value="80"></div>
 <p class="name-field-note">國旗會固定在姓名左側。開啟「拖曳排版」後，移動姓名時旗幟會一起移動；兩者共用同一個大小設定，不能分開移動或縮放。選擇國家／地區後才會顯示對應圖片。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 目前版本說明</h2><p class="sub">V5 新增姓名輸入與七種國旗／標誌選擇。旗幟固定在姓名左側，兩者是一個不可拆分的 HUD 元件，共用拖曳位置與大小；其餘 V4 排版、顯示開關與深度曲線動態功能保留。MP4 合成匯出仍需在原生 iOS App 階段完成。</p></div>
+<div class="panel"><h2>06 / 目前版本說明</h2><p class="sub">V6 依照參考畫面設定各項 HUD 的預設位置、顯示／隱藏狀態、外觀控制值，以及姓名與國旗預設值。保留 V5 的旗幟組合、拖曳排版與動態深度曲線功能。MP4 合成匯出仍需在原生 iOS App 階段完成。</p></div>
 </section>
 </main>
 <script>
@@ -147,28 +147,28 @@ const FLAG_IMAGES = {
 };
 const COUNTRY_NAMES = {roc:'中華民國 Republic of China',hongkong:'香港 Hong Kong',china:'中國 China',southkorea:'韓國 South Korea',malaysia:'馬來西亞 Malaysia',japan:'日本 Japan',chinesetaipei:'中華台北 Chinese Taipei'};
 const demoDepths=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
-const DEFAULT_LAYOUT={hudBrand:[2,4],hudClock:[82,5],nameFlagGroup:[3,23],depthValue:[3,8],depthUnit:[19,18],elapsedValue:[28,11],elapsedLabel:[28,16],tempValue:[75,11],tempLabel:[72,16],speedValue:[71,69],speedLabel:[75,75],profileTitle:[6,75],profileBlock:[3,79],footerBrand:[3,95],maxDepth:[78,95]};
-const LAYOUT_KEY='depthstudio_hud_layout_v5';
-const LEGACY_LAYOUT_KEY='depthstudio_hud_layout_v4';
-const IDENTITY_KEY='depthstudio_identity_v1';
-const VISIBILITY_KEY='depthstudio_hud_visibility_v1';
+const DEFAULT_LAYOUT={hudBrand:[3,3],hudClock:[83,3],nameFlagGroup:[78,68],depthValue:[3.5,4],depthUnit:[29,11.5],elapsedValue:[40,4.5],elapsedLabel:[40,11.5],tempValue:[70,4.5],tempLabel:[70,11.5],speedValue:[82,78.5],speedLabel:[73,73.5],profileTitle:[5,81],profileBlock:[5,84],footerBrand:[3,96],maxDepth:[78,96]};
+const DEFAULT_VISIBILITY={hudBrand:false,hudClock:false,nameFlagGroup:true,depthValue:true,depthUnit:true,elapsedValue:true,elapsedLabel:true,tempValue:true,tempLabel:true,speedValue:true,speedLabel:true,profileTitle:false,profileBlock:true,footerBrand:false,maxDepth:false};
+const LAYOUT_KEY='depthstudio_hud_layout_v6';
+const IDENTITY_KEY='depthstudio_identity_v2';
+const VISIBILITY_KEY='depthstudio_hud_visibility_v2';
 const $=id=>document.getElementById(id);
 const itemIds=Object.keys(DEFAULT_LAYOUT);
-let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.3}));
-let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=false,dragItem=null,dragOffset={x:0,y:0},rafId=null;
+let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));
+let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=true,dragItem=null,dragOffset={x:0,y:0},rafId=null;
 function fmtTime(seconds){const n=Math.max(0,Math.floor(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function setItemPosition(id,x,y){const el=$(id);const sx=Math.max(0,Math.min(100,Number(x)));const sy=Math.max(0,Math.min(100,Number(y)));el.style.left=sx+'%';el.style.top=sy+'%';el.dataset.x=sx;el.dataset.y=sy}
 function saveLayout(){const obj={};itemIds.forEach(id=>obj[id]=[Number($(id).dataset.x??DEFAULT_LAYOUT[id][0]),Number($(id).dataset.y??DEFAULT_LAYOUT[id][1])]);try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存位置；本次操作仍可使用。'}}
-function applySavedLayout(){let obj=null;try{obj=JSON.parse(localStorage.getItem(LAYOUT_KEY)||'null');if(!obj){obj=JSON.parse(localStorage.getItem(LEGACY_LAYOUT_KEY)||'null');if(obj)localStorage.setItem(LAYOUT_KEY,JSON.stringify(obj))}}catch(e){}itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))})}
+function applySavedLayout(){let obj=null;try{obj=JSON.parse(localStorage.getItem(LAYOUT_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))})}
 function setItemVisible(id,visible){$(id).classList.toggle('is-disabled',!visible)}
 function saveVisibility(){const state={};itemIds.forEach(id=>state[id]=!$(id).classList.contains('is-disabled'));try{localStorage.setItem(VISIBILITY_KEY,JSON.stringify(state))}catch(e){$('status').textContent='瀏覽器未允許儲存顯示狀態；本次操作仍可使用。'}}
-function applySavedVisibility(){let state=null;try{state=JSON.parse(localStorage.getItem(VISIBILITY_KEY)||'null')}catch(e){}itemIds.forEach(id=>setItemVisible(id,state?.[id]!==false))}
+function applySavedVisibility(){let state=null;try{state=JSON.parse(localStorage.getItem(VISIBILITY_KEY)||'null')}catch(e){}itemIds.forEach(id=>setItemVisible(id,state?state[id]!==false:DEFAULT_VISIBILITY[id]===true))}
 function buildVisibilityControls(){const host=$('visibilityControls');host.replaceChildren();itemIds.forEach(id=>{const label=document.createElement('label');label.className='visibility-toggle';const input=document.createElement('input');input.type='checkbox';input.checked=!$(id).classList.contains('is-disabled');input.addEventListener('change',()=>{setItemVisible(id,input.checked);saveVisibility();$('status').textContent=$(id).dataset.title+(input.checked?'：已顯示':'：已隱藏')+'。'});const name=document.createElement('span');name.textContent=$(id).dataset.title;label.append(input,name);host.append(label)})}
 function setAllVisibility(visible){itemIds.forEach(id=>setItemVisible(id,visible));saveVisibility();buildVisibilityControls();$('status').textContent=visible?'所有 HUD 資訊已顯示。':'所有 HUD 資訊已隱藏。'}
 function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置。'}
 function updateIdentity(save=true){
   const name=$('displayNameInput').value.trim();
-  $('hudDisplayName').textContent=name||'YOUR NAME';
+  $('hudDisplayName').textContent=name||'姓名';
   const country=$('countrySelect').value;
   const flag=$('hudCountryFlag');
   if(country&&FLAG_IMAGES[country]){flag.src=FLAG_IMAGES[country];flag.alt=COUNTRY_NAMES[country]+'旗幟';flag.hidden=false;}
@@ -179,34 +179,36 @@ function updateIdentity(save=true){
   if(save){try{localStorage.setItem(IDENTITY_KEY,JSON.stringify({name,country,scale}))}catch(e){$('status').textContent='瀏覽器未允許儲存姓名設定；本次操作仍可使用。'}}
 }
 function applySavedIdentity(){
-  let saved={};try{saved=JSON.parse(localStorage.getItem(IDENTITY_KEY)||'{}')||{}}catch(e){}
-  $('displayNameInput').value=typeof saved.name==='string'?saved.name:'';
+  let saved=null;try{saved=JSON.parse(localStorage.getItem(IDENTITY_KEY)||'null')}catch(e){}
+  const defaults={name:'',country:'chinesetaipei',scale:80};
+  const current=saved&&typeof saved==='object'?{...defaults,...saved}:defaults;
+  $('displayNameInput').value=typeof current.name==='string'?current.name:'';
   const allowed=['','roc','hongkong','china','southkorea','malaysia','japan','chinesetaipei'];
-  $('countrySelect').value=allowed.includes(saved.country)?saved.country:'';
-  const scale=Number(saved.scale);$('nameFlagScale').value=Number.isFinite(scale)?Math.max(60,Math.min(180,scale)):100;
+  $('countrySelect').value=allowed.includes(current.country)?current.country:'chinesetaipei';
+  const scale=Number(current.scale);$('nameFlagScale').value=Number.isFinite(scale)?Math.max(60,Math.min(180,scale)):80;
   updateIdentity(false);
 }
 
-function setEditing(on){layoutEditing=on;$('hud').classList.toggle('editing',on);$('editLayout').classList.toggle('active',on);$('editLayout').textContent='拖曳排版：'+(on?'開':'關');$('editorHelp').textContent=on?'排版模式已開啟：拖曳影片上的項目。每一個數值、標籤、標題及曲線都是獨立的。':'開啟排版模式後，直接拖動影片上的任一項目。姓名與國旗會固定為同一組，其他數值與標籤仍可各自移動。完成後再關閉排版模式。'}
+function setEditing(on){layoutEditing=on;$('hud').classList.toggle('editing',on);$('editLayout').classList.toggle('active',on);$('editLayout').textContent='拖曳排版：'+(on?'開':'關');$('editorHelp').textContent=on?'排版模式已開啟：拖曳影片上的項目。每一個數值、標籤、標題及曲線都是獨立的。':'預設已開啟排版模式：可直接拖動影片上的項目。每個數值、標籤、標題與曲線都能獨立移動；姓名與國旗固定為同一組。'}
 function pointForSample(s){const first=samples[0]?.t??0,last=samples[samples.length-1]?.t??1;const span=Math.max(.001,last-first);const x=10+((s.t-first)/span)*300;const y=5+(Math.max(0,s.d)/Math.max(1,maxD))*86;return [Math.max(10,Math.min(310,x)),Math.max(5,Math.min(91,y))]}
 function drawProfile(){if(!samples.length)return;const sorted=[...samples].sort((a,b)=>a.t-b.t);const pts=sorted.map(pointForSample);const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+','+p[1].toFixed(2)).join(' ');$('linePath').setAttribute('d',path);$('areaPath').setAttribute('d',path+' L310,95 L10,95 Z')}
 function interpolateAt(t){if(!samples.length)return null;const sorted=[...samples].sort((a,b)=>a.t-b.t);if(t<sorted[0].t||t>sorted[sorted.length-1].t)return null;let i=sorted.findIndex(p=>p.t>=t);if(i<0)return null;if(i===0)return {...sorted[0],speed:0};const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span}}
 function hideLiveData(){['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='hidden');['profileDot','profileDotGlow'].forEach(id=>$(id).setAttribute('visibility','hidden'));$('profileGuide').setAttribute('visibility','hidden')}
-function updateAt(){const v=$('video');const fallback=samples.length?(samples[0].t+samples[samples.length-1].t)/2:0;const dataTime=v.src?v.currentTime+(Number($('offset').value)||0):fallback;const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1);$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('visibility','visible')}
+function updateAt(){const v=$('video');const fallback=samples.length?Math.min(samples[samples.length-1].t,Math.max(samples[0].t,11.8)):0;const dataTime=v.src?v.currentTime+(Number($('offset').value)||0):fallback;const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1);$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('visibility','visible')}
 function animationLoop(){updateAt();if(!$('video').paused)rafId=requestAnimationFrame(animationLoop);else rafId=null}
 function startAnimation(){if(rafId===null)rafId=requestAnimationFrame(animationLoop)}
 $('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
 $('video').addEventListener('play',startAnimation);['timeupdate','seeked','seeking','loadedmetadata','pause','ended'].forEach(evt=>$('video').addEventListener(evt,updateAt));
 $('uddfFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const xml=new DOMParser().parseFromString(await file.text(),'application/xml');if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');const nodes=[...xml.getElementsByTagName('*')].filter(n=>n.localName?.toLowerCase()==='waypoint');const childText=(node,name)=>{const found=[...node.getElementsByTagName('*')].find(n=>n.localName?.toLowerCase()===name);return found?.textContent?.trim()??null};const parsed=nodes.map((node,i)=>{const depthRaw=childText(node,'depth');const tRaw=childText(node,'divetime');const tempRaw=childText(node,'temperature');const d=Number(depthRaw);const t=Number(tRaw??i+1);let temp=tempRaw===null?NaN:Number(tempRaw);if(temp>100)temp-=273.15;return {t:Number.isFinite(t)?t:i+1,d,temp}}).filter(p=>Number.isFinite(p.d)&&Number.isFinite(p.t)).sort((a,b)=>a.t-b.t);if(!parsed.length)throw Error('找不到可辨識的深度 waypoint；示範資料仍保留');samples=parsed;maxD=Math.max(...samples.map(p=>p.d));avgD=samples.reduce((sum,p)=>sum+p.d,0)/samples.length;duration=samples[samples.length-1].t;$('sumMax').textContent=maxD.toFixed(1)+' m';$('sumAvg').textContent=avgD.toFixed(1)+' m';$('sumDur').textContent=duration+' s';$('recordInfo').textContent='已讀取 '+file.name+'，樣本數 '+samples.length+'。請核對匯入結果是否與手錶紀錄一致。';$('status').textContent='UDDF 已載入：'+samples.length+' 個深度樣本。';drawProfile();updateAt()}catch(err){$('status').textContent='解析提醒：'+err.message}});
-$('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.3}));maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
-$('reset').addEventListener('click',()=>{[['opacity',90],['scale',100],['position',0],['offset',0]].forEach(([id,v])=>$(id).value=v);applyControls();$('status').textContent='HUD 外觀與時間差已重設。'});
+$('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
+$('reset').addEventListener('click',()=>{[['opacity',90],['scale',90],['position',0],['offset',0]].forEach(([id,v])=>$(id).value=v);applyControls();$('status').textContent='HUD 外觀與時間差已重設。'});
 $('editLayout').addEventListener('click',()=>setEditing(!layoutEditing));$('resetLayout').addEventListener('click',resetLayout);$('showAll').addEventListener('click',()=>setAllVisibility(true));$('hideAll').addEventListener('click',()=>setAllVisibility(false));
 $('displayNameInput').addEventListener('input',()=>updateIdentity());$('countrySelect').addEventListener('change',()=>updateIdentity());$('nameFlagScale').addEventListener('input',()=>updateIdentity());
 ['opacity','scale','position','offset'].forEach(id=>$(id).addEventListener('input',applyControls));
 function applyControls(){const op=Number($('opacity').value),sc=Number($('scale').value),pos=Number($('position').value);$('hud').style.opacity=op/100;$('hud').style.transform='translateY('+pos+'%)';document.documentElement.style.setProperty('--hud-scale',sc/100);$('opacityVal').textContent=op+'%';$('scaleVal').textContent=sc+'%';$('posVal').textContent=pos+'%';$('offsetVal').textContent=$('offset').value+' 秒';updateAt()}
 // Pointer Events：支援 iPhone 觸控、Apple Pencil 與滑鼠。
 itemIds.forEach(id=>{const el=$(id);el.addEventListener('pointerdown',e=>{if(!layoutEditing)return;e.preventDefault();dragItem=el;const r=el.getBoundingClientRect();dragOffset={x:e.clientX-r.left,y:e.clientY-r.top};try{el.setPointerCapture(e.pointerId)}catch(_){}});el.addEventListener('pointermove',e=>{if(!layoutEditing||dragItem!==el)return;e.preventDefault();const hudRect=$('hud').getBoundingClientRect();const r=el.getBoundingClientRect();let left=e.clientX-hudRect.left-dragOffset.x;let top=e.clientY-hudRect.top-dragOffset.y;left=Math.max(0,Math.min(hudRect.width-r.width,left));top=Math.max(0,Math.min(hudRect.height-r.height,top));setItemPosition(id,left/hudRect.width*100,top/hudRect.height*100)});const finish=()=>{if(dragItem===el){saveLayout();dragItem=null}};el.addEventListener('pointerup',finish);el.addEventListener('pointercancel',finish)});
-applySavedLayout();applySavedVisibility();buildVisibilityControls();applySavedIdentity();drawProfile();applyControls();
+applySavedLayout();applySavedVisibility();buildVisibilityControls();applySavedIdentity();drawProfile();applyControls();setEditing(true);
 </script>
 </body>
 </html>
