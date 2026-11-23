@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V6</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V7</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -19,7 +19,7 @@ h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:
 #empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#8cb8cc;padding:25px}
 /* HUD 本身透明，不繪製面板、框線或底色 */
 .hud{position:absolute;inset:0;width:100%;height:100%;opacity:1;pointer-events:none;z-index:3}
-.hud-item{position:absolute;left:var(--x,0%);top:var(--y,0%);margin:0;padding:0;color:#effcff;text-shadow:0 1px 3px #00121d,0 0 10px #3ddfff99;white-space:nowrap;user-select:none;-webkit-user-select:none;touch-action:none;transform-origin:top left}
+.hud-item{position:absolute;left:var(--x,50%);top:var(--y,50%);margin:0;padding:0;color:#effcff;text-shadow:0 1px 3px #00121d,0 0 10px #3ddfff99;white-space:nowrap;user-select:none;-webkit-user-select:none;touch-action:none;transform:translate(-50%,-50%) rotate(var(--rotation,0deg)) scale(var(--item-scale,1));transform-origin:center center}
 .hud-item.is-disabled{display:none!important}
 #hudBrand{font-size:calc(10px * var(--hud-scale));font-weight:800;letter-spacing:.15em;color:#bcefff}
 #hudClock{font-size:calc(11px * var(--hud-scale));font-variant-numeric:tabular-nums;color:#d8f8ff}
@@ -45,6 +45,12 @@ h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#a9eaff}.sub{color:
 /* 只有開啟編輯模式時，才顯示選取提示框；正式預覽完全沒有框線 */
 .hud.editing .hud-item{outline:1px dashed rgba(105,232,255,.9);outline-offset:4px;border-radius:2px;background:rgba(0,25,40,.14);cursor:grab;pointer-events:auto}
 .hud.editing .hud-item:active{cursor:grabbing;outline:1px solid #fff;background:rgba(0,38,58,.28)}
+.hud.editing .hud-item.selected{outline:2px solid #fff;outline-offset:6px;box-shadow:0 0 0 3px #43dfff55}
+.snap-guides{position:absolute;inset:0;z-index:2;display:none;pointer-events:none}
+.snap-guides.active{display:block}
+.snap-line-v,.snap-line-h{position:absolute;display:none;background:repeating-linear-gradient(90deg,#fff 0 5px,transparent 5px 10px);filter:drop-shadow(0 0 5px #55eaff);opacity:.95}
+.snap-line-v{top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#bdfaff 0 6px,transparent 6px 12px)}
+.snap-line-h{left:0;right:0;height:1px;background:repeating-linear-gradient(90deg,#bdfaff 0 6px,transparent 6px 12px)}
 .hud.editing #profileBlock{background:rgba(0,25,40,.12)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px;margin:10px 0}.field label{font-size:12px;color:#a9c9d8;display:flex;justify-content:space-between;gap:8px}.field input[type=range]{width:100%;accent-color:#4adfff}
 input[type=file]{width:100%;font-size:12px;color:#b9d9e8}
@@ -58,17 +64,26 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 .visibility-toggle input{width:17px;height:17px;flex:0 0 auto;accent-color:#4adfff}
 .visibility-toggle span{overflow-wrap:anywhere}
 .visibility-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.transform-panel{margin-top:14px;padding:12px;border:1px solid #2a6178;border-radius:12px;background:#0a2030}
+.transform-panel .field{margin:10px 0}
+.transform-panel select{width:100%;padding:11px;border-radius:10px;background:#0a2030;border:1px solid #32627a;color:#eaf7ff;font-size:14px}
+.transform-readout{display:flex;justify-content:space-between;gap:12px;color:#bceeff;font-size:12px;font-weight:800}
+.snap-note{font-size:11px;color:#94b7c8;line-height:1.5;margin-top:8px}
+#exportProgress{width:100%;height:9px;accent-color:#42dfff;margin-top:10px}
+#exportDownload{display:none;text-decoration:none;background:#f0c75e;color:#142330;font-size:13px;font-weight:850;padding:11px 14px;border-radius:11px}
+.export-note{font-size:11px;color:#91b3c3;line-height:1.55;margin-top:8px}
 @media(min-width:760px){main{grid-template-columns:1.1fr .9fr;align-items:start}.left{position:sticky;top:12px}.preview{max-height:78vh;width:min(100%,44vh)}.right{display:grid;gap:16px}}
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V6</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V7</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
   <div id="empty"><div><div style="font-size:34px">◉</div><b>DEPTH STUDIO</b><p class="sub">匯入你的潛水影片<br>即可預覽透明 HUD 疊加效果</p></div></div>
   <video id="video" playsinline controls></video>
   <div class="hud" id="hud">
+    <div class="snap-guides" id="snapGuides"><div class="snap-line-v" id="snapLineV"></div><div class="snap-line-h" id="snapLineH"></div></div>
     <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:3%;--y:3%">● FREEDIVE / MISSION 02</div>
     <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:83%;--y:3%">00:18</div>
     <div class="hud-item" id="nameFlagGroup" data-title="姓名與國旗" style="--x:78%;--y:68%">
@@ -100,15 +115,22 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
     <div class="hud-item" id="maxDepth" data-title="最大深度" style="--x:78%;--y:96%">MAX 11.9 M</div>
   </div>
 </div>
-<p class="sub">HUD 沒有底板或固定外框。開啟「拖曳排版」後，影片上的每一個數值、標籤、標題與曲線都能分開移動；姓名與國旗則會作為同一組一起移動。</p>
+<p class="sub">HUD 沒有底板或固定外框。開啟「拖曳排版」後，影片上的每個資訊欄都能獨立移動、縮放及旋轉；姓名與國旗則會作為同一組一起變形。</p>
 </section>
 <section class="right">
 <div class="panel"><h2>01 / 匯入素材</h2><div class="field"><label>潛水影片（MP4 / MOV）</label><input id="videoFile" type="file" accept="video/*"></div>
 <div class="field"><label>潛水紀錄（UDDF）</label><input id="uddfFile" type="file" accept=".uddf,.xml,text/xml"></div>
-<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button></div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
+<div class="actions"><button id="loadDemo" class="secondary">載入示範潛水資料</button><button id="reset">重設外觀</button><button id="exportVideoBtn" disabled>輸出影片（原始尺寸）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="actions" style="margin-top:8px"><a id="exportDownload">下載輸出影片</a></div><div class="export-note" id="exportInfo">匯入影片後可輸出 HUD 合成影片。輸出尺寸會沿用原影片的寬與高。</div><div class="status" id="status">尚未匯入檔案。可先載入示範資料體驗介面。</div></div>
 <div class="panel"><h2>02 / HUD 外觀與自由排版</h2>
 <div class="actions"><button id="editLayout">拖曳排版：關</button><button id="resetLayout" class="secondary">恢復預設位置</button></div>
-<div class="editor-help" id="editorHelp">預設已開啟排版模式：可直接拖動影片上的項目。每個數值、標籤、標題與曲線都能獨立移動；姓名與國旗固定為同一組。</div>
+<div class="editor-help" id="editorHelp">排版模式已開啟：點選任一 HUD 項目後，可獨立設定大小與角度；拖曳時會吸附其他項目的水平或垂直中心。</div>
+<div class="transform-panel">
+  <div class="field"><label for="itemSelect">目前編輯項目</label><select id="itemSelect"></select></div>
+  <div class="field"><label>項目大小 <b id="itemScaleVal">100%</b></label><input id="itemScale" type="range" min="30" max="300" value="100"></div>
+  <div class="field"><label>旋轉角度 <b id="itemRotationVal">0°</b></label><input id="itemRotation" type="range" min="0" max="359" value="0"></div>
+  <div class="actions"><button id="rotateLeft" class="secondary" type="button">逆時針 90°</button><button id="rotateRight" class="secondary" type="button">順時針 90°</button><button id="resetTransform" class="secondary" type="button">重設此項目</button></div>
+  <div class="snap-note">旋轉接近 0°、90°、180°、270° 時會自動吸附正角度。拖曳項目時，若中心線對齊其他可見項目，會出現輔助線並自動對正。</div>
+</div>
 <div class="field"><label>HUD 透明度 <b id="opacityVal">90%</b></label><input id="opacity" type="range" min="20" max="100" value="90"></div>
 <div class="field"><label>HUD 字體大小 <b id="scaleVal">90%</b></label><input id="scale" type="range" min="70" max="140" value="90"></div>
 <div class="field"><label>HUD 整體垂直偏移 <b id="posVal">0%</b></label><input id="position" type="range" min="-15" max="25" value="0"></div>
@@ -131,7 +153,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗會固定在姓名左側。開啟「拖曳排版」後，移動姓名時旗幟會一起移動；兩者共用同一個大小設定，不能分開移動或縮放。選擇國家／地區後才會顯示對應圖片。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 目前版本說明</h2><p class="sub">V6 依照參考畫面設定各項 HUD 的預設位置、顯示／隱藏狀態、外觀控制值，以及姓名與國旗預設值。保留 V5 的旗幟組合、拖曳排版與動態深度曲線功能。MP4 合成匯出仍需在原生 iOS App 階段完成。</p></div>
+<div class="panel"><h2>06 / 目前版本說明</h2><p class="sub">V7 支援每個 HUD 項目獨立移動、縮放與旋轉，並提供角度吸附與中心對齊輔助線。輸出影片時沿用原影片像素尺寸，優先依影片逐格回呼維持來源影格節奏，並以來源檔案大小／時間估算目標位元率；合成必須重新編碼，並非保留原始編碼位元流。</p></div>
 </section>
 </main>
 <script>
@@ -147,28 +169,34 @@ const FLAG_IMAGES = {
 };
 const COUNTRY_NAMES = {roc:'中華民國 Republic of China',hongkong:'香港 Hong Kong',china:'中國 China',southkorea:'韓國 South Korea',malaysia:'馬來西亞 Malaysia',japan:'日本 Japan',chinesetaipei:'中華台北 Chinese Taipei'};
 const demoDepths=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
-const DEFAULT_LAYOUT={hudBrand:[3,3],hudClock:[83,3],nameFlagGroup:[78,68],depthValue:[3.5,4],depthUnit:[29,11.5],elapsedValue:[40,4.5],elapsedLabel:[40,11.5],tempValue:[70,4.5],tempLabel:[70,11.5],speedValue:[82,78.5],speedLabel:[73,73.5],profileTitle:[5,81],profileBlock:[5,84],footerBrand:[3,96],maxDepth:[78,96]};
+const DEFAULT_LAYOUT={hudBrand:[16,3],hudClock:[88,3],nameFlagGroup:[19,78],depthValue:[17,12],depthUnit:[34,18],elapsedValue:[55,14],elapsedLabel:[55,8],tempValue:[82,14],tempLabel:[82,8],speedValue:[83,72],speedLabel:[83,79],profileTitle:[30,82],profileBlock:[50,91],footerBrand:[17,99],maxDepth:[83,99]};
 const DEFAULT_VISIBILITY={hudBrand:false,hudClock:false,nameFlagGroup:true,depthValue:true,depthUnit:true,elapsedValue:true,elapsedLabel:true,tempValue:true,tempLabel:true,speedValue:true,speedLabel:true,profileTitle:false,profileBlock:true,footerBrand:false,maxDepth:false};
-const LAYOUT_KEY='depthstudio_hud_layout_v6';
+const LAYOUT_KEY='depthstudio_hud_layout_v7';
+const TRANSFORM_KEY='depthstudio_hud_transforms_v7';
 const IDENTITY_KEY='depthstudio_identity_v2';
 const VISIBILITY_KEY='depthstudio_hud_visibility_v2';
 const $=id=>document.getElementById(id);
 const itemIds=Object.keys(DEFAULT_LAYOUT);
 let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));
-let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=true,dragItem=null,dragOffset={x:0,y:0},rafId=null;
+let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=true,dragItem=null,dragOffset={x:0,y:0},rafId=null,selectedItem='depthValue',snapState={x:null,y:null},audioGraph=null,exportBusy=false;
 function fmtTime(seconds){const n=Math.max(0,Math.floor(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function setItemPosition(id,x,y){const el=$(id);const sx=Math.max(0,Math.min(100,Number(x)));const sy=Math.max(0,Math.min(100,Number(y)));el.style.left=sx+'%';el.style.top=sy+'%';el.dataset.x=sx;el.dataset.y=sy}
 function saveLayout(){const obj={};itemIds.forEach(id=>obj[id]=[Number($(id).dataset.x??DEFAULT_LAYOUT[id][0]),Number($(id).dataset.y??DEFAULT_LAYOUT[id][1])]);try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存位置；本次操作仍可使用。'}}
 function applySavedLayout(){let obj=null;try{obj=JSON.parse(localStorage.getItem(LAYOUT_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))})}
+const DEFAULT_TRANSFORMS=Object.fromEntries(itemIds.map(id=>[id,{scale:1,rotation:0}]));
+function applyItemTransform(id,scale,rotation){const el=$(id);const sc=Math.max(.3,Math.min(3,Number(scale)||1));const rot=((Number(rotation)||0)%360+360)%360;el.dataset.scale=sc;el.dataset.rotation=rot;el.style.setProperty('--item-scale',sc);el.style.setProperty('--rotation',rot+'deg')}
+function saveTransforms(){const obj={};itemIds.forEach(id=>obj[id]={scale:Number($(id).dataset.scale??1),rotation:Number($(id).dataset.rotation??0)});try{localStorage.setItem(TRANSFORM_KEY,JSON.stringify(obj))}catch(e){$('status').textContent='瀏覽器未允許儲存變形設定；本次操作仍可使用。'}}
+function applySavedTransforms(){let obj=null;try{obj=JSON.parse(localStorage.getItem(TRANSFORM_KEY)||'null')}catch(e){}itemIds.forEach(id=>{const t=obj?.[id]||DEFAULT_TRANSFORMS[id];applyItemTransform(id,t.scale,t.rotation)})}
+function resetAllTransforms(){itemIds.forEach(id=>applyItemTransform(id,1,0));saveTransforms()}
 function setItemVisible(id,visible){$(id).classList.toggle('is-disabled',!visible)}
 function saveVisibility(){const state={};itemIds.forEach(id=>state[id]=!$(id).classList.contains('is-disabled'));try{localStorage.setItem(VISIBILITY_KEY,JSON.stringify(state))}catch(e){$('status').textContent='瀏覽器未允許儲存顯示狀態；本次操作仍可使用。'}}
 function applySavedVisibility(){let state=null;try{state=JSON.parse(localStorage.getItem(VISIBILITY_KEY)||'null')}catch(e){}itemIds.forEach(id=>setItemVisible(id,state?state[id]!==false:DEFAULT_VISIBILITY[id]===true))}
 function buildVisibilityControls(){const host=$('visibilityControls');host.replaceChildren();itemIds.forEach(id=>{const label=document.createElement('label');label.className='visibility-toggle';const input=document.createElement('input');input.type='checkbox';input.checked=!$(id).classList.contains('is-disabled');input.addEventListener('change',()=>{setItemVisible(id,input.checked);saveVisibility();$('status').textContent=$(id).dataset.title+(input.checked?'：已顯示':'：已隱藏')+'。'});const name=document.createElement('span');name.textContent=$(id).dataset.title;label.append(input,name);host.append(label)})}
 function setAllVisibility(visible){itemIds.forEach(id=>setItemVisible(id,visible));saveVisibility();buildVisibilityControls();$('status').textContent=visible?'所有 HUD 資訊已顯示。':'所有 HUD 資訊已隱藏。'}
-function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置。'}
+function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));resetAllTransforms();saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置、大小與角度。'}
 function updateIdentity(save=true){
   const name=$('displayNameInput').value.trim();
-  $('hudDisplayName').textContent=name||'姓名';
+  $('hudDisplayName').textContent=name||'YOUR NAME';
   const country=$('countrySelect').value;
   const flag=$('hudCountryFlag');
   if(country&&FLAG_IMAGES[country]){flag.src=FLAG_IMAGES[country];flag.alt=COUNTRY_NAMES[country]+'旗幟';flag.hidden=false;}
@@ -190,11 +218,22 @@ function applySavedIdentity(){
 }
 
 function setEditing(on){layoutEditing=on;$('hud').classList.toggle('editing',on);$('editLayout').classList.toggle('active',on);$('editLayout').textContent='拖曳排版：'+(on?'開':'關');$('editorHelp').textContent=on?'排版模式已開啟：拖曳影片上的項目。每一個數值、標籤、標題及曲線都是獨立的。':'預設已開啟排版模式：可直接拖動影片上的項目。每個數值、標籤、標題與曲線都能獨立移動；姓名與國旗固定為同一組。'}
+function selectItem(id){if(!itemIds.includes(id))return;selectedItem=id;itemIds.forEach(k=>$(k).classList.toggle('selected',k===id));$('itemSelect').value=id;const el=$(id);const sc=Math.round(Number(el.dataset.scale||1)*100);const rot=Math.round(Number(el.dataset.rotation||0))%360;$('itemScale').value=sc;$('itemRotation').value=rot;$('itemScaleVal').textContent=sc+'%';$('itemRotationVal').textContent=rot+'°'}
+function buildItemSelect(){const sel=$('itemSelect');sel.replaceChildren();itemIds.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=$(id).dataset.title;sel.append(o)});selectItem(selectedItem)}
+function snapAngle(deg){const n=((Number(deg)||0)%360+360)%360;const q=Math.round(n/90)*90%360;const d=Math.min(Math.abs(n-q),360-Math.abs(n-q));return d<=6?q:n}
+function setSelectedScale(value){const el=$(selectedItem);applyItemTransform(selectedItem,Number(value)/100,Number(el.dataset.rotation||0));$('itemScaleVal').textContent=Math.round(Number(value))+'%';saveTransforms()}
+function setSelectedRotation(value,commit=false){const el=$(selectedItem);let deg=((Number(value)||0)%360+360)%360;if(commit)deg=snapAngle(deg);applyItemTransform(selectedItem,Number(el.dataset.scale||1),deg);$('itemRotation').value=Math.round(deg);$('itemRotationVal').textContent=Math.round(deg)+'°';if(commit)saveTransforms()}
+function resetSelectedTransform(){applyItemTransform(selectedItem,1,0);selectItem(selectedItem);saveTransforms()}
+function hideSnapGuides(){$('snapGuides').classList.remove('active');$('snapLineV').style.display='none';$('snapLineH').style.display='none';snapState={x:null,y:null}}
+function showSnapGuides(x,y){const active=x!==null||y!==null;$('snapGuides').classList.toggle('active',active);if(x!==null){$('snapLineV').style.display='block';$('snapLineV').style.left=x+'%'}else $('snapLineV').style.display='none';if(y!==null){$('snapLineH').style.display='block';$('snapLineH').style.top=y+'%'}else $('snapLineH').style.display='none'}
+function snapPosition(id,x,y){let sx=x,sy=y,alignedX=null,alignedY=null;const threshold=1.65;let bestDx=threshold,bestDy=threshold;for(const otherId of itemIds){if(otherId===id)continue;const other=$(otherId);if(other.classList.contains('is-disabled')||getComputedStyle(other).visibility==='hidden')continue;const ox=Number(other.dataset.x),oy=Number(other.dataset.y);const dx=Math.abs(x-ox),dy=Math.abs(y-oy);if(dx<=bestDx){bestDx=dx;sx=ox;alignedX=ox}if(dy<=bestDy){bestDy=dy;sy=oy;alignedY=oy}}
+  sx=Math.max(0,Math.min(100,sx));sy=Math.max(0,Math.min(100,sy));showSnapGuides(alignedX,alignedY);return [sx,sy]}
+
 function pointForSample(s){const first=samples[0]?.t??0,last=samples[samples.length-1]?.t??1;const span=Math.max(.001,last-first);const x=10+((s.t-first)/span)*300;const y=5+(Math.max(0,s.d)/Math.max(1,maxD))*86;return [Math.max(10,Math.min(310,x)),Math.max(5,Math.min(91,y))]}
 function drawProfile(){if(!samples.length)return;const sorted=[...samples].sort((a,b)=>a.t-b.t);const pts=sorted.map(pointForSample);const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+','+p[1].toFixed(2)).join(' ');$('linePath').setAttribute('d',path);$('areaPath').setAttribute('d',path+' L310,95 L10,95 Z')}
 function interpolateAt(t){if(!samples.length)return null;const sorted=[...samples].sort((a,b)=>a.t-b.t);if(t<sorted[0].t||t>sorted[sorted.length-1].t)return null;let i=sorted.findIndex(p=>p.t>=t);if(i<0)return null;if(i===0)return {...sorted[0],speed:0};const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span}}
 function hideLiveData(){['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='hidden');['profileDot','profileDotGlow'].forEach(id=>$(id).setAttribute('visibility','hidden'));$('profileGuide').setAttribute('visibility','hidden')}
-function updateAt(){const v=$('video');const fallback=samples.length?Math.min(samples[samples.length-1].t,Math.max(samples[0].t,11.8)):0;const dataTime=v.src?v.currentTime+(Number($('offset').value)||0):fallback;const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1);$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('visibility','visible')}
+function updateAt(timeOverride=null){const v=$('video');const fallback=samples.length?Math.min(samples[samples.length-1].t,Math.max(samples[0].t,11.8)):0;const baseTime=Number.isFinite(timeOverride)?timeOverride:(v.src?v.currentTime:fallback);const dataTime=baseTime+(Number($('offset').value)||0);const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1)+' m/s';$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('visibility','visible')}
 function animationLoop(){updateAt();if(!$('video').paused)rafId=requestAnimationFrame(animationLoop);else rafId=null}
 function startAnimation(){if(rafId===null)rafId=requestAnimationFrame(animationLoop)}
 $('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
@@ -206,9 +245,90 @@ $('editLayout').addEventListener('click',()=>setEditing(!layoutEditing));$('rese
 $('displayNameInput').addEventListener('input',()=>updateIdentity());$('countrySelect').addEventListener('change',()=>updateIdentity());$('nameFlagScale').addEventListener('input',()=>updateIdentity());
 ['opacity','scale','position','offset'].forEach(id=>$(id).addEventListener('input',applyControls));
 function applyControls(){const op=Number($('opacity').value),sc=Number($('scale').value),pos=Number($('position').value);$('hud').style.opacity=op/100;$('hud').style.transform='translateY('+pos+'%)';document.documentElement.style.setProperty('--hud-scale',sc/100);$('opacityVal').textContent=op+'%';$('scaleVal').textContent=sc+'%';$('posVal').textContent=pos+'%';$('offsetVal').textContent=$('offset').value+' 秒';updateAt()}
-// Pointer Events：支援 iPhone 觸控、Apple Pencil 與滑鼠。
-itemIds.forEach(id=>{const el=$(id);el.addEventListener('pointerdown',e=>{if(!layoutEditing)return;e.preventDefault();dragItem=el;const r=el.getBoundingClientRect();dragOffset={x:e.clientX-r.left,y:e.clientY-r.top};try{el.setPointerCapture(e.pointerId)}catch(_){}});el.addEventListener('pointermove',e=>{if(!layoutEditing||dragItem!==el)return;e.preventDefault();const hudRect=$('hud').getBoundingClientRect();const r=el.getBoundingClientRect();let left=e.clientX-hudRect.left-dragOffset.x;let top=e.clientY-hudRect.top-dragOffset.y;left=Math.max(0,Math.min(hudRect.width-r.width,left));top=Math.max(0,Math.min(hudRect.height-r.height,top));setItemPosition(id,left/hudRect.width*100,top/hudRect.height*100)});const finish=()=>{if(dragItem===el){saveLayout();dragItem=null}};el.addEventListener('pointerup',finish);el.addEventListener('pointercancel',finish)});
-applySavedLayout();applySavedVisibility();buildVisibilityControls();applySavedIdentity();drawProfile();applyControls();setEditing(true);
+// Pointer Events：觸控／滑鼠均可選取與拖曳；項目中心可吸附到其他項目中心。
+itemIds.forEach(id=>{const el=$(id);el.addEventListener('pointerdown',e=>{if(!layoutEditing)return;e.preventDefault();selectItem(id);dragItem=el;const hudRect=$('hud').getBoundingClientRect();const cx=hudRect.left+Number(el.dataset.x||0)/100*hudRect.width;const cy=hudRect.top+Number(el.dataset.y||0)/100*hudRect.height;dragOffset={x:e.clientX-cx,y:e.clientY-cy};try{el.setPointerCapture(e.pointerId)}catch(_){}});el.addEventListener('pointermove',e=>{if(!layoutEditing||dragItem!==el)return;e.preventDefault();const hudRect=$('hud').getBoundingClientRect();let x=(e.clientX-hudRect.left-dragOffset.x)/hudRect.width*100;let y=(e.clientY-hudRect.top-dragOffset.y)/hudRect.height*100;const snapped=snapPosition(id,x,y);setItemPosition(id,...snapped)});const finish=()=>{if(dragItem===el){saveLayout();hideSnapGuides();dragItem=null}};el.addEventListener('pointerup',finish);el.addEventListener('pointercancel',finish)});
+$('itemSelect').addEventListener('change',()=>selectItem($('itemSelect').value));
+$('itemScale').addEventListener('input',()=>setSelectedScale($('itemScale').value));
+$('itemRotation').addEventListener('input',()=>setSelectedRotation($('itemRotation').value,false));
+$('itemRotation').addEventListener('change',()=>setSelectedRotation($('itemRotation').value,true));
+$('rotateLeft').addEventListener('click',()=>{const e=$(selectedItem);setSelectedRotation(Number(e.dataset.rotation||0)+270,true)});
+$('rotateRight').addEventListener('click',()=>{const e=$(selectedItem);setSelectedRotation(Number(e.dataset.rotation||0)+90,true)});
+$('resetTransform').addEventListener('click',resetSelectedTransform);
+
+// Canvas 合成輸出：保持原始影片像素尺寸，依來源檔大小估算目標影片位元率。
+function drawSpacedText(ctx,text,x,y,spacing){
+  if(!spacing||!Number.isFinite(spacing)){ctx.fillText(text,x,y);return}
+  const widths=[...text].map(ch=>ctx.measureText(ch).width);const total=widths.reduce((a,b)=>a+b,0)+Math.max(0,text.length-1)*spacing;let cursor=x-total/2;
+  [...text].forEach((ch,i)=>{ctx.fillText(ch,cursor+widths[i]/2,y);cursor+=widths[i]+spacing})
+}
+function drawProfileCanvas(ctx,x0,y0,w,h,time){
+  if(!samples.length)return;const sorted=[...samples].sort((a,b)=>a.t-b.t);const pts=sorted.map(p=>{const [x,y]=pointForSample(p);return [x/320*w,y/100*h]});
+  ctx.save();ctx.translate(x0,y0);ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.lineTo(w-10/320*w,h-5/100*h);ctx.lineTo(10/320*w,h-5/100*h);ctx.closePath();const grad=ctx.createLinearGradient(0,0,0,h);grad.addColorStop(0,'rgba(85,231,255,.26)');grad.addColorStop(1,'rgba(85,231,255,0)');ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle='#70edff';ctx.lineWidth=Math.max(1.2,w*2.2/320);ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='#2adfff';ctx.shadowBlur=ctx.lineWidth*2.2;ctx.stroke();ctx.shadowBlur=0;
+  const s=interpolateAt(time+(Number($('offset').value)||0));if(s){const [px,py]=pointForSample(s);const x=px/320*w,y=py/100*h;ctx.beginPath();ctx.setLineDash([3*w/320,3*w/320]);ctx.moveTo(x,5/100*h);ctx.lineTo(x,91/100*h);ctx.strokeStyle='rgba(186,247,255,.85)';ctx.lineWidth=Math.max(1,w/320);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(x,y,9*w/320,0,Math.PI*2);ctx.fillStyle='rgba(85,234,255,.3)';ctx.fill();ctx.beginPath();ctx.arc(x,y,4.8*w/320,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle='#55eaff';ctx.lineWidth=2.2*w/320;ctx.fill();ctx.stroke()}
+  ctx.restore();
+}
+function drawHudToCanvas(ctx,W,H,time){
+  updateAt(time);const hud=$('hud'),rect=hud.getBoundingClientRect(),stageRect=$('stage').getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const opacity=Number(getComputedStyle(hud).opacity)||1;
+  for(const id of itemIds){const el=$(id),style=getComputedStyle(el);if(el.classList.contains('is-disabled')||style.display==='none'||style.visibility==='hidden')continue;
+    const x=Number(el.dataset.x??DEFAULT_LAYOUT[id][0])/100*rect.width;const y=Number(el.dataset.y??DEFAULT_LAYOUT[id][1])/100*rect.height;const scale=Number(el.dataset.scale||1),rotation=Number(el.dataset.rotation||0);
+    ctx.save();ctx.setTransform(sx,0,0,sy,0,0);ctx.globalAlpha=opacity;ctx.translate(x,y);ctx.rotate(rotation*Math.PI/180);ctx.scale(scale,scale);
+    if(id==='profileBlock'){
+      const w=el.offsetWidth,h=el.offsetHeight;drawProfileCanvas(ctx,-w/2,-h/2,w,h,time);ctx.restore();continue;
+    }
+    const fontSize=parseFloat(style.fontSize)||12;const weight=style.fontWeight||'700';const family=style.fontFamily||'Arial,sans-serif';ctx.font=`${weight} ${fontSize}px ${family}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=style.color||'#fff';ctx.shadowColor='rgba(61,223,255,.55)';ctx.shadowBlur=id==='depthValue'?fontSize*.32:fontSize*.12;ctx.shadowOffsetY=1;
+    if(id==='nameFlagGroup'){
+      const name=$('hudDisplayName').textContent||'YOUR NAME';const flag=$('hudCountryFlag');const flagH=fontSize*1.35;const flagW=flag&&!flag.hidden&&flag.complete&&flag.naturalWidth?flagH*flag.naturalWidth/flag.naturalHeight:0;ctx.font=`850 ${fontSize}px ${family}`;const nameW=ctx.measureText(name).width;const gap=flagW?fontSize*.48:0;const total=flagW+gap+nameW;const start=-total/2;if(flagW){try{ctx.drawImage(flag,start,-flagH/2,flagW,flagH)}catch(_){}}ctx.fillText(name,start+flagW+gap+nameW/2,0);
+    }else{
+      let text=el.textContent.trim();if(id==='hudBrand')text='● FREEDIVE / MISSION 02';if(id==='footerBrand')text='ATMOS MISSION 2';if(id==='maxDepth')text='MAX '+maxD.toFixed(1)+' M';
+      const spacing=parseFloat(style.letterSpacing)||0;drawSpacedText(ctx,text,0,0,spacing);
+    }
+    ctx.restore();
+  }
+  ctx.setTransform(1,0,0,1,0,0);
+}
+function chooseRecorderMime(){const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return types.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||''}
+async function exportVideo(){
+  if(exportBusy)return;const video=$('video'),file=$('videoFile').files?.[0];if(!file||!video.src||!video.videoWidth||!video.videoHeight){$('status').textContent='請先匯入並等待影片載入完成，再輸出影片。';return}
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){$('status').textContent='目前瀏覽器不支援影片合成錄製；請改用支援 MediaRecorder 與 Canvas captureStream 的 Safari 版本。';return}
+  const mime=chooseRecorderMime();if(!mime){$('status').textContent='此瀏覽器沒有可用的 MP4／WebM 錄製格式，無法輸出。';return}
+  exportBusy=true;$('exportVideoBtn').disabled=true;$('exportProgress').hidden=false;$('exportProgress').value=0;$('exportDownload').style.display='none';
+  const W=video.videoWidth,H=video.videoHeight,duration=Number.isFinite(video.duration)?video.duration:0;const estimate=Math.max(1500000,Math.min(50000000,Math.round((file.size*8/Math.max(1,duration))*1.15)));
+  $('exportInfo').textContent=`輸出尺寸 ${W} × ${H}；目標影片位元率約 ${(estimate/1000000).toFixed(1)} Mbps（依原檔平均位元率加強估算）。${typeof video.requestVideoFrameCallback==='function'?'依來源影格回呼輸出':'瀏覽器回退為 30 fps'}。合成必須重新編碼，無法保留原始編碼位元流。`;
+  const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d',{alpha:false});
+  if(!ctx){$('status').textContent='無法建立影片合成畫布。';exportBusy=false;$('exportVideoBtn').disabled=false;return}
+  let stream=null,recorder=null,oldTime=video.currentTime,wasPaused=video.paused,oldMuted=video.muted,raf=null,rvfc=null,chunks=[],audioTrackClones=[];
+  try{
+    // 將影片重播到開頭，背景畫布以原影片解析度繪製。
+    video.pause();video.muted=false;video.currentTime=0;await new Promise(resolve=>{if(video.readyState>=2&&video.currentTime===0)resolve();else video.addEventListener('seeked',resolve,{once:true})});
+    ctx.drawImage(video,0,0,W,H);drawHudToCanvas(ctx,W,H,0);
+    let videoTrack=null,useFrameCallbacks=typeof video.requestVideoFrameCallback==='function';
+    if(useFrameCallbacks){stream=canvas.captureStream(0);videoTrack=stream.getVideoTracks()[0];if(!videoTrack||typeof videoTrack.requestFrame!=='function'){stream.getTracks().forEach(t=>t.stop());stream=canvas.captureStream(30);useFrameCallbacks=false}}else{stream=canvas.captureStream(30)}
+    // 將原影片音訊加入錄製串流；若 Web Audio 不可用，仍可輸出無聲影片並在狀態中提示。
+    let audioAdded=false;try{
+      const AC=window.AudioContext||window.webkitAudioContext;if(AC){if(!audioGraph){const ac=new AC(),srcNode=ac.createMediaElementSource(video),dest=ac.createMediaStreamDestination();srcNode.connect(dest);srcNode.connect(ac.destination);audioGraph={ac,srcNode,dest}}await audioGraph.ac.resume();audioGraph.dest.stream.getAudioTracks().forEach(t=>{const clone=t.clone();audioTrackClones.push(clone);stream.addTrack(clone)});audioAdded=audioTrackClones.length>0}
+    }catch(err){console.warn('Audio capture unavailable',err)}
+    const options={mimeType:mime,videoBitsPerSecond:estimate,audioBitsPerSecond:192000};recorder=new MediaRecorder(stream,options);recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    const stopped=new Promise(resolve=>{recorder.onstop=resolve});
+    let ended=false;const renderFrame=()=>{ctx.drawImage(video,0,0,W,H);drawHudToCanvas(ctx,W,H,video.currentTime);$('exportProgress').value=Math.min(100,video.currentTime/Math.max(.01,duration)*100);if(videoTrack&&useFrameCallbacks)videoTrack.requestFrame()};
+    const onVideoFrame=()=>{if(ended)return;renderFrame();if(!video.paused&&!video.ended)rvfc=video.requestVideoFrameCallback(onVideoFrame)};
+    const onAnimationFrame=()=>{if(ended)return;renderFrame();if(!video.paused&&!video.ended)raf=requestAnimationFrame(onAnimationFrame)};
+    recorder.start(1000);await video.play();renderFrame();if(useFrameCallbacks)rvfc=video.requestVideoFrameCallback(onVideoFrame);else raf=requestAnimationFrame(onAnimationFrame);
+    await new Promise((resolve,reject)=>{const onEnd=()=>{if(recorder.state!=='inactive')recorder.stop();resolve()};const onErr=()=>reject(new Error('影片播放期間發生錯誤'));video.addEventListener('ended',onEnd,{once:true});video.addEventListener('error',onErr,{once:true});});
+    await stopped;ended=true;if(raf)cancelAnimationFrame(raf);if(rvfc&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(rvfc);
+    const blob=new Blob(chunks,{type:recorder.mimeType||mime});if(!blob.size)throw new Error('輸出檔案是空的，請重新嘗試。');
+    const ext=blob.type.includes('mp4')?'mp4':'webm';const url=URL.createObjectURL(blob);const link=$('exportDownload');link.href=url;link.download=(file.name.replace(/\.[^.]+$/,'')+'_DepthStudio.'+ext);link.style.display='inline-block';link.textContent='下載輸出影片（'+(blob.size/1024/1024).toFixed(1)+' MB）';$('exportProgress').value=100;$('status').textContent='影片合成完成。'+(audioAdded?'已包含原影片音訊。':'注意：瀏覽器未能擷取原影片音訊，輸出可能沒有聲音。')+' 點擊「下載輸出影片」儲存檔案。';
+  }catch(err){$('status').textContent='輸出失敗：'+(err?.message||String(err))+'。請確認 Safari 允許影片播放及下載。';}
+  finally{
+    try{if(recorder&&recorder.state!=='inactive')recorder.stop()}catch(_){}try{stream?.getVideoTracks().forEach(t=>t.stop())}catch(_){}try{audioTrackClones.forEach(t=>t.stop())}catch(_){}
+    video.pause();video.currentTime=Math.min(oldTime,Number.isFinite(video.duration)?video.duration:oldTime);video.muted=oldMuted;if(!wasPaused){try{await video.play()}catch(_){}}updateAt();exportBusy=false;$('exportVideoBtn').disabled=false;
+  }
+}
+$('exportVideoBtn').addEventListener('click',exportVideo);
+$('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;$('exportInfo').textContent=`原影片尺寸：${$('video').videoWidth} × ${$('video').videoHeight}。輸出會使用相同像素尺寸；編碼格式依目前 Safari 支援狀況選擇。`});
+
+applySavedLayout();applySavedTransforms();applySavedVisibility();buildVisibilityControls();applySavedIdentity();buildItemSelect();drawProfile();applyControls();selectItem('depthValue');setEditing(true);
+
 </script>
 </body>
 </html>
