@@ -1,4 +1,4 @@
-/* Depth Studio V8.9 — stream an OPFS MP4 to the browser download manager. */
+/* Depth Studio V8.10 — stream an OPFS MP4 to the browser download manager. */
 'use strict';
 
 self.addEventListener('install', event => {
