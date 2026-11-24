@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.12</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.13</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -82,7 +82,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.12</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.13</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -92,25 +92,25 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
     <div class="snap-guides" id="snapGuides"><div class="snap-line-v" id="snapLineV"></div><div class="snap-line-h" id="snapLineH"></div></div>
     <div class="hud-item" id="hudBrand" data-title="品牌文字" style="--x:3%;--y:3%">● FREEDIVE / MISSION 02</div>
     <div class="hud-item" id="hudClock" data-title="影片時間" style="--x:83%;--y:3%">00:18</div>
-    <div class="hud-item" id="identityGroup" data-title="姓名、國旗與潛水種類" style="--x:37%;--y:78%">
+    <div class="hud-item" id="identityGroup" data-title="姓名、國旗與潛水種類" style="--x:25%;--y:76%">
       <div class="identity-content">
         <div class="name-flag-content">
           <img id="hudCountryFlag" alt="" hidden>
-          <span id="hudDisplayName">YOUR NAME</span>
+          <span id="hudDisplayName">name</span>
         </div>
         <span id="hudDivingType">CWTB</span>
       </div>
     </div>
-    <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:3.5%;--y:4%">11.9</div>
-    <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:29%;--y:11.5%">M</div>
-    <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:40%;--y:4.5%">00:18</div>
-    <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:40%;--y:11.5%">DIVE TIME</div>
-    <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:70%;--y:4.5%">29.3°</div>
-    <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:70%;--y:11.5%">WATER TEMP</div>
-    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:82%;--y:78.5%">0.0 m/s</div>
-    <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:73%;--y:73.5%">DEPTH / SEC</div>
+    <div class="hud-item" id="depthValue" data-title="即時深度數值" style="--x:17%;--y:18%">11.9</div>
+    <div class="hud-item" id="depthUnit" data-title="深度單位" style="--x:34%;--y:24%">M</div>
+    <div class="hud-item metric-value" id="elapsedValue" data-title="潛水時間數值" style="--x:55%;--y:21%">00:18</div>
+    <div class="hud-item metric-label" id="elapsedLabel" data-title="潛水時間標籤" style="--x:55%;--y:15%">DIVE TIME</div>
+    <div class="hud-item metric-value" id="tempValue" data-title="水溫數值" style="--x:82%;--y:21%">29.3°</div>
+    <div class="hud-item metric-label" id="tempLabel" data-title="水溫標籤" style="--x:82%;--y:15%">WATER TEMP</div>
+    <div class="hud-item metric-value" id="speedValue" data-title="深度變化速度數值" style="--x:82%;--y:71%">0.0 m/s</div>
+    <div class="hud-item metric-label" id="speedLabel" data-title="深度變化速度標籤" style="--x:82%;--y:78%">DEPTH / SEC</div>
     <div class="hud-item" id="profileTitle" data-title="深度曲線標題" style="--x:5%;--y:81%">DEPTH PROFILE <span style="opacity:.7">/ 0 M ↓ MAX DEPTH</span></div>
-    <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:5%;--y:84%">
+    <div class="hud-item" id="profileBlock" data-title="深度曲線圖" style="--x:50%;--y:89%">
       <svg id="profile" viewBox="0 0 360 132" preserveAspectRatio="none" aria-label="深度曲線，縱軸為公尺，橫軸為時間">
         <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#55e7ff" stop-opacity=".26"/><stop offset="1" stop-color="#55e7ff" stop-opacity="0"/></linearGradient></defs>
         <g id="profileGrid"></g>
@@ -148,7 +148,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <div class="sub">時間差用來對齊影片與手錶紀錄。所有 HUD 位置會保存在這台裝置的 Safari；重新整理後仍會保留。</div></div>
 <div class="panel"><h2>03 / HUD 資訊顯示與隱藏</h2><p class="sub">勾選要疊加在影片上的資訊。取消勾選只會隱藏該項目，不會影響其他項目或排版位置。</p><div class="visibility-actions"><button id="showAll" class="secondary" type="button">全部顯示</button><button id="hideAll" class="secondary" type="button">全部隱藏</button></div><div class="visibility-list" id="visibilityControls" aria-label="HUD 資訊顯示項目"></div></div>
 <div class="panel"><h2>04 / 姓名與國家旗幟</h2>
-<div class="field"><label for="displayNameInput">姓名</label><input id="displayNameInput" type="text" maxlength="30" autocomplete="off" placeholder="請輸入要顯示在影片上的姓名"></div>
+<div class="field"><label for="displayNameInput">姓名</label><input id="displayNameInput" type="text" maxlength="30" autocomplete="off" value="name" placeholder="name"></div>
 <div class="field"><label for="countrySelect">國家／地區</label><select id="countrySelect" style="width:100%;padding:11px 12px;border-radius:10px;background:#0a2030;border:1px solid #32627a;color:#eaf7ff;font-size:14px">
 <option value="">請選擇國家／地區</option>
 <option value="roc">中華民國 Republic of China</option>
@@ -164,9 +164,9 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.12：保留 OPFS 分塊輸出並補齊下載網址、進度訊息及錯誤回報。提供 Service Worker 串流下載、直接檔案連結，以及 iPhone 分享選單儲存三種交付路徑；找回舊成品不必重新編碼。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
-<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存（可選「儲存到檔案」）</button><a id="exportDownload" role="button">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">備用：直接下載檔案</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.12 將 MP4 分塊寫入瀏覽器私有檔案空間。若主要下載路徑失敗，可改用「備用：直接下載檔案」，或使用 iPhone 分享選單選擇「儲存到檔案」。若先前完成影片仍留在網站儲存空間，可直接找回，不必再次輸出。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.12 保留原有 HUD、UDDF、時間同步、4K 合成及 OPFS 分塊寫入；補齊 Service Worker 下載網址與訊息監聽，並新增直接檔案連結及 iPhone 原生分享儲存的備用路徑。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.13：保留已驗證成功的 V8.12 下載與 OPFS 輸出流程不變；優化 HUD 預設排版、姓名預設值、潛水資料時間插值與預覽效能。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
+<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存（可選「儲存到檔案」）</button><a id="exportDownload" role="button">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">備用：直接下載檔案</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.13 保留 V8.12 已成功的 MP4 分塊輸出與三種下載／保存路徑；本次只調整預設 HUD 排版、姓名與潛水資料顯示，不變更下載服務。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.13 保留 V8.12 已成功的 OPFS 分塊輸出、Service Worker 串流下載、直接檔案連結及 iPhone 分享儲存；優化 HUD 預設位置、姓名預設值、UDDF 數據顯示及預覽效能。</p></div>
 </section>
 </main>
 <script>
@@ -182,7 +182,8 @@ const FLAG_IMAGES = {
 };
 const COUNTRY_NAMES = {roc:'中華民國 Republic of China',hongkong:'香港 Hong Kong',china:'中國 China',southkorea:'韓國 South Korea',malaysia:'馬來西亞 Malaysia',japan:'日本 Japan',chinesetaipei:'中華台北 Chinese Taipei'};
 const demoDepths=[0,2.3,3,3.3,3.4,3.9,5,5.7,6.5,7.7,8.3,8.8,9.1,9.9,10.5,11.2,11.5,11.9,11.9,11.9,11.9,11.2,10.8,10.1,9.5,8.8,8.2,7.5,6.8,5.9,5.2,4.3,3.5,2.7,1.8,.9,0];
-const DEFAULT_LAYOUT={hudBrand:[16,3],hudClock:[88,3],identityGroup:[37,78],depthValue:[17,12],depthUnit:[34,18],elapsedValue:[55,14],elapsedLabel:[55,8],tempValue:[82,14],tempLabel:[82,8],speedValue:[83,72],speedLabel:[83,79],profileTitle:[30,82],profileBlock:[50,89],footerBrand:[17,96],maxDepth:[83,96]};
+const DEFAULT_LAYOUT={hudBrand:[16,3],hudClock:[88,3],identityGroup:[25,76],depthValue:[17,18],depthUnit:[34,24],elapsedValue:[55,21],elapsedLabel:[55,15],tempValue:[82,21],tempLabel:[82,15],speedValue:[82,71],speedLabel:[82,78],profileTitle:[30,82],profileBlock:[50,89],footerBrand:[17,96],maxDepth:[83,96]};
+const PREVIOUS_DEFAULT_LAYOUT={identityGroup:[37,78],depthValue:[17,12],depthUnit:[34,18],elapsedValue:[55,14],elapsedLabel:[55,8],tempValue:[82,14],tempLabel:[82,8],speedValue:[83,72],speedLabel:[83,79]};
 const DEFAULT_VISIBILITY={hudBrand:false,hudClock:false,identityGroup:true,depthValue:true,depthUnit:true,elapsedValue:true,elapsedLabel:true,tempValue:true,tempLabel:true,speedValue:true,speedLabel:true,profileTitle:false,profileBlock:true,footerBrand:false,maxDepth:false};
 const LAYOUT_KEY='depthstudio_hud_layout_v8_2';
 const TRANSFORM_KEY='depthstudio_hud_transforms_v8_2';
@@ -191,6 +192,8 @@ const VISIBILITY_KEY='depthstudio_hud_visibility_v8_2';
 const $=id=>document.getElementById(id);
 const itemIds=Object.keys(DEFAULT_LAYOUT);
 let samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));
+let sortedSamples=samples.slice().sort((a,b)=>a.t-b.t);
+function refreshSampleCache(){sortedSamples=samples.slice().sort((a,b)=>a.t-b.t);}
 let maxD=11.9,avgD=6.9,duration=36,videoURL=null,layoutEditing=true,dragItem=null,dragOffset={x:0,y:0},rafId=null,selectedItem='depthValue',snapState={x:null,y:null},audioGraph=null,exportBusy=false;
 function fmtTime(seconds){const n=Math.max(0,Math.floor(seconds));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function clampItemCenter(id,x,y){
@@ -210,6 +213,17 @@ function applySavedLayout(){
   if(!obj){
     const legacy=readStoredJSON('depthstudio_hud_layout_v7')||readStoredJSON('depthstudio_hud_layout_v8');
     if(legacy){obj={...legacy};const a=legacy.nameFlagGroup,b=legacy.divingType; if(Array.isArray(a)&&Array.isArray(b))obj.identityGroup=[(Number(a[0])+Number(b[0]))/2,(Number(a[1])+Number(b[1]))/2];else if(Array.isArray(a))obj.identityGroup=a;else if(Array.isArray(b))obj.identityGroup=b;}
+  }
+  // Migrate untouched V8.12 default positions to the new reference layout,
+  // while preserving every position the user manually changed.
+  if(obj&&typeof obj==='object'){
+    obj={...obj};
+    for(const [id,previous] of Object.entries(PREVIOUS_DEFAULT_LAYOUT)){
+      const saved=obj[id];
+      if(Array.isArray(saved)&&saved.length===2&&Math.abs(Number(saved[0])-previous[0])<0.01&&Math.abs(Number(saved[1])-previous[1])<0.01){
+        obj[id]=DEFAULT_LAYOUT[id];
+      }
+    }
   }
   itemIds.forEach(id=>{const p=obj?.[id];const ok=Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);setItemPosition(id,...(ok?p:DEFAULT_LAYOUT[id]))});
   saveLayout();
@@ -237,7 +251,7 @@ function setAllVisibility(visible){itemIds.forEach(id=>setItemVisible(id,visible
 function resetLayout(){itemIds.forEach(id=>setItemPosition(id,...DEFAULT_LAYOUT[id]));resetAllTransforms();saveLayout();$('status').textContent='所有 HUD 項目已恢復預設位置、大小與角度。'}
 function updateIdentity(save=true){
   const name=$('displayNameInput').value.trim();
-  $('hudDisplayName').textContent=name||'YOUR NAME';
+  $('hudDisplayName').textContent=name||'name';
   const country=$('countrySelect').value;
   const flag=$('hudCountryFlag');
   if(country&&FLAG_IMAGES[country]){flag.src=FLAG_IMAGES[country];flag.alt=COUNTRY_NAMES[country]+'旗幟';flag.hidden=false;}
@@ -251,9 +265,9 @@ function updateIdentity(save=true){
 }
 function applySavedIdentity(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem(IDENTITY_KEY)||'null')}catch(e){}
-  const defaults={name:'',country:'chinesetaipei',scale:80,divingType:'CWTB'};
+  const defaults={name:'name',country:'chinesetaipei',scale:80,divingType:'CWTB'};
   const current=saved&&typeof saved==='object'?{...defaults,...saved}:defaults;
-  $('displayNameInput').value=typeof current.name==='string'?current.name:'';
+  $('displayNameInput').value=typeof current.name==='string'&&current.name.trim()?current.name:'name';
   const allowed=['','roc','hongkong','china','southkorea','malaysia','japan','chinesetaipei'];
   $('countrySelect').value=allowed.includes(current.country)?current.country:'chinesetaipei';
   const scale=Number(current.scale);$('nameFlagScale').value=Number.isFinite(scale)?Math.max(60,Math.min(180,scale)):80;
@@ -275,7 +289,7 @@ function snapPosition(id,x,y){let sx=x,sy=y,alignedX=null,alignedY=null;const th
 
 const PROFILE_PLOT={left:49,right:352,top:8,bottom:100};
 function profileDepthScale(){return Math.max(10,Math.ceil(Math.max(0,maxD)/10)*10)}
-function profileTimeRange(){if(!samples.length)return {first:0,last:1,span:1};const sorted=[...samples].sort((a,b)=>a.t-b.t);const first=sorted[0].t,last=sorted[sorted.length-1].t;return {first,last,span:Math.max(.001,last-first)}}
+function profileTimeRange(){if(!sortedSamples.length)return {first:0,last:1,span:1};const first=sortedSamples[0].t,last=sortedSamples[sortedSamples.length-1].t;return {first,last,span:Math.max(.001,last-first)}}
 function pointForSample(s){const r=profileTimeRange(),dscale=profileDepthScale();const x=PROFILE_PLOT.left+((s.t-r.first)/r.span)*(PROFILE_PLOT.right-PROFILE_PLOT.left);const y=PROFILE_PLOT.top+(Math.max(0,s.d)/dscale)*(PROFILE_PLOT.bottom-PROFILE_PLOT.top);return [Math.max(PROFILE_PLOT.left,Math.min(PROFILE_PLOT.right,x)),Math.max(PROFILE_PLOT.top,Math.min(PROFILE_PLOT.bottom,y))]}
 function svgNode(name,attrs,text){const n=document.createElementNS('http://www.w3.org/2000/svg',name);Object.entries(attrs||{}).forEach(([k,v])=>n.setAttribute(k,String(v)));if(text!==undefined)n.textContent=text;return n}
 function drawProfileAxes(){const g=$('profileGrid');if(!g)return;g.replaceChildren();const dscale=profileDepthScale(),range=profileTimeRange();const plot=PROFILE_PLOT;
@@ -283,16 +297,67 @@ function drawProfileAxes(){const g=$('profileGrid');if(!g)return;g.replaceChildr
   for(let i=1;i<=3;i++){const x=plot.left+(plot.right-plot.left)*i/3;const t=range.span*i/3;g.append(svgNode('line',{x1:x,y1:plot.top,x2:x,y2:plot.bottom,stroke:'rgba(160,226,242,.24)','stroke-width':.7,'stroke-dasharray':'2 3'}));g.append(svgNode('text',{x:x,y:117,'text-anchor':i===3?'end':'middle',fill:'#c4edf8','font-size':9,'font-weight':700},fmtTime(t)))}
   g.append(svgNode('line',{x1:plot.left,y1:plot.top,x2:plot.left,y2:plot.bottom,stroke:'rgba(160,226,242,.5)','stroke-width':.9}));g.append(svgNode('line',{x1:plot.left,y1:plot.bottom,x2:plot.right,y2:plot.bottom,stroke:'rgba(160,226,242,.5)','stroke-width':.9}));
 }
-function drawProfile(){if(!samples.length)return;drawProfileAxes();const sorted=[...samples].sort((a,b)=>a.t-b.t);const pts=sorted.map(pointForSample);const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+','+p[1].toFixed(2)).join(' ');$('linePath').setAttribute('d',path);$('areaPath').setAttribute('d',path+' L'+PROFILE_PLOT.right+','+PROFILE_PLOT.bottom+' L'+PROFILE_PLOT.left+','+PROFILE_PLOT.bottom+' Z')}
-function interpolateAt(t){if(!samples.length)return null;const sorted=[...samples].sort((a,b)=>a.t-b.t);if(t<sorted[0].t||t>sorted[sorted.length-1].t)return null;let i=sorted.findIndex(p=>p.t>=t);if(i<0)return null;if(i===0)return {...sorted[0],speed:0};const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span}}
+function drawProfile(){if(!sortedSamples.length)return;drawProfileAxes();const pts=sortedSamples.map(pointForSample);const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+','+p[1].toFixed(2)).join(' ');$('linePath').setAttribute('d',path);$('areaPath').setAttribute('d',path+' L'+PROFILE_PLOT.right+','+PROFILE_PLOT.bottom+' L'+PROFILE_PLOT.left+','+PROFILE_PLOT.bottom+' Z')}
+function interpolateAt(t){const sorted=sortedSamples;if(!sorted.length||!Number.isFinite(t))return null;const first=sorted[0],last=sorted[sorted.length-1];if(t<=first.t)return {...first,t,speed:0};if(t>last.t)return {...last,t,speed:0};let lo=0,hi=sorted.length;while(lo<hi){const mid=(lo+hi)>>1;if(sorted[mid].t<t)lo=mid+1;else hi=mid;}const i=lo;if(i<=0)return {...first,t,speed:0};const a=sorted[i-1],b=sorted[i],span=Math.max(.001,b.t-a.t),f=(t-a.t)/span;const temp=Number.isFinite(a.temp)&&Number.isFinite(b.temp)?a.temp+(b.temp-a.temp)*f:(Number.isFinite(b.temp)?b.temp:a.temp);return {t,d:a.d+(b.d-a.d)*f,temp,speed:(b.d-a.d)/span}}
 function hideLiveData(){['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='hidden');['profileDot','profileDotGlow'].forEach(id=>$(id).setAttribute('visibility','hidden'));$('profileGuide').setAttribute('visibility','hidden')}
 function updateAt(timeOverride=null){const v=$('video');const fallback=samples.length?Math.min(samples[samples.length-1].t,Math.max(samples[0].t,11.8)):0;const baseTime=Number.isFinite(timeOverride)?timeOverride:(v.src?v.currentTime:fallback);const dataTime=baseTime+(Number($('offset').value)||0);const s=interpolateAt(dataTime);if(!s){hideLiveData();return}['depthValue','depthUnit','elapsedValue','elapsedLabel','tempValue','tempLabel','speedValue','speedLabel','hudClock'].forEach(id=>$(id).style.visibility='visible');$('depthValue').textContent=s.d.toFixed(1);$('elapsedValue').textContent=fmtTime(s.t);$('hudClock').textContent=fmtTime(s.t);$('tempValue').textContent=Number.isFinite(s.temp)?s.temp.toFixed(1)+'°':'--';$('speedValue').textContent=(Number.isFinite(s.speed)?s.speed:0).toFixed(1)+' m/s';$('maxDepth').textContent='MAX '+maxD.toFixed(1)+' M';const [x,y]=pointForSample(s);[['profileDot','4.8'],['profileDotGlow','9']].forEach(([id])=>{$(id).setAttribute('cx',x);$(id).setAttribute('cy',y);$(id).setAttribute('visibility','visible')});$('profileGuide').setAttribute('x1',x);$('profileGuide').setAttribute('x2',x);$('profileGuide').setAttribute('y1',PROFILE_PLOT.top);$('profileGuide').setAttribute('y2',PROFILE_PLOT.bottom);$('profileGuide').setAttribute('visibility','visible')}
 function animationLoop(){updateAt();if(!$('video').paused)rafId=requestAnimationFrame(animationLoop);else rafId=null}
 function startAnimation(){if(rafId===null)rafId=requestAnimationFrame(animationLoop)}
 $('videoFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}resetDownloadProgress();lastExportBlob=null;$('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('exportDownloadFallback').style.display='none';$('exportDownloadFallback').removeAttribute('href');$('saveToPhotosBtn').style.display='none';if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(file);$('video').src=videoURL;$('video').style.display='block';$('empty').style.display='none';$('status').textContent='已載入影片：'+file.name;updateAt()});
 $('video').addEventListener('play',startAnimation);['timeupdate','seeked','seeking','loadedmetadata','pause','ended'].forEach(evt=>$('video').addEventListener(evt,updateAt));
-$('uddfFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const xml=new DOMParser().parseFromString(await file.text(),'application/xml');if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');const nodes=[...xml.getElementsByTagName('*')].filter(n=>n.localName?.toLowerCase()==='waypoint');const childText=(node,name)=>{const found=[...node.getElementsByTagName('*')].find(n=>n.localName?.toLowerCase()===name);return found?.textContent?.trim()??null};const parsed=nodes.map((node,i)=>{const depthRaw=childText(node,'depth');const tRaw=childText(node,'divetime');const tempRaw=childText(node,'temperature');const d=Number(depthRaw);const t=Number(tRaw??i+1);let temp=tempRaw===null?NaN:Number(tempRaw);if(temp>100)temp-=273.15;return {t:Number.isFinite(t)?t:i+1,d,temp}}).filter(p=>Number.isFinite(p.d)&&Number.isFinite(p.t)).sort((a,b)=>a.t-b.t);if(!parsed.length)throw Error('找不到可辨識的深度 waypoint；示範資料仍保留');samples=parsed;maxD=Math.max(...samples.map(p=>p.d));avgD=samples.reduce((sum,p)=>sum+p.d,0)/samples.length;duration=samples[samples.length-1].t;$('sumMax').textContent=maxD.toFixed(1)+' m';$('sumAvg').textContent=avgD.toFixed(1)+' m';$('sumDur').textContent=duration+' s';$('recordInfo').textContent='已讀取 '+file.name+'，樣本數 '+samples.length+'。請核對匯入結果是否與手錶紀錄一致。';$('status').textContent='UDDF 已載入：'+samples.length+' 個深度樣本。';drawProfile();updateAt()}catch(err){$('status').textContent='解析提醒：'+err.message}});
-$('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
+$('uddfFile').addEventListener('change',async e=>{
+  const file=e.target.files?.[0];
+  if(!file)return;
+  try{
+    const xml=new DOMParser().parseFromString(await file.text(),'application/xml');
+    if(xml.querySelector('parsererror'))throw Error('UDDF XML 格式無法解析');
+    const nodes=[...xml.getElementsByTagName('*')].filter(n=>n.localName?.toLowerCase()==='waypoint');
+    const childText=(node,name)=>{
+      const found=[...node.getElementsByTagName('*')].find(n=>n.localName?.toLowerCase()===name);
+      return found?.textContent?.trim()??null;
+    };
+    const parsedRaw=nodes.map((node,i)=>{
+      const depthRaw=childText(node,'depth');
+      const timeRaw=childText(node,'divetime');
+      const tempRaw=childText(node,'temperature');
+      const d=depthRaw===null?NaN:Number(depthRaw);
+      const t=timeRaw===null?i+1:Number(timeRaw);
+      let temp=tempRaw===null?NaN:Number(tempRaw);
+      // UDDF water temperature is commonly Kelvin; convert plausible Kelvin values only.
+      if(Number.isFinite(temp)&&temp>=200&&temp<=400)temp-=273.15;
+      return {t,d,temp};
+    }).filter(p=>Number.isFinite(p.t)&&p.t>=0&&Number.isFinite(p.d)&&p.d>=0).sort((a,b)=>a.t-b.t);
+    // Collapse repeated timestamps to prevent zero-length intervals and unrealistic speed spikes.
+    const parsed=[];
+    for(const point of parsedRaw){
+      const previous=parsed[parsed.length-1];
+      if(previous&&Math.abs(previous.t-point.t)<0.0001)parsed[parsed.length-1]=point;
+      else parsed.push(point);
+    }
+    if(!parsed.length)throw Error('找不到有效深度 waypoint；請確認匯入的是單次潛水紀錄 UDDF。');
+    samples=parsed;
+    refreshSampleCache();
+    const maxRaw=childText(xml,'greatestdepth');
+    const avgRaw=childText(xml,'averagedepth');
+    const durationRaw=childText(xml,'diveduration');
+    const declaredMax=maxRaw===null?NaN:Number(maxRaw);
+    const declaredAvg=avgRaw===null?NaN:Number(avgRaw);
+    const declaredDuration=durationRaw===null?NaN:Number(durationRaw);
+    maxD=Number.isFinite(declaredMax)&&declaredMax>=0?declaredMax:Math.max(...samples.map(p=>p.d));
+    avgD=Number.isFinite(declaredAvg)&&declaredAvg>=0?declaredAvg:samples.reduce((sum,p)=>sum+p.d,0)/samples.length;
+    duration=Number.isFinite(declaredDuration)&&declaredDuration>0?declaredDuration:Math.max(0,samples[samples.length-1].t-samples[0].t);
+    $('sumMax').textContent=maxD.toFixed(1)+' m';
+    $('sumAvg').textContent=avgD.toFixed(1)+' m';
+    $('sumDur').textContent=fmtTime(duration);
+    $('recordInfo').textContent='已讀取 '+file.name+'，樣本數 '+samples.length+'；潛水資料時間 '+fmtTime(samples[0].t)+'–'+fmtTime(samples[samples.length-1].t)+'。';
+    $('status').textContent='UDDF 已載入：'+samples.length+' 個有效深度樣本；水溫若為 Kelvin 已自動換算為 °C。';
+    drawProfile();
+    updateAt();
+  }catch(err){
+    $('status').textContent='解析提醒：'+(err?.message||String(err))+'；原有資料仍保留。';
+  }
+});
+$('loadDemo').addEventListener('click',()=>{samples=demoDepths.map((d,i)=>({t:i+1,d,temp:29.4}));refreshSampleCache();maxD=11.9;avgD=6.9;duration=36;$('sumMax').textContent='11.9 m';$('sumAvg').textContent='6.9 m';$('sumDur').textContent='36 s';$('recordInfo').textContent='ATMOS Mission2 示範紀錄：37 個 waypoint；深度範圍 0–11.9 m。';$('status').textContent='已載入 ATMOS 示範潛水資料。';drawProfile();updateAt()});
 $('reset').addEventListener('click',()=>{[['opacity',90],['scale',90],['position',0],['offset',0]].forEach(([id,v])=>$(id).value=v);applyControls();$('status').textContent='HUD 外觀與時間差已重設。'});
 $('editLayout').addEventListener('click',()=>setEditing(!layoutEditing));$('resetLayout').addEventListener('click',resetLayout);$('showAll').addEventListener('click',()=>setAllVisibility(true));$('hideAll').addEventListener('click',()=>setAllVisibility(false));
 $('displayNameInput').addEventListener('input',()=>updateIdentity());$('countrySelect').addEventListener('change',()=>updateIdentity());$('nameFlagScale').addEventListener('input',()=>updateIdentity());$('divingTypeSelect').addEventListener('change',()=>updateIdentity());
@@ -320,10 +385,13 @@ function drawSpacedText(ctx,text,x,y,spacing){
   [...text].forEach((ch,i)=>{ctx.fillText(ch,cursor+widths[i]/2,y);cursor+=widths[i]+spacing})
 }
 function makeSortedExportSamples(){
-  return samples.slice().sort((a,b)=>a.t-b.t);
+  return sortedSamples.slice();
 }
 function interpolateExportSample(sorted,t){
-  if(!sorted.length||t<sorted[0].t||t>sorted[sorted.length-1].t)return null;
+  if(!sorted.length||!Number.isFinite(t))return null;
+  const first=sorted[0],last=sorted[sorted.length-1];
+  if(t<=first.t)return {...first,t,speed:0};
+  if(t>last.t)return {...last,t,speed:0};
   let lo=0,hi=sorted.length;
   while(lo<hi){const mid=(lo+hi)>>1;if(sorted[mid].t<t)lo=mid+1;else hi=mid;}
   const i=lo;
@@ -349,7 +417,7 @@ function drawProfileCanvasCached(ctx,x0,y0,w,h,time,cache){
   ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.lineTo(X(plot.right),Y(plot.bottom));ctx.lineTo(X(plot.left),Y(plot.bottom));ctx.closePath();
   const grad=ctx.createLinearGradient(0,Y(plot.top),0,Y(plot.bottom));grad.addColorStop(0,'rgba(85,231,255,.26)');grad.addColorStop(1,'rgba(85,231,255,0)');ctx.fillStyle=grad;ctx.fill();
   ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.strokeStyle='#70edff';ctx.lineWidth=Math.max(1.2,w*2.2/360);ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='#2adfff';ctx.shadowBlur=ctx.lineWidth*2.2;ctx.stroke();ctx.shadowBlur=0;
-  const sample=interpolateExportSample(cache.sorted,time+cache.offset);if(sample){const x=plot.left+((sample.t-cache.first)/cache.span)*(plot.right-plot.left),y=plot.top+(Math.max(0,sample.d)/cache.dscale)*(plot.bottom-plot.top);const px=X(x),py=Y(y);ctx.beginPath();ctx.setLineDash([3*sx,3*sx]);ctx.moveTo(px,Y(plot.top));ctx.lineTo(px,Y(plot.bottom));ctx.strokeStyle='rgba(186,247,255,.85)';ctx.lineWidth=Math.max(1,w/360);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(px,py,9*sx,0,Math.PI*2);ctx.fillStyle='rgba(85,234,255,.3)';ctx.fill();ctx.beginPath();ctx.arc(px,py,4.8*sx,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle='#55eaff';ctx.lineWidth=2.2*sx;ctx.fill();ctx.stroke();}
+  const sample=interpolateExportSample(cache.sorted,time+cache.offset);if(sample){const x=Math.max(plot.left,Math.min(plot.right,plot.left+((sample.t-cache.first)/cache.span)*(plot.right-plot.left))),y=plot.top+(Math.max(0,sample.d)/cache.dscale)*(plot.bottom-plot.top);const px=X(x),py=Y(y);ctx.beginPath();ctx.setLineDash([3*sx,3*sx]);ctx.moveTo(px,Y(plot.top));ctx.lineTo(px,Y(plot.bottom));ctx.strokeStyle='rgba(186,247,255,.85)';ctx.lineWidth=Math.max(1,w/360);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(px,py,9*sx,0,Math.PI*2);ctx.fillStyle='rgba(85,234,255,.3)';ctx.fill();ctx.beginPath();ctx.arc(px,py,4.8*sx,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle='#55eaff';ctx.lineWidth=2.2*sx;ctx.fill();ctx.stroke();}
   ctx.restore();
 }
 function buildHudExportCache(W,H){
@@ -367,7 +435,7 @@ function buildHudExportCache(W,H){
       dynamic:dynamicIds.has(id)
     });
   }
-  const identity={name:$('hudDisplayName').textContent||'YOUR NAME',type:$('hudDivingType').textContent||'CWTB',flag:$('hudCountryFlag'),maxDepth:maxD};
+  const identity={name:$('hudDisplayName').textContent||'name',type:$('hudDivingType').textContent||'CWTB',flag:$('hudCountryFlag'),maxDepth:maxD};
   const sorted=makeSortedExportSamples();
   const profile=buildExportProfileCache(sorted);profile.offset=Number($('offset').value)||0;
   return {items,identity,profile,sorted,offset:profile.offset,sx:W/rect.width,sy:H/rect.height,opacity:Number(getComputedStyle(hud).opacity)||1,profileCache:{width:items.find(x=>x.id==='profileBlock')?.width||0,height:items.find(x=>x.id==='profileBlock')?.height||0}};
@@ -606,7 +674,7 @@ async function inspectPreviousExports(){
     const root=await navigator.storage.getDirectory();
     const matches=[];
     for await(const [name,handle] of root.entries()){
-      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12)_4K\.mp4$/i.test(name))continue;
+      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12|13)_4K\.mp4$/i.test(name))continue;
       if(handle.kind!=='file')continue;
       const file=await handle.getFile();
       if(file&&file.size>1024)matches.push({name,handle,file});
@@ -645,7 +713,7 @@ async function recoverPreviousExport(){
 }
 $('recoverPreviousBtn').addEventListener('click',recoverPreviousExport);
 
-// V8.12 streams the finalized OPFS file through a same-origin Service Worker download.
+// V8.13 keeps the V8.12 proven OPFS / Service Worker download pipeline unchanged.
 // Important: the service-worker link MUST NOT have the HTML download attribute.
 // Browsers may route <a download> requests directly to the download manager and
 // Post-export MP4 rereads and second-pass packet validation remain disabled.
@@ -740,7 +808,7 @@ async function exportVideo(){
     const pixelsPerSecond=outW*outH*srcStats.fps;
     const targetBitrate=Math.ceil(Math.max(sourceBitrate*1.05,pixelsPerSecond*.10));
     const approxSizeMB=targetBitrate*sourceDuration/8/1e6;
-    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-12_4K.mp4';
+    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-13_4K.mp4';
     $('exportInfo').textContent=`來源 ${sourceWidth} × ${sourceHeight}；輸出目標 ${outW} × ${outH}${targetSize.upscaled?'（升頻 4K）':'（保留原生 4K 以上尺寸）'}；來源 ${srcStats.fps.toFixed(3)} FPS、${srcStats.count.toLocaleString()} 幀；來源影片軌 ${(sourceBitrate/1e6).toFixed(2)} Mbps；預估檔案約 ${approxSizeMB.toFixed(0)} MB。`;
     phase('正在檢查 4K 編碼能力…',6);
     const quality=new Quality({bitrate:targetBitrate});let codec=null;
@@ -798,7 +866,7 @@ async function exportVideo(){
     if(!blob||blob.size<1024)throw new Error('MP4 檔案為空或尚未完整寫入。');
     // V8.12: Hand off the finalized file immediately. Do not reread the MP4 tail,
     // reopen it with a second demuxer, decode-check it, or scan output packets.
-    await attachExportDownload(blob,sourceFile,'V8-12',destination?.fileHandle||null);
+    await attachExportDownload(blob,sourceFile,'V8-13',destination?.fileHandle||null);
     lastExportFilename=blob.name||outputFileName;
     $('exportProgress').value=100;
     $('exportInfo').textContent=`MP4 已建立（${(blob.size/1024/1024).toFixed(1)} MB）。本版本不再對大型成品執行第二輪封包掃描，並使用串流下載交付檔案。${destination.mode==='opfs'?'檔案已保存在網站私有儲存空間，下載時會由 Service Worker 逐段讀取；本頁會顯示已送出的實際資料量。':destination.mode==='direct-file'?'檔案已寫入你選擇的位置。':'檔案由瀏覽器記憶體建立。'}`;
@@ -809,7 +877,7 @@ async function exportVideo(){
     if(!blob&&destination?.fileHandle&&destination.mode==='opfs'){
       try{
         const recovered=await destination.fileHandle.getFile();
-        if(recovered&&recovered.size>1024){blob=recovered;await attachExportDownload(blob,sourceFile,'V8-12',destination?.fileHandle||null);lastExportFilename=blob.name||outputFileName;}
+        if(recovered&&recovered.size>1024){blob=recovered;await attachExportDownload(blob,sourceFile,'V8-13',destination?.fileHandle||null);lastExportFilename=blob.name||outputFileName;}
       }catch(_){}
     }
     if(blob&&blob.size>1024){
