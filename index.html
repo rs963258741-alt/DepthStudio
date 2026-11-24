@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.13</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.14</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -82,7 +82,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.13</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.14</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -164,9 +164,9 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.13：保留已驗證成功的 V8.12 下載與 OPFS 輸出流程不變；優化 HUD 預設排版、姓名預設值、潛水資料時間插值與預覽效能。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
-<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存（可選「儲存到檔案」）</button><a id="exportDownload" role="button">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">備用：直接下載檔案</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.13 保留 V8.12 已成功的 MP4 分塊輸出與三種下載／保存路徑；本次只調整預設 HUD 排版、姓名與潛水資料顯示，不變更下載服務。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.13 保留 V8.12 已成功的 OPFS 分塊輸出、Service Worker 串流下載、直接檔案連結及 iPhone 分享儲存；優化 HUD 預設位置、姓名預設值、UDDF 數據顯示及預覽效能。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.14：保留原有 4K 合成與 OPFS 分塊寫入；下載僅保留已實測成功的直接檔案方式。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
+<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存</button><a id="exportDownload" role="button" style="display:none">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">輸出影片</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.14 保留原有 MP4 合成、OPFS 分塊寫入、HUD 與潛水資料處理；僅保留已實測成功的直接檔案下載方式。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.14 保留既有 OPFS 分塊輸出、HUD、UDDF 數據及預覽設定；下載僅使用直接檔案連結。</p></div>
 </section>
 </main>
 <script>
@@ -267,7 +267,13 @@ function applySavedIdentity(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem(IDENTITY_KEY)||'null')}catch(e){}
   const defaults={name:'name',country:'chinesetaipei',scale:80,divingType:'CWTB'};
   const current=saved&&typeof saved==='object'?{...defaults,...saved}:defaults;
-  $('displayNameInput').value=typeof current.name==='string'&&current.name.trim()?current.name:'name';
+  const savedName=typeof current.name==='string'?current.name.trim():'';
+  const displayName=savedName==='朱擇文'?'name':(savedName||'name');
+  $('displayNameInput').value=displayName;
+  // One-time migration of the old prefilled name only. Preserve every other saved preference.
+  if(saved&&typeof saved==='object'&&savedName==='朱擇文'){
+    try{localStorage.setItem(IDENTITY_KEY,JSON.stringify({...current,name:'name'}));}catch(e){}
+  }
   const allowed=['','roc','hongkong','china','southkorea','malaysia','japan','chinesetaipei'];
   $('countrySelect').value=allowed.includes(current.country)?current.country:'chinesetaipei';
   const scale=Number(current.scale);$('nameFlagScale').value=Number.isFinite(scale)?Math.max(60,Math.min(180,scale)):80;
@@ -619,52 +625,28 @@ async function attachExportDownload(file,sourceFile,versionLabel,fileHandle=null
   resetDownloadProgress();
   lastExportBlob=file;
   lastExportFilename=file.name||sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_'+versionLabel+'_4K.mp4';
-  const link=$('exportDownload');
-  const fallback=$('exportDownloadFallback');
-  link.removeAttribute('href');
-  link.removeAttribute('aria-disabled');
-  link.removeAttribute('download');
-  link.type='video/mp4';
 
-  // One object URL references the already disk-backed OPFS File; it does not
-  // construct a second 700 MB Blob or ArrayBuffer. Keep it as a direct fallback.
+  // Keep the exact tested path: one object URL for the finalized File/Blob,
+  // downloaded directly by the browser. Do not route through Service Worker or share sheet.
+  const streamLink=$('exportDownload');
+  streamLink.style.display='none';
+  streamLink.removeAttribute('href');
+  streamLink.removeAttribute('download');
+  streamLink.dataset.downloadMode='disabled';
+
+  const directLink=$('exportDownloadFallback');
   activeExportUrl=URL.createObjectURL(file);
-  fallback.href=activeExportUrl;
-  fallback.download=lastExportFilename;
-  fallback.style.display='inline-flex';
-  fallback.textContent=`備用：直接下載檔案（${(file.size/1024/1024).toFixed(1)} MB）`;
+  directLink.href=activeExportUrl;
+  directLink.download=lastExportFilename;
+  directLink.dataset.downloadMode='direct-file';
+  directLink.textContent='輸出影片';
+  directLink.setAttribute('aria-label','直接下載已完成的 Depth Studio MP4 影片');
+  directLink.style.display='inline-flex';
 
-  let streamingReady=false;
-  if(fileHandle){
-    const ready=await getDownloadWorkerReady();
-    if(ready&&navigator.serviceWorker?.controller){
-      const downloadRequest=buildStreamingDownloadUrl(fileHandle,lastExportFilename,file.size);
-      link.href=downloadRequest.url;
-      activeDownloadRequestId=downloadRequest.id;
-      link.dataset.downloadMode='service-worker';
-      streamingReady=true;
-    }
-  }
-  if(!streamingReady){
-    link.href=activeExportUrl;
-    link.download=lastExportFilename;
-    link.dataset.downloadMode='blob-fallback';
-  }
-  link.style.display='inline-flex';link.style.visibility='visible';link.style.opacity='1';
-  link.textContent=streamingReady
-    ?`下載完成影片（串流・${(file.size/1024/1024).toFixed(1)} MB）`
-    :`下載完成影片（MP4・${(file.size/1024/1024).toFixed(1)} MB）`;
-  link.setAttribute('aria-label','下載已完成的 Depth Studio MP4 影片');
-
-  // Do not hide the native share route for large files. When the result is a
-  // File returned by OPFS getFile(), share that same File; never wrap/copy it.
-  const shareButton=$('saveToPhotosBtn');
-  shareButton.style.display=(typeof navigator.share==='function')?'inline-flex':'none';
-  shareButton.disabled=false;
-  shareButton.textContent='使用 iPhone 分享選單儲存（可選「儲存到檔案」）';
-  $('status').textContent=streamingReady
-    ?'MP4 已建立。先試「下載完成影片」；若 iPhone 下載停住，請改用「備用：直接下載檔案」或分享選單儲存。'
-    :'MP4 已建立。Service Worker 串流不可用，已改用直接檔案連結；也可使用 iPhone 分享選單儲存。';
+  $('saveToPhotosBtn').style.display='none';
+  $('downloadProgress').hidden=true;
+  $('downloadStatus').hidden=true;
+  $('status').textContent='MP4 已建立。請按「輸出影片」直接下載檔案。';
   return true;
 }
 async function inspectPreviousExports(){
@@ -674,7 +656,7 @@ async function inspectPreviousExports(){
     const root=await navigator.storage.getDirectory();
     const matches=[];
     for await(const [name,handle] of root.entries()){
-      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12|13)_4K\.mp4$/i.test(name))continue;
+      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12|13|14)_4K\.mp4$/i.test(name))continue;
       if(handle.kind!=='file')continue;
       const file=await handle.getFile();
       if(file&&file.size>1024)matches.push({name,handle,file});
@@ -704,7 +686,7 @@ async function recoverPreviousExport(){
     if(ready){
       $('exportProgress').hidden=false;$('exportProgress').value=100;
       $('exportInfo').textContent=`已找回先前完成的 MP4（${(currentFile.size/1024/1024).toFixed(1)} MB），沒有重新編碼。`;
-      $('status').textContent='已找回上次輸出的影片。現在請按「下載完成影片（MP4）」。';
+      $('status').textContent='已找回上次輸出的影片。現在請按「輸出影片」直接下載。';
       $('recoverPreviousBtn').style.display='none';
     }
   }catch(error){
@@ -713,9 +695,8 @@ async function recoverPreviousExport(){
 }
 $('recoverPreviousBtn').addEventListener('click',recoverPreviousExport);
 
-// V8.13 keeps the V8.12 proven OPFS / Service Worker download pipeline unchanged.
-// Important: the service-worker link MUST NOT have the HTML download attribute.
-// Browsers may route <a download> requests directly to the download manager and
+// V8.14 uses only the directly tested File/Blob object-URL download action.
+// OPFS output remains chunked; the finalized File is not copied into an ArrayBuffer.
 // Post-export MP4 rereads and second-pass packet validation remain disabled.
 async function makeOutputDestination(MB,fileName,estimatedMB){
   const {Output,Mp4OutputFormat,StreamTarget,BufferTarget}=MB;
@@ -784,11 +765,7 @@ async function exportVideo(){
     if(Date.now()-lastUiAt>8000)$('status').textContent=`${currentPhase}（已經過 ${elapsed} 秒；請保持瀏覽器在前景並避免鎖定螢幕。）`;
   },3000);
   try{
-    if(isAppleMobileBrowser()){
-      phase('正在準備 iPhone 串流下載服務…',1);
-      const downloadReady=await getDownloadWorkerReady();
-      if(!downloadReady||!navigator.serviceWorker?.controller)throw new Error('iPhone 安全串流下載服務尚未啟動。請先重新整理網站，確認重新整理後載入完成，再開始輸出。');
-    }
+    // Download delivery uses the user-tested direct File URL; no Service Worker prerequisite.
     phase('正在載入影片處理模組…',2);
     if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('此瀏覽器尚未提供完整 WebCodecs 編碼／解碼功能。');
     const MB=await loadMediabunny();
@@ -808,7 +785,7 @@ async function exportVideo(){
     const pixelsPerSecond=outW*outH*srcStats.fps;
     const targetBitrate=Math.ceil(Math.max(sourceBitrate*1.05,pixelsPerSecond*.10));
     const approxSizeMB=targetBitrate*sourceDuration/8/1e6;
-    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-13_4K.mp4';
+    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-14_4K.mp4';
     $('exportInfo').textContent=`來源 ${sourceWidth} × ${sourceHeight}；輸出目標 ${outW} × ${outH}${targetSize.upscaled?'（升頻 4K）':'（保留原生 4K 以上尺寸）'}；來源 ${srcStats.fps.toFixed(3)} FPS、${srcStats.count.toLocaleString()} 幀；來源影片軌 ${(sourceBitrate/1e6).toFixed(2)} Mbps；預估檔案約 ${approxSizeMB.toFixed(0)} MB。`;
     phase('正在檢查 4K 編碼能力…',6);
     const quality=new Quality({bitrate:targetBitrate});let codec=null;
@@ -866,23 +843,23 @@ async function exportVideo(){
     if(!blob||blob.size<1024)throw new Error('MP4 檔案為空或尚未完整寫入。');
     // V8.12: Hand off the finalized file immediately. Do not reread the MP4 tail,
     // reopen it with a second demuxer, decode-check it, or scan output packets.
-    await attachExportDownload(blob,sourceFile,'V8-13',destination?.fileHandle||null);
+    await attachExportDownload(blob,sourceFile,'V8-14',destination?.fileHandle||null);
     lastExportFilename=blob.name||outputFileName;
     $('exportProgress').value=100;
-    $('exportInfo').textContent=`MP4 已建立（${(blob.size/1024/1024).toFixed(1)} MB）。本版本不再對大型成品執行第二輪封包掃描，並使用串流下載交付檔案。${destination.mode==='opfs'?'檔案已保存在網站私有儲存空間，下載時會由 Service Worker 逐段讀取；本頁會顯示已送出的實際資料量。':destination.mode==='direct-file'?'檔案已寫入你選擇的位置。':'檔案由瀏覽器記憶體建立。'}`;
-    $('status').textContent=blob.size>50*1024*1024?'影片已輸出。請按「下載完成影片」將 MP4 串流儲存到 iPhone「檔案」App；大型影片請勿直接呼叫分享面板。':'影片已輸出。請按「下載完成影片」儲存 MP4，或使用小檔案分享按鈕。';
+    $('exportInfo').textContent=`MP4 已建立（${(blob.size/1024/1024).toFixed(1)} MB）。影片以已實測成功的直接檔案連結下載；原始成品仍保留在瀏覽器儲存空間。${destination.mode==='opfs'?'輸出檔案已分塊寫入網站私有儲存空間。':destination.mode==='direct-file'?'輸出檔案已寫入選定位置。':'輸出檔案由瀏覽器記憶體建立。'}`;
+    $('status').textContent='影片已輸出。請按「輸出影片」直接下載 MP4。';
   }catch(err){
     // If an error happened after the file was committed but before the normal hand-off,
     // try to recover the stored File and validate it before discarding anything.
     if(!blob&&destination?.fileHandle&&destination.mode==='opfs'){
       try{
         const recovered=await destination.fileHandle.getFile();
-        if(recovered&&recovered.size>1024){blob=recovered;await attachExportDownload(blob,sourceFile,'V8-13',destination?.fileHandle||null);lastExportFilename=blob.name||outputFileName;}
+        if(recovered&&recovered.size>1024){blob=recovered;await attachExportDownload(blob,sourceFile,'V8-14',destination?.fileHandle||null);lastExportFilename=blob.name||outputFileName;}
       }catch(_){}
     }
     if(blob&&blob.size>1024){
       $('exportProgress').value=100;
-      $('status').textContent='MP4 檔案已成功建立並保留。後續步驟出現提醒：'+(err?.message||String(err))+'；請使用已顯示的儲存或下載按鈕。';
+      $('status').textContent='MP4 檔案已成功建立並保留。後續步驟出現提醒：'+(err?.message||String(err))+'；請按「輸出影片」直接下載。';
       $('exportInfo').textContent=`已建立 ${(blob.size/1024/1024).toFixed(1)} MB MP4。自動檢查／交付流程遇到提醒，但檔案仍保留。`;
     }else{
       $('status').textContent='輸出尚未完成：'+(err?.message||String(err));
@@ -940,14 +917,13 @@ $('exportDownload').addEventListener('click',()=>{
   }
 });
 $('exportDownloadFallback').addEventListener('click',()=>{
-  $('status').textContent='已切換到不經 Service Worker 的直接檔案連結。請在 iPhone 下載項目或檔案 App 確認是否完成。';
+  $('status').textContent='已啟動「輸出影片」直接下載。請在 iPhone 下載項目或「檔案」App 確認是否完成。';
   $('downloadProgress').hidden=true;
   $('downloadStatus').hidden=true;
 });
 $('exportVideoBtn').addEventListener('click',exportVideo);
 $('video').addEventListener('loadedmetadata',()=>{$('exportVideoBtn').disabled=false;const file=$('videoFile').files?.[0];const duration=Number.isFinite($('video').duration)?$('video').duration:0;const average=file?Math.ceil(file.size*8/Math.max(1,duration)):0;$('exportInfo').textContent=`已載入來源影片：${$('video').videoWidth} × ${$('video').videoHeight}；檔案整體平均位元率估算 ${(average/1000000).toFixed(2)} Mbps。輸出時會將短邊按比例升頻，確保影片長邊至少 3840px（原片已達 4K 以上則保留原尺寸），並逐幀檢查來源影格時間戳及輸出品質。`});
 
-downloadWorkerReadyPromise=ensureDownloadWorker();
 inspectPreviousExports();
 applySavedLayout();applySavedTransforms();applySavedVisibility();buildVisibilityControls();applySavedIdentity();buildItemSelect();drawProfile();applyControls();selectItem('depthValue');setEditing(true);
 
