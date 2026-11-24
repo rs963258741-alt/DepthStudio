@@ -1,49 +1,43 @@
-# Depth Studio
+# Depth Studio Web Preview V8.18
 
-Native iOS SwiftUI app for synchronizing freediving UDDF telemetry with action-camera video.
+## V8.18 basis
+- Uses the complete V8.17 project supplied for this revision.
+- Keeps the Garmin FIT importer in `fit-import.js` and the existing UDDF/XML import branch unchanged.
+- Keeps the existing HUD, interpolation, editing controls, OPFS chunked MP4 writing, `Mp4OutputFormat({ fastStart: false })`, MP4 container checks, and video/audio track verification.
+- Retains only the direct-file download route already confirmed by the user: `URL.createObjectURL(completedFile)` assigned to the download anchor with its `download` filename.
+- The completed-file anchor is labelled **輸出影片**. The initial button labelled **輸出高畫質影片（至少 4K）** remains the action that starts video generation; it is not a second download route.
+- Removes the Service Worker streaming download, iPhone share-sheet download option, and manual previous-export recovery button. Export no longer waits for a Service Worker before starting.
+- Attempts to unregister the legacy Depth Studio `sw.js` worker when the page loads. `sw.js` is retained unchanged in this archive but is not registered or used by V8.18.
+- The export error handler still attempts an automatic recovery of the current output if an error occurs after OPFS writing; any recovered result uses the same single **輸出影片** link.
 
-## Flat upload layout
+## V8.17 changes retained
+- Adds Garmin FIT import through a separate `fit-import.js` module; the FIT SDK is loaded only when a `.fit` file is selected.
+- Uses Garmin’s official `@garmin/fitsdk` JavaScript decoder, pinned to version `21.222.0`.
+- Validates the FIT header, total size and CRC with the SDK before decoding messages.
+- Reads time-stamped `recordMesgs` depth samples and uses `diveSummaryMesgs` for Garmin-reported average / maximum depth when available.
+- Keeps the existing UDDF XML parsing branch unchanged; `.uddf` and `.xml` continue through the original parser.
+- Rejects FIT files without at least two valid time-stamped depth samples before replacing the active dive data.
 
-All app and build files are placed in this directory so they can be selected together in GitHub's **Add file → Upload files** page. No project subfolder is required.
+## V8.16 MP4 validation retained
+- Validates top-level ISO-BMFF/MP4 boxes (`ftyp`, `mdat`, `moov`) and their boundaries.
+- Allows the valid `moov`-after-`mdat` layout used by `fastStart: false`.
+- Reopens the finished MP4 with Mediabunny and checks the video track, codec decodability, output dimensions, sampled packet count, and audio-track retention when the source has audio.
+- Compares OPFS final file size against the final written position.
+- Does not expose an output file as complete when verification fails.
 
-- `AtmosUDDFParser.swift` — ATMOS UDDF parser
-- `ContentView.swift` — main SwiftUI screen and file import
-- `DepthStudioApp.swift` — app entry point
-- `DiveDataInterpolator.swift` — interpolation and vertical speed
-- `DiveHUDOverlay.swift` — live telemetry HUD
-- `DiveVideoExporter.swift` — AVFoundation/Core Animation export draft
-- `DiveVideoPreview.swift` — video preview and HUD controls
-- `TimelineSync.swift` — watch/video time alignment
-- `project.yml` — XcodeGen project definition; explicitly references the eight root-level Swift files
-- `codemagic.yaml` — Codemagic cloud build workflow
+## Exporting a Garmin FIT file
+- Garmin Connect website: open the specific dive activity, open its settings menu, then choose `Export File`.
+- Garmin Dive app: open `You` → `Dive Logs` → the dive → the three-dot menu → `Export Dive as FIT File`.
+- Use the single-dive `.FIT` file. ZIP archives, CSV exports, and wellness FIT files are not the intended input for this importer.
+- The Garmin FIT export may omit some data that is visible in Garmin Dive; missing temperature samples are left blank rather than estimated.
 
-The repository's existing root `.gitignore` can remain as-is. The existing `.github/workflows` folder is separate GitHub automation and does not need to be uploaded with these app files.
+## Deployment
+- The deployed app needs `index.html` and `fit-import.js` in the same project root.
+- `sw.js` is retained in this archive but is no longer used by V8.18. It does not need to be registered or modified.
+- `tests/` contains development tests and is not required for the live page. It is safe to keep in the repository.
 
-## Build
-
-On macOS with Xcode and XcodeGen installed:
-
-```sh
-xcodegen generate --spec project.yml
-xcodebuild -project DepthStudio.xcodeproj -scheme DepthStudio -sdk iphoneos CODE_SIGNING_ALLOWED=NO build
-```
-
-Codemagic runs the same generation and build commands on a cloud macOS runner.
-
-## Status and limitations
-
-This is an initial integration scaffold, not a release-ready app. A successful Swift syntax parse is not the same as a full iOS SDK build. The app must still pass Codemagic's Xcode compilation and on-device tests. MP4 export, camera format compatibility, orientation, HDR handling, and timing accuracy still require validation. An unsigned `.app` cannot be installed directly on a physical iPhone; TestFlight distribution requires Apple signing credentials and an eligible Apple Developer account.
-
-## Build fixes (2026-11-23)
-
-- `DiveExportSettings.quality` is declared as `String`, matching AVFoundation export preset constants such as `AVAssetExportPresetHighestQuality`.
-- The video file importer uses `UTType.mpeg4Movie` instead of the nonexistent `UTType.mpeg4`; QuickTime and general movie types are also accepted.
-- All eight Swift source files remain at the repository root; `project.yml` explicitly lists those eight root-level files.
-
-## Local validation performed
-
-- Swift syntax parsing passed for all eight Swift files.
-- The ATMOS Mission2 UDDF parser and timeline synchronization smoke test passed against the supplied 37-sample UDDF file.
-- Depth interpolation, temperature interpolation, descent/ascent speed, and out-of-range checks passed.
-- Both YAML files parsed successfully, and all eight `project.yml` source paths exist.
-- These checks do not replace a full Xcode/iOS SDK build. The next Codemagic run is still required to verify compilation on Apple's iOS SDK.
+## Validation
+- Run FIT normalizer unit tests with: `node --test tests/fit-import.test.mjs`.
+- The FIT parser loads Garmin’s pinned browser ESM package from jsDelivr only when a `.fit` file is selected, so the first FIT import requires an internet connection.
+- Static syntax checks and all 9 FIT normalizer unit tests pass in the build environment.
+- A real Garmin FIT file and iPhone Safari were not available for end-to-end testing in this revision. The final export/download should still be verified on the target iPhone.
