@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Depth Studio｜潛水影像 HUD 預覽 V8.14</title>
+<title>Depth Studio｜潛水影像 HUD 預覽 V8.15</title>
 <style>
 :root{--cyan:#62e7ff;--blue:#168cff;--bg:#07111b;--hud-scale:1}
 *{box-sizing:border-box}
@@ -82,7 +82,7 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 </style>
 </head>
 <body>
-<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.14</div></header>
+<header><div class="brand">DEPTH <span>STUDIO</span></div><div class="tag">WEB PREVIEW · HUD V8.15</div></header>
 <main>
 <section class="left panel"><h2>影像與 HUD 預覽</h2>
 <div class="preview" id="stage">
@@ -164,9 +164,9 @@ button.secondary{background:#18394e;color:#d9f6ff;border:1px solid #32627a}butto
 <p class="name-field-note">國旗固定在姓名左側；潛水種類會以獨立 HUD 欄位顯示在姓名旁邊，可自行移動、縮放、旋轉及設定顯示／隱藏。</p>
 </div>
 <div class="panel"><h2>05 / 潛水紀錄摘要</h2><div class="stats"><div class="stat"><strong id="sumMax">11.9 m</strong><span>最大深度</span></div><div class="stat"><strong id="sumAvg">6.9 m</strong><span>平均深度</span></div><div class="stat"><strong id="sumDur">36 s</strong><span>紀錄時間</span></div></div><p class="sub" id="recordInfo">示範資料：ATMOS Mission2。載入你的 UDDF 後會嘗試讀取實際紀錄。</p></div>
-<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.14：保留原有 4K 合成與 OPFS 分塊寫入；下載僅保留已實測成功的直接檔案方式。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
-<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存</button><a id="exportDownload" role="button" style="display:none">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">輸出影片</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.14 保留原有 MP4 合成、OPFS 分塊寫入、HUD 與潛水資料處理；僅保留已實測成功的直接檔案下載方式。</div></div>
-<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.14 保留既有 OPFS 分塊輸出、HUD、UDDF 數據及預覽設定；下載僅使用直接檔案連結。</p></div>
+<div class="panel"><h2>06 / 輸出影片</h2><p class="sub">V8.15：保留原有 4K 合成、OPFS 分塊寫入與直接檔案下載；改用 MP4 開頭索引並恢復輸出完整性驗證。</p><div class="actions"><button id="exportVideoBtn" disabled>輸出高畫質影片（至少 4K）</button></div><progress id="exportProgress" max="100" value="0" hidden></progress><div class="export-note" id="exportElapsed" aria-live="polite"></div>
+<progress id="downloadProgress" max="100" value="0" hidden></progress><div class="export-note" id="downloadStatus" aria-live="polite" hidden></div><div class="actions" style="margin-top:8px"><button id="saveToPhotosBtn" type="button" style="display:none">使用 iPhone 分享選單儲存</button><a id="exportDownload" role="button" style="display:none">下載完成影片（MP4）</a><a id="exportDownloadFallback" role="button" style="display:none;text-decoration:none;background:#18394e;color:#d9f6ff;border:1px solid #32627a;font-size:13px;font-weight:800;padding:11px 14px;border-radius:11px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation">輸出影片</a><button id="recoverPreviousBtn" type="button" style="display:none">找回上次已完成的影片</button></div><div class="export-note" id="exportInfo">V8.15 保留原有 MP4 合成、OPFS 分塊寫入、HUD 與潛水資料處理；只使用直接檔案下載，輸出後先驗證 MP4 開頭索引、影片軌與音訊。</div></div>
+<div class="panel"><h2>07 / 目前版本說明</h2><p class="sub">V8.15 保留既有 OPFS 分塊輸出、HUD、UDDF 數據及預覽設定；下載仍只使用直接檔案連結，並在提供下載前驗證 MP4 結構、影片軌、影格封包與音訊。</p></div>
 </section>
 </main>
 <script>
@@ -619,6 +619,89 @@ if(navigator.serviceWorker){
   });
 }
 
+async function validateMp4Container(file){
+  if(!(file instanceof Blob)||file.size<1024)throw new Error('MP4 檔案大小不足。');
+  let offset=0,boxCount=0,ftypIndex=-1,moovIndex=-1,firstMdatIndex=-1;
+  const boxes=[];
+  while(offset<file.size){
+    if(++boxCount>10000)throw new Error('MP4 容器包含過多區塊，已停止檢查。');
+    if(file.size-offset<8)throw new Error('MP4 結尾資料不完整，缺少區塊標頭。');
+    const headerLength=Math.min(16,file.size-offset);
+    const headerBytes=new Uint8Array(await file.slice(offset,offset+headerLength).arrayBuffer());
+    if(headerBytes.length<8)throw new Error('無法讀取 MP4 區塊標頭。');
+    const view=new DataView(headerBytes.buffer,headerBytes.byteOffset,headerBytes.byteLength);
+    const size32=view.getUint32(0,false);
+    const type=String.fromCharCode(headerBytes[4],headerBytes[5],headerBytes[6],headerBytes[7]);
+    let boxSize=size32,headerSize=8;
+    if(size32===1){
+      if(headerBytes.length<16)throw new Error('MP4 64 位元區塊標頭不完整。');
+      const wideSize=(BigInt(view.getUint32(8,false))<<32n)|BigInt(view.getUint32(12,false));
+      if(wideSize>BigInt(Number.MAX_SAFE_INTEGER))throw new Error('MP4 區塊大小超出安全範圍。');
+      boxSize=Number(wideSize);headerSize=16;
+    }else if(size32===0){
+      boxSize=file.size-offset;
+    }
+    if(!Number.isSafeInteger(boxSize)||boxSize<headerSize)throw new Error(`MP4 ${type} 區塊大小無效。`);
+    if(offset+boxSize>file.size)throw new Error(`MP4 ${type} 區塊超出檔案結尾，檔案可能未完整寫入。`);
+    if(boxCount===1&&type!=='ftyp')throw new Error('MP4 第一個區塊不是 ftyp，檔案格式不正確。');
+    if(type==='ftyp')ftypIndex=boxCount-1;
+    if(type==='moov')moovIndex=boxCount-1;
+    if(type==='mdat'&&firstMdatIndex<0){
+      if(boxSize<=headerSize)throw new Error('MP4 媒體資料區塊 mdat 是空的。');
+      firstMdatIndex=boxCount-1;
+    }
+    boxes.push({type,offset,size:boxSize});
+    offset+=boxSize;
+  }
+  if(offset!==file.size)throw new Error('MP4 區塊長度與實際檔案大小不一致。');
+  if(ftypIndex!==0)throw new Error('MP4 缺少開頭 ftyp 區塊。');
+  if(moovIndex<0)throw new Error('MP4 缺少 moov 影片索引中繼資料。');
+  if(firstMdatIndex<0)throw new Error('MP4 缺少 mdat 媒體資料。');
+  if(moovIndex>firstMdatIndex)throw new Error('MP4 影片索引位於媒體資料之後，不符合本版本的快速開啟格式。');
+  return {boxes:boxCount,size:file.size,fastStart:true};
+}
+
+async function verifyMp4Blob(MB,file,sourceStats,targetSize,sourceDuration,sourceHasAudio){
+  const {Input,ALL_FORMATS,BlobSource}=MB;
+  const verifyInput=new Input({formats:ALL_FORMATS,source:new BlobSource(file)});
+  const outTrack=await verifyInput.getPrimaryVideoTrack();
+  if(!outTrack)throw new Error('MP4 已建立，但無法讀取影片軌。');
+  const actualW=await outTrack.getDisplayWidth(),actualH=await outTrack.getDisplayHeight();
+  if(!(await outTrack.canDecode()))throw new Error('MP4 已建立，但瀏覽器無法辨識或解碼輸出影片編碼。');
+  if(actualW!==targetSize.width||actualH!==targetSize.height){
+    throw new Error(`輸出解析度不符：預期 ${targetSize.width}×${targetSize.height}，實際 ${actualW}×${actualH}。`);
+  }
+  const outDuration=typeof outTrack.getDurationFromMetadata==='function'
+    ? await outTrack.getDurationFromMetadata().catch(()=>null)
+    : null;
+  const outRateSample=await outTrack.computePacketStats(Math.min(128,Math.max(1,sourceStats.count)));
+  if(!(Number(outRateSample.packetCount)>0))throw new Error('MP4 影片軌存在，但讀不到有效影格封包。');
+  const outAudio=await verifyInput.getPrimaryAudioTrack();
+  if(sourceHasAudio&&!outAudio)throw new Error('來源影片含有音訊，但輸出 MP4 沒有可讀取的音訊軌。');
+  const warnings=[];
+  if(outDuration!==null&&Number.isFinite(outDuration)&&Math.abs(outDuration-sourceDuration)>Math.max(.15,2/Math.max(1,sourceStats.fps))){
+    warnings.push(`片長中繼資料與來源不同（來源 ${sourceDuration.toFixed(2)} 秒、輸出 ${outDuration.toFixed(2)} 秒）`);
+  }
+  const sampledFps=Number(outRateSample.averagePacketRate)||0;
+  if(sampledFps&&Math.abs(sampledFps-sourceStats.fps)/Math.max(.001,sourceStats.fps)>.03){
+    warnings.push(`輸出抽樣 FPS 約 ${sampledFps.toFixed(2)}，來源平均 ${sourceStats.fps.toFixed(2)}`);
+  }
+  return {actualW,actualH,outDuration,sampledFps,outAudio,warnings,packetCount:Number(outRateSample.packetCount)||0};
+}
+
+async function verifyRecoveredMp4(file){
+  await validateMp4Container(file);
+  const MB=await loadMediabunny();
+  const {Input,ALL_FORMATS,BlobSource}=MB;
+  const input=new Input({formats:ALL_FORMATS,source:new BlobSource(file)});
+  const track=await input.getPrimaryVideoTrack();
+  if(!track)throw new Error('找回的 MP4 沒有可讀取的影片軌。');
+  if(!(await track.canDecode()))throw new Error('找回的 MP4 影片編碼無法解碼。');
+  const stats=await track.computePacketStats(128);
+  if(!(Number(stats.packetCount)>0))throw new Error('找回的 MP4 沒有可讀取的影片影格。');
+  return true;
+}
+
 async function attachExportDownload(file,sourceFile,versionLabel,fileHandle=null){
   if(!(file instanceof Blob)||file.size<1024)throw new Error('輸出影片資料為空或不完整，無法建立下載檔。');
   if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}
@@ -636,6 +719,7 @@ async function attachExportDownload(file,sourceFile,versionLabel,fileHandle=null
 
   const directLink=$('exportDownloadFallback');
   activeExportUrl=URL.createObjectURL(file);
+  directLink.type='video/mp4';
   directLink.href=activeExportUrl;
   directLink.download=lastExportFilename;
   directLink.dataset.downloadMode='direct-file';
@@ -656,7 +740,7 @@ async function inspectPreviousExports(){
     const root=await navigator.storage.getDirectory();
     const matches=[];
     for await(const [name,handle] of root.entries()){
-      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12|13|14)_4K\.mp4$/i.test(name))continue;
+      if(!/_DepthStudio_V8-(?:7|8|9|10|11|12|13|14|15)_4K\.mp4$/i.test(name))continue;
       if(handle.kind!=='file')continue;
       const file=await handle.getFile();
       if(file&&file.size>1024)matches.push({name,handle,file});
@@ -682,6 +766,7 @@ async function recoverPreviousExport(){
     if(!candidate){$('status').textContent='沒有找到上次保留在網站儲存空間的完成影片。';return;}
     const currentFile=await candidate.handle.getFile();
     if(!currentFile||currentFile.size<1024)throw new Error('找到的檔案不完整或已被清除。');
+    await verifyRecoveredMp4(currentFile);
     const ready=await attachExportDownload(currentFile,currentFile,'Recovered',candidate.handle);
     if(ready){
       $('exportProgress').hidden=false;$('exportProgress').value=100;
@@ -695,7 +780,7 @@ async function recoverPreviousExport(){
 }
 $('recoverPreviousBtn').addEventListener('click',recoverPreviousExport);
 
-// V8.14 uses only the directly tested File/Blob object-URL download action.
+// V8.15 uses only the directly tested File/Blob object-URL download action.
 // OPFS output remains chunked; the finalized File is not copied into an ArrayBuffer.
 // Post-export MP4 rereads and second-pass packet validation remain disabled.
 async function makeOutputDestination(MB,fileName,estimatedMB){
@@ -725,8 +810,10 @@ async function makeOutputDestination(MB,fileName,estimatedMB){
         async close(){await fileWritable.close();},
         async abort(reason){try{await fileWritable.abort(reason);}catch(_){}}
       });
-      // fastStart:false places the regular MP4 moov box at the end and avoids an in-memory fast-start pass.
-      const output=new Output({format:new Mp4OutputFormat({fastStart:false}),target:new StreamTarget(safeWritable,{chunked:true,chunkSize:8*1024*1024})});
+      // Reserve space for moov at the start, then backfill it during finalization.
+      // Mediabunny 1.65.2's Conversion estimates maximumPacketCount for this mode,
+      // so the MP4 stays a regular non-fragmented file without buffering the whole movie.
+      const output=new Output({format:new Mp4OutputFormat({fastStart:'reserve'}),target:new StreamTarget(safeWritable,{chunked:true,chunkSize:8*1024*1024})});
       return {output,mode:'opfs',fileHandle:handle,getBytesWritten:()=>bytesWritten};
     }catch(error){
       try{if(fileWritable)await fileWritable.abort(error);}catch(_){}
@@ -750,7 +837,7 @@ async function exportVideo(){
   if(activeExportUrl){URL.revokeObjectURL(activeExportUrl);activeExportUrl=null;}
   lastExportBlob=null;
   const startedAt=Date.now();let lastUiAt=0,lastProgress=0,currentPhase='正在準備輸出';
-  let heartbeat=null,frameUiTimer=null,conversion=null,blob=null,destination=null,outputFileName='';
+  let heartbeat=null,frameUiTimer=null,conversion=null,blob=null,destination=null,outputFileName='',outputVerified=false,mediaModule=null,verificationContext=null;
   const setProgress=(value,message,force=false)=>{
     const now=Date.now();
     const next=Math.max(lastProgress,Math.max(0,Math.min(99.5,Number(value)||0)));
@@ -768,7 +855,8 @@ async function exportVideo(){
     // Download delivery uses the user-tested direct File URL; no Service Worker prerequisite.
     phase('正在載入影片處理模組…',2);
     if(typeof VideoEncoder==='undefined'||typeof VideoDecoder==='undefined')throw new Error('此瀏覽器尚未提供完整 WebCodecs 編碼／解碼功能。');
-    const MB=await loadMediabunny();
+    mediaModule=await loadMediabunny();
+    const MB=mediaModule;
     const {Input,ALL_FORMATS,BlobSource,Conversion,Quality,canEncodeVideo}=MB;
     phase('正在分析原始影片…',3);
     const input=new Input({formats:ALL_FORMATS,source:new BlobSource(sourceFile)});
@@ -781,11 +869,12 @@ async function exportVideo(){
     const sourceDuration=await videoTrack.computeDuration();
     if(!sourceWidth||!sourceHeight||!srcStats.count||!Number.isFinite(sourceDuration)||sourceDuration<=0)throw new Error('無法讀取來源影片尺寸、影格率或時間長度。');
     const targetSize=get4KOutputSize(sourceWidth,sourceHeight),outW=targetSize.width,outH=targetSize.height;
+    verificationContext={srcStats,targetSize,sourceDuration,sourceHasAudio:!!audioTrack};
     const sourceBitrate=Math.max(1,Math.round(srcStats.bitrate));
     const pixelsPerSecond=outW*outH*srcStats.fps;
     const targetBitrate=Math.ceil(Math.max(sourceBitrate*1.05,pixelsPerSecond*.10));
     const approxSizeMB=targetBitrate*sourceDuration/8/1e6;
-    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-14_4K.mp4';
+    outputFileName=sourceFile.name.replace(/\.[^.]+$/,'')+'_DepthStudio_V8-15_4K.mp4';
     $('exportInfo').textContent=`來源 ${sourceWidth} × ${sourceHeight}；輸出目標 ${outW} × ${outH}${targetSize.upscaled?'（升頻 4K）':'（保留原生 4K 以上尺寸）'}；來源 ${srcStats.fps.toFixed(3)} FPS、${srcStats.count.toLocaleString()} 幀；來源影片軌 ${(sourceBitrate/1e6).toFixed(2)} Mbps；預估檔案約 ${approxSizeMB.toFixed(0)} MB。`;
     phase('正在檢查 4K 編碼能力…',6);
     const quality=new Quality({bitrate:targetBitrate});let codec=null;
@@ -841,29 +930,48 @@ async function exportVideo(){
       blob=new File([buffer],outputFileName,{type:'video/mp4'});
     }
     if(!blob||blob.size<1024)throw new Error('MP4 檔案為空或尚未完整寫入。');
-    // V8.12: Hand off the finalized file immediately. Do not reread the MP4 tail,
-    // reopen it with a second demuxer, decode-check it, or scan output packets.
-    await attachExportDownload(blob,sourceFile,'V8-14',destination?.fileHandle||null);
+    if(destination?.mode==='opfs'){
+      const written=Number(destination.getBytesWritten?.());
+      if(Number.isFinite(written)&&written>0&&written!==blob.size){
+        throw new Error(`OPFS 寫入量與檔案大小不一致（寫入位置結尾 ${written.toLocaleString()} bytes，檔案 ${blob.size.toLocaleString()} bytes）。`);
+      }
+    }
+    phase('正在檢查 MP4 容器結構與快速開啟索引…',94);
+    await validateMp4Container(blob);
+    phase('正在驗證 MP4 影片軌、影格封包與音訊…',97);
+    const verification=await verifyMp4Blob(MB,blob,srcStats,targetSize,sourceDuration,!!audioTrack);
+    await attachExportDownload(blob,sourceFile,'V8-15',destination?.fileHandle||null);
+    outputVerified=true;
     lastExportFilename=blob.name||outputFileName;
     $('exportProgress').value=100;
-    $('exportInfo').textContent=`MP4 已建立（${(blob.size/1024/1024).toFixed(1)} MB）。影片以已實測成功的直接檔案連結下載；原始成品仍保留在瀏覽器儲存空間。${destination.mode==='opfs'?'輸出檔案已分塊寫入網站私有儲存空間。':destination.mode==='direct-file'?'輸出檔案已寫入選定位置。':'輸出檔案由瀏覽器記憶體建立。'}`;
-    $('status').textContent='影片已輸出。請按「輸出影片」直接下載 MP4。';
+    const durationText=Number.isFinite(verification.outDuration)?`${verification.outDuration.toFixed(2)} 秒`:'片長中繼資料未提供';
+    const fpsText=verification.sampledFps?`${verification.sampledFps.toFixed(2)} FPS（抽樣）`:'FPS 抽樣未提供';
+    const detail=`${verification.actualW} × ${verification.actualH}；${fpsText}；${durationText}；${verification.packetCount.toLocaleString()} 個抽樣影片封包。`;
+    $('exportInfo').textContent=`MP4 已建立並通過容器／軌道檢查（${(blob.size/1024/1024).toFixed(1)} MB）。${detail}${verification.warnings.length?'檢查提醒：'+verification.warnings.join('；'):'MP4 快速開啟索引、影片軌及音訊檢查通過。'} ${destination.mode==='opfs'?'輸出檔案已分塊寫入網站私有儲存空間。':destination.mode==='direct-file'?'輸出檔案已寫入選定位置。':'輸出檔案由瀏覽器記憶體建立。'}`;
+    $('status').textContent='MP4 完整性檢查通過。請按「輸出影片」直接下載檔案。';
   }catch(err){
     // If an error happened after the file was committed but before the normal hand-off,
     // try to recover the stored File and validate it before discarding anything.
     if(!blob&&destination?.fileHandle&&destination.mode==='opfs'){
       try{
         const recovered=await destination.fileHandle.getFile();
-        if(recovered&&recovered.size>1024){blob=recovered;await attachExportDownload(blob,sourceFile,'V8-14',destination?.fileHandle||null);lastExportFilename=blob.name||outputFileName;}
+        if(recovered&&recovered.size>1024&&mediaModule&&verificationContext){
+          await validateMp4Container(recovered);
+          await verifyMp4Blob(mediaModule,recovered,verificationContext.srcStats,verificationContext.targetSize,verificationContext.sourceDuration,verificationContext.sourceHasAudio);
+          blob=recovered;
+          await attachExportDownload(blob,sourceFile,'V8-15',destination?.fileHandle||null);
+          outputVerified=true;
+          lastExportFilename=blob.name||outputFileName;
+        }
       }catch(_){}
     }
-    if(blob&&blob.size>1024){
+    if(blob&&blob.size>1024&&outputVerified){
       $('exportProgress').value=100;
       $('status').textContent='MP4 檔案已成功建立並保留。後續步驟出現提醒：'+(err?.message||String(err))+'；請按「輸出影片」直接下載。';
       $('exportInfo').textContent=`已建立 ${(blob.size/1024/1024).toFixed(1)} MB MP4。自動檢查／交付流程遇到提醒，但檔案仍保留。`;
     }else{
       $('status').textContent='輸出尚未完成：'+(err?.message||String(err));
-      $('exportInfo').textContent='本次未建立可交付的 MP4。若錯誤提到儲存空間，請先清出 iPhone 空間；若提到 OPFS，請確認 Safari 網站儲存權限。';
+      $('exportInfo').textContent='輸出檔案未通過 MP4 容器／影片軌道驗證，因此沒有提供下載。請確認儲存空間後重新輸出。錯誤：'+(err?.message||String(err));
       $('exportProgress').value=0;
       if(destination?.fileHandle&&destination.mode==='opfs'){try{await destination.fileHandle.remove();}catch(_){}}
       $('exportDownload').style.display='none';$('exportDownload').removeAttribute('href');$('exportDownloadFallback').style.display='none';$('exportDownloadFallback').removeAttribute('href');$('saveToPhotosBtn').style.display='none';
