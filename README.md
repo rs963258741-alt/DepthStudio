@@ -1,4 +1,27 @@
-# Depth Studio Web Preview V8.18
+# Depth Studio Web V9.0
+
+## V9.0：整合泳池平潛＋電腦版介面
+- 開啟網站先選擇模式：**深度潛水**或**泳池平潛**；右上角按鈕可隨時切回模式選擇。網址加 `#depth` 或 `#pool` 可直接進入指定模式。
+- **泳池平潛（V1 基礎模式）**與 iPhone App 功能相同（計算方式移植自 App 的 `PoolTimeline.swift`）：
+  - 25／50 m 泳池、DYN／DYNB／DNF、自訂最終出水距離（例如 137.5 m），轉身節點自動產生。
+  - 播放影片標記出發、轉身、出水時間；可 ±0.1／±1 秒微調、輸入時間、清除時間、跳到節點時間、新增／刪除校正點。
+  - 自動計算距離、閉氣時間、趟次與分段平均速率；顯示平潛數據摘要與錯誤提示。
+  - 16 個 HUD 欄位：拖曳、2% 中心吸附、縮放、旋轉、顯示／隱藏、透明度、字體、垂直偏移、姓名／國旗／項目；設定存在瀏覽器。
+  - 距離／速率雙曲線；預覽與輸出使用同一個繪製函式，畫面一致。
+  - 4K MP4 輸出與深度模式共用同一條流程（OPFS 寫入、容器與影片軌驗證、直接下載）。
+- **電腦版介面**：寬螢幕時預覽固定在左側並依螢幕高度放大，設定以兩欄排列；泳池模式支援鍵盤（空白鍵播放／暫停、←／→ 約一格、Shift＋←／→ 0.5 秒）。手機寬度仍為單欄。
+- **輸出修正**：沒有硬體 H.264／HEVC 編碼器的電腦（部分 Windows／Linux）原本會在輸出時失敗，現在會自動改用瀏覽器預設編碼器。
+
+## 部署檔案
+`index.html`、`fit-import.js`、`pool-timeline.js`、`pool-mode.js`、`assets/jiaoliu-logo.webp` 需放在同一個專案根目錄。
+
+## 測試
+- 單元測試：`node --test tests/fit-import.test.mjs tests/pool-timeline.test.mjs`
+- 完整功能測試（Playwright＋ffmpeg）：先在根目錄執行 `python3 -m http.server 8765`，再執行 `MEDIABUNNY_FILE=<mediabunny.mjs 路徑> node tests/e2e-web.cjs 5`（說明見檔案開頭）。
+
+---
+
+# 先前版本：Depth Studio Web Preview V8.18
 
 ## V8.18 basis
 - Uses the complete V8.17 project supplied for this revision.
